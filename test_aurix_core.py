@@ -94,3 +94,70 @@ def test_illegal_folder_names_rejected():
 
 def test_sanitize_strips_illegal_characters():
     assert sanitize_folder_name('my<>project') == "myproject"
+
+
+# ===============================================================
+# SPEC RULE 2.1 - local before model
+# Regression for observed 2026-08-02 failure: "wat time is it?"
+# was routed to the model, which returned the placeholder text
+# "[Insert Current Time, e.g., 10:30 AM PST]".
+# ===============================================================
+
+from aurix_core import route_command, is_local_route
+
+
+@pytest.mark.parametrize("user_input", [
+    "what time is it",
+    "wat time is it?",
+    "What Time Is It?",
+    "hey aurix what time is it",
+    "whats the time",
+])
+def test_time_never_reaches_the_model(user_input):
+    assert route_command(user_input) == "time"
+    assert is_local_route(user_input) is True
+
+
+@pytest.mark.parametrize("user_input", [
+    "what is today's date",
+    "what is the date",
+    "what day is it",
+])
+def test_date_never_reaches_the_model(user_input):
+    assert route_command(user_input) == "date"
+
+
+@pytest.mark.parametrize("user_input,expected_route", [
+    ("open calculator",                 "app"),
+    ("launch youtube",                  "app"),
+    ("create a folder called notes",    "folder"),
+    ("list files",                      "files"),
+    ("show memory",                     "memory"),
+    ("help",                            "help"),
+    ("exit",                            "exit"),
+    ("read file notes.txt",             "file"),
+    ("summarize file report.md",        "file"),
+])
+def test_local_routes(user_input, expected_route):
+    assert route_command(user_input) == expected_route
+
+
+@pytest.mark.parametrize("user_input", [
+    "explain quantum computing",
+    "write me an email to my manager",
+    "translate this to hindi",
+    "why is the sky blue",
+])
+def test_open_questions_do_reach_the_model(user_input):
+    assert route_command(user_input) == "model"
+    assert is_local_route(user_input) is False
+
+
+def test_empty_input_is_not_a_model_call():
+    assert route_command("") == "empty"
+    assert route_command("   ") == "empty"
+
+
+def test_file_command_beats_normalization():
+    """A filename containing a route keyword must still route to file."""
+    assert route_command("read file time.txt") == "file"

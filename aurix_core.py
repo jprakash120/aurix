@@ -90,3 +90,52 @@ def is_safe_folder_name(name):
 def sanitize_folder_name(name):
     """Strip illegal characters from a folder name."""
     return re.sub(r'[<>:"/\\|?*]', "", name).strip()
+
+
+# ---------------------------------------------------------------
+# ROUTING (SPEC Rule 2.1: local before model)
+# ---------------------------------------------------------------
+
+LOCAL_ROUTES = {
+    "time":   ["what time is it", "what is the time", "current time", "time now"],
+    "date":   ["what is today's date", "what is the date", "what day is it",
+               "todays date", "what is todays date"],
+    "memory": ["show memory", "clear memory"],
+    "files":  ["list files"],
+    "help":   ["help", "what can you do"],
+    "exit":   ["exit", "quit", "shut down", "goodbye"],
+}
+
+
+def route_command(user_input):
+    """
+    Decide who answers: the machine or the model.
+
+    Returns a route name ("time", "date", "file", "app", ...) or "model".
+    Anything the OS knows for certain must NOT reach the model.
+    """
+    if not user_input or not user_input.strip():
+        return "empty"
+
+    action, _ = parse_file_command(user_input)
+    if action:
+        return "file"
+
+    command = normalize_command(user_input)
+
+    for route, phrases in LOCAL_ROUTES.items():
+        if command in phrases:
+            return route
+
+    if command.startswith(("open ", "launch ")):
+        return "app"
+
+    if command.startswith("create a folder"):
+        return "folder"
+
+    return "model"
+
+
+def is_local_route(user_input):
+    """True if this must be answered without a model call."""
+    return route_command(user_input) != "model"
