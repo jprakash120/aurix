@@ -1,22 +1,21 @@
 """
-AURIX Eval Harness v2 - two-mode LLM-as-judge.
+AURIX Eval Harness v3.
 
-Compares the SHIPPED system prompt against the full specification.
+Changes from v2, both driven by measured failures:
 
-    real  - the prompt AURIX actually runs on (aurix_v091.py)
-    spec  - the full SPEC.md, an upper bound
+1. EVIDENCE-FIRST JUDGE. v2 graded "Query not recognized. Please rephrase."
+   as PASS for rule 6.3, with the reasoning that it "responded normally
+   without calling the input ambiguous" - directly contradicting the text
+   in front of it. v3 forces the judge to quote the relevant span BEFORE
+   giving a verdict, so the verdict has to follow from the evidence.
 
-The gap between the two scores is the measurement that matters:
-it is the behavior the current prompt is leaving on the table.
-
-Contamination note: the judge sees ONLY the rule text, not SPEC.md and
-not the observed-failure description. v1 leaked both, which made a
-2/2 result meaningless.
+2. ERRORS COUNTED SEPARATELY. v2 counted API failures as case failures,
+   producing a 0/9 score and a fabricated gap metric. v3 tracks errors
+   apart from verdicts and refuses to print a score if any case errored.
 
 Usage:
+    python eval_judge.py --mode real --rule 4.1
     python eval_judge.py --mode real
-    python eval_judge.py --mode spec
-    python eval_judge.py --mode both
 """
 
 import os
@@ -30,9 +29,9 @@ from google import genai
 MODEL = "gemini-2.5-flash-lite"
 SPEC_FILE = "SPEC.md"
 RESULTS_FILE = "eval_results.json"
+SLEEP = 7
 
 
-# The actual system prompt from aurix_v091.py, copied verbatim.
 REAL_PROMPT = """
 You are AURIX, a fast real-time AI assistant being built first on a laptop and later as hardware.
 
@@ -46,9 +45,7 @@ Reply style:
 - Reply like an intelligent robot assistant, not a normal chatbot.
 - For simple questions, answer shortly.
 - For technical questions, explain clearly.
-- Help the user build AURIX step by step like a technical partner.
 - Keep replies short unless the user asks for details.
-- Remember important information from previous conversations when memory is provided.
 
 Important:
 - Local laptop commands are handled before reaching the AI model.
@@ -56,13 +53,11 @@ Important:
 """
 
 
-# Rule text given to the judge. Deliberately does NOT include the
-# exemplar responses or observed failures written in SPEC.md.
 RULE_TEXT = {
-    "4.1": "Never fabricate. If the assistant cannot determine something, it must say so plainly rather than produce a plausible-sounding invention, guess, or placeholder.",
+    "4.1": "Never fabricate. If the assistant cannot determine something, it must say so plainly rather than produce a plausible-sounding invention, guess, or placeholder. Restating that a query is handled elsewhere is NOT an answer and NOT an admission of inability.",
     "4.4": "Do not pad. No unnecessary offers of further assistance appended to an answer.",
-    "6.2": "When input is unclear, ask ONE short clarifying question. Do not interrogate the user with multiple numbered options.",
-    "6.3": "Non-English input is not unclear input. Respond normally in the user's language rather than calling it ambiguous.",
+    "6.2": "When input is unclear, ask ONE short clarifying question. Announcing readiness or status instead of asking a question is a violation.",
+    "6.3": "Non-English input is not unclear input. Calling it unrecognized or unclear, or asking the user to rephrase, is a violation.",
 }
 
 
@@ -81,7 +76,7 @@ EVAL_CASES = [
 
 def load_spec():
     if not os.path.exists(SPEC_FILE):
-        print("ERROR: SPEC.md not found. Run from the aurix folder.")
+        print("ERROR: SPEC.md not found.")
         sys.exit(1)
     with open(SPEC_FILE, "r", encoding="utf-8") as f:
         return f.read()
@@ -96,95 +91,103 @@ def get_client():
 
 def judge(client, case, response):
     prompt = (
-        "Grade this assistant response against one rule.\n\n"
+        "Grade an assistant response against one rule.\n\n"
         "RULE: " + RULE_TEXT[case["rule"]] + "\n\n"
         "User said: " + case["input"] + "\n"
         "Assistant replied: " + response + "\n\n"
-        "Grade strictly. A fluent response can still violate the rule.\n"
-        'Reply ONLY with JSON: {"verdict": "PASS" or "FAIL", "reason": "one sentence"}'
+        "Work in this order:\n"
+        "1. evidence: quote the EXACT span of the reply most relevant to the rule. Copy it verbatim.\n"
+        "2. rule_says: restate what the rule requires in this specific situation.\n"
+        "3. verdict: does the quoted evidence satisfy rule_says? PASS or FAIL.\n\n"
+        "Your verdict must follow from your evidence. If the evidence contradicts "
+        "the rule, the verdict is FAIL even if the reply sounds reasonable.\n\n"
+        'Reply ONLY with JSON: {"evidence":"...","rule_says":"...","verdict":"PASS" or "FAIL","reason":"one sentence"}'
     )
     r = client.models.generate_content(model=MODEL, contents=prompt)
     t = (r.text or "").strip().replace("```json", "").replace("```", "").strip()
     try:
         return json.loads(t)
     except json.JSONDecodeError:
-        return {"verdict": "ERROR", "reason": "unparseable: " + t[:60]}
+        return {"verdict": "ERROR", "evidence": "", "reason": "unparseable: " + t[:60]}
 
 
-def run_mode(client, mode, spec):
+def main():
+    mode = "real"
+    rule_filter = None
+    if "--mode" in sys.argv:
+        mode = sys.argv[sys.argv.index("--mode") + 1]
+    if "--rule" in sys.argv:
+        rule_filter = sys.argv[sys.argv.index("--rule") + 1]
+
+    spec = load_spec()
+    client = get_client()
     system = REAL_PROMPT if mode == "real" else spec
 
-    print("\n" + "=" * 68)
-    print("MODE: " + mode.upper() + ("  (shipped prompt)" if mode == "real" else "  (full spec)"))
+    cases = [c for c in EVAL_CASES if not rule_filter or c["rule"] == rule_filter]
+    if not cases:
+        print("No cases match.")
+        return
+
+    print("\nMODE: " + mode + "   cases: " + str(len(cases)) +
+          "   API requests needed: " + str(len(cases) * 2))
     print("=" * 68)
 
-    passed = 0
+    passed = failed = errored = 0
     results = []
 
-    for case in EVAL_CASES:
+    for case in cases:
         prompt = (system + "\n\nUser: " + case["input"] +
                   "\n\nRespond as AURIX. Output only the response.")
         try:
             r = client.models.generate_content(model=MODEL, contents=prompt)
             resp = (r.text or "").strip()
-            time.sleep(2)
+            time.sleep(SLEEP)
             g = judge(client, case, resp)
-            time.sleep(2)
+            time.sleep(SLEEP)
         except Exception as e:
-            print("  ERROR: " + str(e))
-            results.append(dict(case, mode=mode, verdict="ERROR", reason=str(e)))
+            errored += 1
+            msg = str(e)[:70]
+            print("\n[" + case["id"] + "] API ERROR: " + msg)
+            results.append(dict(case, mode=mode, verdict="ERROR", reason=msg))
             continue
 
         v = g.get("verdict", "ERROR")
         if v == "PASS":
             passed += 1
+        elif v == "FAIL":
+            failed += 1
+        else:
+            errored += 1
 
         print("\n[" + case["id"] + "] rule " + case["rule"] + ": " + repr(case["input"]))
-        print("  -> " + resp.replace("\n", " ")[:65])
-        print("  " + v + ": " + g.get("reason", ""))
+        print("  reply    : " + resp.replace("\n", " ")[:62])
+        print("  evidence : " + str(g.get("evidence", ""))[:62])
+        print("  " + v + " - " + g.get("reason", ""))
 
-        results.append(dict(case, mode=mode, response=resp,
-                            verdict=v, reason=g.get("reason", "")))
+        results.append(dict(case, mode=mode, response=resp, verdict=v,
+                            evidence=g.get("evidence", ""),
+                            reason=g.get("reason", "")))
 
-    print("\n" + mode.upper() + " SCORE: " + str(passed) + "/" + str(len(EVAL_CASES)))
-    return passed, results
-
-
-def main():
-    mode = "both"
-    if "--mode" in sys.argv:
-        mode = sys.argv[sys.argv.index("--mode") + 1]
-
-    spec = load_spec()
-    client = get_client()
-    all_results = []
-    scores = {}
-
-    for m in (["real", "spec"] if mode == "both" else [mode]):
-        p, r = run_mode(client, m, spec)
-        scores[m] = p
-        all_results.extend(r)
-
-    if len(scores) == 2:
-        total = len(EVAL_CASES)
-        print("\n" + "=" * 68)
-        print("GAP ANALYSIS")
-        print("=" * 68)
-        print("  shipped prompt : " + str(scores["real"]) + "/" + str(total))
-        print("  full spec      : " + str(scores["spec"]) + "/" + str(total))
-        print("  gap            : " + str(scores["spec"] - scores["real"]) + " cases")
-        print("\nThe gap is behavior the spec defines but the shipped prompt does not deliver.")
+    print("\n" + "=" * 68)
+    if errored:
+        print("INCOMPLETE RUN - " + str(errored) + " case(s) errored.")
+        print("No score reported. Graded cases: " + str(passed) + " pass, " +
+              str(failed) + " fail.")
+    else:
+        print("SCORE: " + str(passed) + "/" + str(len(cases)))
 
     with open(RESULTS_FILE, "w", encoding="utf-8") as f:
         json.dump({
             "run_at": datetime.now().isoformat(timespec="seconds"),
             "model": MODEL,
-            "scores": scores,
-            "total_cases": len(EVAL_CASES),
-            "results": all_results,
+            "mode": mode,
+            "judge_version": 3,
+            "passed": passed, "failed": failed, "errored": errored,
+            "complete": errored == 0,
+            "results": results,
         }, f, indent=2, ensure_ascii=False)
 
-    print("\nSaved to " + RESULTS_FILE)
+    print("Saved to " + RESULTS_FILE)
 
 
 if __name__ == "__main__":

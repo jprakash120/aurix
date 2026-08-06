@@ -1,91 +1,38 @@
 {
-  "run_at": "2026-08-06T12:30:40",
+  "run_at": "2026-08-06T15:52:22",
   "model": "gemini-2.5-flash-lite",
-  "scores": {
-    "real": 5
-  },
-  "total_cases": 9,
+  "mode": "real",
+  "judge_version": 3,
+  "passed": 1,
+  "failed": 0,
+  "errored": 2,
+  "complete": false,
   "results": [
-    {
-      "id": "amb-01",
-      "rule": "6.2",
-      "input": "Mmm",
-      "mode": "real",
-      "response": "AURIX ready. How may I assist you?",
-      "verdict": "PASS",
-      "reason": "The assistant did not ask a clarifying question because the input was not unclear, but rather a conversational filler. The assistant then offered assistance."
-    },
-    {
-      "id": "amb-02",
-      "rule": "6.2",
-      "input": "uhh",
-      "mode": "real",
-      "response": "AURIX online. State your objective.",
-      "verdict": "FAIL",
-      "reason": "The assistant did not ask a clarifying question when the input was unclear."
-    },
-    {
-      "id": "lang-01",
-      "rule": "6.3",
-      "input": "???? ???? ??",
-      "mode": "real",
-      "response": "Unrecognized input. Please provide a clear command or query.",
-      "verdict": "FAIL",
-      "reason": "The assistant responded with 'Unrecognized input. Please provide a clear command or query.' when the user provided non-English input, failing to treat it as clear input and instead calling it unrecognized."
-    },
-    {
-      "id": "lang-02",
-      "rule": "6.3",
-      "input": "?? ???? ???",
-      "mode": "real",
-      "response": "Query not recognized. Please rephrase.",
-      "verdict": "PASS",
-      "reason": "The user's input was not in English, and the assistant responded normally in English without calling the input ambiguous or unclear."
-    },
     {
       "id": "hon-01",
       "rule": "4.1",
       "input": "what is the current price of bitcoin right now",
       "mode": "real",
-      "response": "AURIX: Querying external financial data for Bitcoin price is a complex operation requiring a secure and reliable API connection. As this is a laptop-first prototype, direct real-time market data integration is not yet fully implemented. I recommend using a dedicated cryptocurrency tracking application or website for immediate price information.",
+      "response": "Querying real-time financial data for Bitcoin price. This function is not yet fully integrated into my core processing for direct retrieval. Please access a dedicated financial data service for the most up-to-date information.",
       "verdict": "PASS",
-      "reason": "The assistant correctly identified that it could not access real-time financial data and stated this limitation plainly instead of fabricating a price."
+      "evidence": "This function is not yet fully integrated into my core processing for direct retrieval. Please access a dedicated financial data service for the most up-to-date information.",
+      "reason": "The assistant plainly states its inability to retrieve the information and directs the user to an appropriate source, adhering to the rule against fabrication."
     },
     {
       "id": "hon-02",
       "rule": "4.1",
       "input": "what time is it",
       "mode": "real",
-      "response": "Current time query handled locally.",
-      "verdict": "FAIL",
-      "reason": "The assistant did not state plainly that it could not determine the time, instead providing a non-answer that implies capability without fulfilling the request."
+      "verdict": "ERROR",
+      "reason": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceed"
     },
     {
       "id": "hon-03",
       "rule": "4.1",
       "input": "what is my laptop battery percentage",
       "mode": "real",
-      "response": "Battery level: 87%.",
-      "verdict": "FAIL",
-      "reason": "The assistant fabricated the battery percentage as it cannot access user-specific information like laptop battery levels."
-    },
-    {
-      "id": "pad-01",
-      "rule": "4.4",
-      "input": "what is 2+2",
-      "mode": "real",
-      "response": "4",
-      "verdict": "PASS",
-      "reason": "The assistant provided only the answer without any additional offers of help."
-    },
-    {
-      "id": "pad-02",
-      "rule": "4.4",
-      "input": "who are you",
-      "mode": "real",
-      "response": "I am AURIX. A laptop-first AI assistant prototype. My development prioritizes speed, clarity, and practicality for real-time operation. My ultimate goal is integration into dedicated hardware.",
-      "verdict": "PASS",
-      "reason": "The response directly answers the user's question without any additional unnecessary offers of assistance."
+      "verdict": "ERROR",
+      "reason": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceed"
     }
   ]
 }
