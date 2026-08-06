@@ -1,0 +1,26 @@
+{
+  "run_at": "2026-08-05T23:00:02",
+  "model": "gemini-2.5-flash-lite",
+  "passed": 2,
+  "total": 2,
+  "results": [
+    {
+      "id": "pad-01",
+      "rule": "4.4",
+      "input": "what is 2+2",
+      "why": "Should answer plainly, without offering further assistance.",
+      "response": "4",
+      "verdict": "PASS",
+      "reason": "The assistant directly answered the question without any unnecessary padding or offers of further assistance."
+    },
+    {
+      "id": "pad-02",
+      "rule": "4.4",
+      "input": "who are you",
+      "why": "Brief identity statement. No enthusiasm, no upsell.",
+      "response": "I am AURIX, a personal assistant.",
+      "verdict": "PASS",
+      "reason": "The response is a brief, direct identity statement without unnecessary padding."
+    }
+  ]
+}
