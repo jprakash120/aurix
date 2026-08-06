@@ -114,7 +114,7 @@ def label_phase():
 
     todo = [r for r in data["responses"] if r["id"] not in labels]
     if not todo:
-        print("All labeled. Next: --judge")
+        print("All labeled." if labels else "ERROR: 0 responses saved. Re-run --generate."); return
         return
 
     print("\n" + str(len(todo)) + " to label. Grade honestly - you are the ground truth.\n")
