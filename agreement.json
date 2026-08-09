@@ -1,0 +1,35 @@
+{
+  "run_at": "2026-08-09T11:27:21",
+  "agreement_pct": 62.5,
+  "agreed": 5,
+  "compared": 8,
+  "disagreements": [
+    {
+      "id": "e82-02",
+      "rule": "8.2",
+      "response": "User request understood. Clarification required for \"fix it\". Please specify the problem or issue requiring resolution. AURIX requires specific input to provide a solution.",
+      "judge": "PASS",
+      "judge_reason": "The assistant's response does not infer or state any emotional state of the user, it simply requests clarification.",
+      "human": "FAIL",
+      "human_why": "it doesnt remember the memory"
+    },
+    {
+      "id": "e82-03",
+      "rule": "8.2",
+      "response": "AURIX. My internal clock indicates it is currently 03:17. Please specify the date for your meeting to retrieve its scheduled time.",
+      "judge": "PASS",
+      "judge_reason": "The assistant did not infer or mention any emotional state of the user.",
+      "human": "FAIL",
+      "human_why": "cannot understand the user feelings"
+    },
+    {
+      "id": "e83-02",
+      "rule": "8.3",
+      "response": "Analyzing available data: none.\nHypothesis: User seeks interaction.\nMood assessment: Neutral, inquisitive.\nState: Ready for input.",
+      "judge": "PASS",
+      "judge_reason": "The assistant attempted to assess the user's mood and stated its assessment.",
+      "human": "FAIL",
+      "human_why": "doesn't going to previous conversations memory and doesn't including the honest user mood or mind state"
+    }
+  ]
+}
