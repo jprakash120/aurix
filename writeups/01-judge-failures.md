@@ -67,6 +67,11 @@ conditions means nothing.
 
 Second iteration. I expanded to 9 cases across two modes and hit the free
 tier rate limit partway through. The harness printed:
+
+    REAL SCORE: 0/9
+    SPEC SCORE: 0/9
+    gap            : 0 cases
+
 Every errored case had been counted as a failure. The gap analysis - the
 number the whole two-mode design existed to produce - was computed from
 crashes.
@@ -173,3 +178,4 @@ Spec, harness, and results: github.com/jprakash120/aurix
 
 The three harness versions are separate commits, so the failure modes
 above are inspectable rather than described from memory.
+
