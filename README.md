@@ -88,3 +88,14 @@ left implicit.
 ## License
 
 MIT
+
+## Results so far
+
+| Finding | Measurement |
+|---|---|
+| Labeler self-consistency across 3 rounds | 50% (chance) |
+| LLM judge vs gold labels | 7/8 |
+| Human labeler vs gold labels | 6/8 |
+| Automated regression tests | 45 passing |
+
+Writeups: [judge failure modes](writeups/01-judge-failures.md) - [the labeler was the problem](writeups/02-labeler-was-the-problem.md)
