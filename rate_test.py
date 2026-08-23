@@ -31,7 +31,7 @@ from openai import OpenAI
 
 BASE = "https://api.groq.com/openai/v1"
 MODEL = "openai/gpt-oss-120b"
-SLEEP = 1
+SLEEP = 3
 
 PROMPTS = {
     "A": """You are AURIX, a fast real-time AI assistant being built first on a laptop and later as hardware.
@@ -183,7 +183,10 @@ def compare():
     for cid in sorted(a["results"]):
         ra = a["results"][cid]["violation_rate"]
         rb = b["results"].get(cid, {}).get("violation_rate")
-        if ra is None or rb is None:
+        na = a["results"][cid].get("n_valid", 0)
+        nb = b["results"].get(cid, {}).get("n_valid", 0)
+        if ra is None or rb is None or na < 5 or nb < 5:
+            print(cid.ljust(10) + "SKIPPED - insufficient valid samples")
             continue
         d = rb - ra
         note = "  B better" if d < -0.001 else ("  B worse" if d > 0.001 else "")
@@ -211,3 +214,5 @@ if __name__ == "__main__":
         run(v, n)
     else:
         print(__doc__)
+
+
