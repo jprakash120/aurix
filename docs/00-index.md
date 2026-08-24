@@ -34,7 +34,15 @@ MEASURING    violation rates at n=20
 NEXT         writeup 03 · vision on laptop camera
 ```
 
-→ [[status]]
+→ [[status]] · [[progress]]
+
+---
+
+## Learning
+
+Ten free courses, two tracks, checkboxes to tick as you go.
+
+→ **[[learning-path]]** · [[progress]]
 
 ---
 
