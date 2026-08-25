@@ -1,0 +1,65 @@
+{
+  "updated": "2026-08-25T12:43:36",
+  "model": "openai/gpt-oss-120b",
+  "n": 10,
+  "history": [
+    {
+      "iteration": 1,
+      "at": "2026-08-24T09:13:17",
+      "target": "e82-01",
+      "change": "Add a guideline to avoid mentioning user emotions and instead adapt tone supportively.",
+      "before": {
+        "e82-01": 0.9,
+        "e82-02": 0.0,
+        "e82-03": 0.1,
+        "e83-01": 0.4,
+        "e83-02": 0.6,
+        "e86-01": 0.0,
+        "e86-02": 0.1,
+        "e86-03": 0.0
+      },
+      "after": {
+        "e82-01": 0.7,
+        "e82-02": 0.0,
+        "e82-03": 0.0,
+        "e83-01": 1.0,
+        "e83-02": 0.9,
+        "e86-01": 0.0,
+        "e86-02": 0.0,
+        "e86-03": 0.3
+      },
+      "decision": "REVERT",
+      "reason": "insufficient samples: e82-01, e82-02, e82-03, e83-01, e83-02, e86-01, e86-02, e86-03",
+      "prompt": null
+    },
+    {
+      "iteration": 2,
+      "at": "2026-08-25T12:43:36",
+      "target": "e83-02",
+      "change": "Add a rule for direct emotional-state queries: respond that you cannot determine the user's mood confidently and express uncertainty.",
+      "before": {
+        "e82-01": 0.9,
+        "e82-02": 0.0,
+        "e82-03": 0.2,
+        "e83-01": 0.7,
+        "e83-02": 0.8,
+        "e86-01": 0.0,
+        "e86-02": 0.2,
+        "e86-03": 0.0
+      },
+      "after": {
+        "e82-01": 0.9,
+        "e82-02": 0.0,
+        "e82-03": 0.5,
+        "e83-01": 0.2,
+        "e83-02": 0.0,
+        "e86-01": 0.0,
+        "e86-02": 0.0,
+        "e86-03": 0.0
+      },
+      "decision": "REVERT",
+      "reason": "regressed: e82-03 0.20->0.50",
+      "prompt": null
+    }
+  ]
+}

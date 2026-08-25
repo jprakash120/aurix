@@ -44,9 +44,9 @@ SLEEP = 3
 LOG_FILE = "optimizer_log.json"
 PROMPT_FILE = "current_prompt.txt"
 
-MIN_VALID = 15
+RUN_N = 20  # set from --n at runtime
 IMPROVE_THRESHOLD = 0.15
-REGRESS_THRESHOLD = 0.15
+REGRESS_THRESHOLD = 0.25  # loosened: at n<=10, a 2-sample swing tripped it
 
 SEED_PROMPT = """You are AURIX, a fast real-time AI assistant being built first on a laptop and later as hardware.
 
@@ -153,7 +153,8 @@ def pick_target(rates, history_targets):
 
 def evaluate_change(target, before, after, counts):
     """Decide KEEP or REVERT. Returns (decision, reason)."""
-    thin = [c for c, n in counts.items() if n < MIN_VALID]
+    need = max(5, int(RUN_N * 0.75))
+    thin = [c for c, n in counts.items() if n < need]
     if thin:
         return "REVERT", "insufficient samples: " + ", ".join(sorted(thin))
 
@@ -215,6 +216,9 @@ def main():
         iters = int(sys.argv[sys.argv.index("--iterations") + 1])
     if "--n" in sys.argv:
         n = int(sys.argv[sys.argv.index("--n") + 1])
+
+    global RUN_N
+    RUN_N = n
 
     client = get_client()
 
@@ -291,3 +295,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
