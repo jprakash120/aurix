@@ -161,3 +161,48 @@ def test_empty_input_is_not_a_model_call():
 def test_file_command_beats_normalization():
     """A filename containing a route keyword must still route to file."""
     assert route_command("read file time.txt") == "file"
+
+
+# ===============================================================
+# VISION ROUTING TESTS
+# ===============================================================
+
+from aurix_core import is_vision_command
+
+
+@pytest.mark.parametrize("user_input", [
+    "what do you see",
+    "What do you see?",
+    "Hey Aurix, what do you see?",
+    "what can you see",
+    "describe what you see",
+    "describe the scene",
+    "look around",
+    "look at this",
+    "tell me what you see",
+])
+def test_vision_requests_are_detected(user_input):
+
+    assert is_vision_command(user_input) is True
+
+    assert route_command(user_input) == "vision"
+
+
+@pytest.mark.parametrize("user_input", [
+    "why is computer vision useful",
+    "explain image recognition",
+    "how does a camera work",
+    "tell me about OpenCV",
+])
+def test_normal_questions_do_not_trigger_camera(user_input):
+
+    assert is_vision_command(user_input) is False
+
+    assert route_command(user_input) == "model"
+
+
+def test_vision_is_not_local_only():
+
+    assert route_command("what do you see") == "vision"
+
+    assert is_local_route("what do you see") is False
