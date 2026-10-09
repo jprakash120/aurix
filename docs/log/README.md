@@ -26,6 +26,16 @@ frustrating" replies stay FAIL; fact-only restatements flip to PASS;
 brief_direct stays 0.00. Behavior fix (SYSTEM_PROMPT) comes after,
 measured against the regraded baseline.
 
+**Then the regrade lied.** Groq's daily limit hit after 3 judge calls.
+The other 21 saved verdicts were overwritten with ERROR, the file was
+saved, and the run printed "Verdicts that changed between rubric v2 and
+v3: 0". True, and meaningless - almost nothing had been re-judged. I
+committed it before reading the per-sample rows. Seventh "number that
+looked fine and wasn't." Fix: regrade is now all-or-nothing - the first
+failed judge call aborts it, nothing is written, and it says how far it
+got. Test fails if the old behavior comes back (mutation-checked). The
+bad regraded file was reverted to the previous good one.
+
 ---
 
 ## 2026-10-09 (later) - regrade confirmed; clarify was the real problem

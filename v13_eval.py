@@ -279,11 +279,22 @@ def run(plan, n, ai, judge_client, primary_model, sleep=SLEEP, log=print):
     return out
 
 
+class RegradeAborted(Exception):
+    """A judge call failed (usually a 429). A partial regrade is not saved:
+    a saved FAIL replaced by ERROR reads as 'no verdicts changed' when in
+    fact almost nothing was re-judged (observed 2026-10-09: 21 of 24)."""
+    def __init__(self, done, total, reason):
+        self.done, self.total, self.reason = done, total, reason
+        super().__init__("stopped after %d/%d judge calls: %s" % (done, total, reason))
+
+
 def regrade(results, judge_client, sleep=SLEEP, log=print):
     """Re-judge saved replies with the current rubric. Replies are held
-    fixed, so any change in verdict is the judge, not the model."""
+    fixed, so any change in verdict is the judge, not the model.
+    All or nothing: raises RegradeAborted on the first failed judge call."""
     results = copy.deepcopy(results)  # never mutate the caller's original
     n, primary = results["n"], results["primary_model"]
+    total, done = judge_calls_for_regrade(results), 0
     flips = []
     for cid, c in results["cases"].items():
         case = {"id": cid, "rule": c["rule"], "input": c["input"]}
@@ -297,7 +308,8 @@ def regrade(results, judge_client, sleep=SLEEP, log=print):
                     try:
                         smp["verdict"], smp["evidence"] = judge(judge_client, case, smp["response"])
                     except Exception as e:
-                        smp["verdict"], smp["error"] = "ERROR", str(e)[:120]
+                        raise RegradeAborted(done, total, str(e)[:160])
+                    done += 1
                     smp["verdict_v%d" % results.get("rubric_version", 1)] = old
                     if smp["verdict"] in ("PASS", "FAIL") and smp["verdict"] != old:
                         flips.append((cid, name, old, smp["verdict"], smp["response"]))
@@ -377,7 +389,12 @@ def main():
             return
         from openai import OpenAI
         client = OpenAI(api_key=os.environ["GROQ_API_KEY"], base_url=GROQ_BASE)
-        new, flips = regrade(old, client)
+        try:
+            new, flips = regrade(old, client)
+        except RegradeAborted as e:
+            print("\nREGRADE ABORTED - %s" % e)
+            print("Nothing saved. %s is unchanged. Rerun when quota resets." % REGRADED_FILE)
+            sys.exit(1)
         with open(REGRADED_FILE, "w", encoding="utf-8") as f:
             json.dump(new, f, indent=2, ensure_ascii=False)
         report(new)

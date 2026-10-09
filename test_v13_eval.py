@@ -246,3 +246,30 @@ def test_8_2_rubric_names_impersonal_forms_and_allows_restated_facts():
 
 def test_rubric_version_is_3():
     assert E.RUBRIC_VERSION == 3
+
+
+class RateLimitedJudge:
+    """Judges the first `ok` calls, then raises like a Groq 429."""
+    def __init__(self, ok):
+        self.left = ok
+        good = FakeJudge("PASS").chat.completions.create
+        def create(**kw):
+            if self.left <= 0:
+                raise RuntimeError("Error code: 429 - Rate limit reached")
+            self.left -= 1
+            return good(**kw)
+        self.chat = SimpleNamespace(completions=SimpleNamespace(create=create))
+
+
+def test_regrade_aborts_on_judge_error_instead_of_saving_errors():
+    """2026-10-09: a 429 mid-regrade turned 21 of 24 saved verdicts into
+    ERROR, and the run reported 'Verdicts that changed: 0'."""
+    import pytest
+    old = _saved_results(["FAIL", "FAIL", "PASS", "FAIL"])
+    with pytest.raises(E.RegradeAborted) as info:
+        E.regrade(old, RateLimitedJudge(ok=2), sleep=0, log=lambda *_: None)
+    assert info.value.done == 2 and info.value.total == 4
+    assert "429" in info.value.reason
+    # caller's saved verdicts untouched
+    assert [x["verdict"] for x in old["cases"]["e83-01"]["conditions"]["v13:normal"]["samples"]] \
+        == ["FAIL", "FAIL", "PASS", "FAIL"]
