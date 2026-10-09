@@ -28,7 +28,9 @@ test is an aspiration, not a specification.
 | `aurix_ai.py` | Provider layer: Groq first (reasoning, Whisper STT, vision), Gemini fallback. |
 | `aurix_learning.py` | LinUCB contextual bandit choosing response *behavior*, not emotion labels. |
 | `aurix_world_memory.py` | SQLite episodic memory with scene-novelty change detection. |
-| `eval_judge.py`, `rate_test.py`, `optimizer.py` | LLM-as-judge evals, violation rates, prompt optimizer. |
+| `aurix_prompting.py` | The system prompt and turn template. Imported by the runner AND the eval, never copied. |
+| `v13_eval.py` | Section 8 violation rates for the real v1.3 pipeline, per bandit behavior, vs the v0.9.1 baseline. |
+| `eval_judge.py`, `rate_test.py`, `optimizer.py` | Earlier harnesses. They measure the v0.9.1 prompt, not v1.3. |
 | `TASK.md` | Standing rules for automated coding agents working on this repo. |
 
 The core/runner split is deliberate. `aurix_core.py` imports nothing
@@ -82,12 +84,12 @@ Tests, which need no API key and no Windows:
 ## Status and next steps
 
 Working: voice I/O, local command routing, file reading and summarization,
-vision, episodic world memory, a learned response policy, 77 passing tests
+vision, episodic world memory, a learned response policy, 92 passing tests
 (under a second, no API calls).
 
-Next: point the eval harness at v1.3. The judge-measured rates below were
-taken against the v0.9.1 fixed prompt, which v1.3 no longer uses. Then
-writeups 03 and 04, and SPEC section 9 extending the honesty rules to vision.
+Next: run `v13_eval.py` - the judge-measured rates below were taken against
+the v0.9.1 fixed prompt, which v1.3 no longer uses. Then writeups 03 and 04,
+and SPEC section 9 extending the honesty rules to vision.
 
 Open design questions are tracked in section 7 of the spec rather than
 left implicit.
@@ -106,7 +108,7 @@ MIT
 | Rule 8.3 violation rate, n=20 (v0.9.1 prompt) | 0.59-0.70 |
 | Optimizer changes kept | 0 of 2 |
 | Rule 8.5 guards protected by tests, before / after mutation testing | 0 of 5 / 5 of 5 |
-| Automated tests | 77 passing |
+| Automated tests | 92 passing |
 
 Writeups: [judge failure modes](writeups/01-judge-failures.md) - [the labeler was the problem](writeups/02-labeler-was-the-problem.md)
 

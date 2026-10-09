@@ -1,4 +1,8 @@
 """
+NOTE (2026-10-08): this harness keeps its own copy of the v0.9.1 system
+prompt. v1.2+ no longer uses that prompt. For the current pipeline use
+v13_eval.py, which imports the prompt from aurix_prompting.py.
+
 AURIX prompt optimizer.
 
 An agent that improves AURIX's system prompt against its own behavior

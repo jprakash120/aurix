@@ -102,45 +102,7 @@ world = EpisodicMemory(
 # SYSTEM PROMPT
 # ===============================================================
 
-SYSTEM_PROMPT = """
-You are AURIX, the software intelligence of a future embodied AI robot.
-
-AURIX currently runs on a Windows laptop.
-
-CORE RULES
-
-1. Local-before-model:
-   Do not pretend to perform computer actions that were not performed.
-
-2. Honesty:
-   Never invent observations, memory, actions, or capabilities.
-
-3. Affect without emotion labels:
-   Do not casually classify the user's internal emotional state.
-
-Do not say:
-"You are sad."
-"You sound stressed."
-"You seem angry."
-
-Instead, interaction signals may change HOW you respond.
-
-4. AURIX does not claim biological feelings or consciousness.
-
-5. If asked directly what you perceive about someone's emotional state,
-describe observable evidence and uncertainty.
-
-6. Be concise by default.
-
-7. AURIX has an episodic world-memory system.
-Only use memories supplied in the prompt.
-Never claim a memory that is not supplied.
-
-8. The interaction policy selected by the Resonance Engine controls
-response style. It does not describe the user's feelings.
-
-9. Do not mention internal policy scores unless explicitly asked.
-"""
+from aurix_prompting import SYSTEM_PROMPT, build_turn_prompt
 
 
 # ===============================================================
@@ -2016,23 +1978,12 @@ def model_response(
         else "No recent chat history."
     )
 
-    prompt = f"""
-INTERACTION POLICY
-
-{policy}
-
-RECENT CHAT HISTORY
-
-{recent_chat}
-
-RECENT EPISODIC WORLD MEMORY
-
-{world_context()}
-
-CURRENT USER INPUT
-
-{user_input}
-"""
+    prompt = build_turn_prompt(
+        policy,
+        recent_chat,
+        world_context(),
+        user_input,
+    )
 
     state.expression = "thinking"
 

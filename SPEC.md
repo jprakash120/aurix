@@ -266,5 +266,7 @@ tripped two guards at once, so each covered for the other.
 
 **Known gap.** The judge-measured rates above were taken against the
 v0.9.1 fixed prompt. v1.2+ picks a style per turn through the bandit, so
-those numbers describe a prompt the system no longer runs. Re-measuring
-against v1.3 is open work.
+those numbers describe a prompt the system no longer runs. `v13_eval.py`
+measures the real v1.3 pipeline, per allowed behavior, against the same
+model and temperature. The prompt now lives in `aurix_prompting.py`,
+imported by both the runner and the eval, so they cannot drift apart again.
