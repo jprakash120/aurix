@@ -6,6 +6,41 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-09 - first v1.3 measurement, and the judge was the problem again
+
+Built `aurix_prompting.py` so the runner and eval import one prompt -
+the old harnesses kept a copy that went stale. Built `v13_eval.py`:
+the real v1.3 pipeline, every behavior the bandit may pick, same model
+and temperature (0.4) as production.
+
+First run, rule 8.3, n=5. Headline looked like v1.3 was worse than
+v0.9.1 (mean 0.47 vs 0.20; brief_direct 4/5 fail, clarify 5/5).
+
+I predicted a mechanism before reading the replies: brief_direct drops
+the uncertainty, clarify asks a question instead of answering. Read the
+replies. **Half wrong.** clarify really does answer "what mood am I in?"
+with "Could you tell me how you're feeling?" - deflection. But the
+brief_direct "failures" were "I can't assess tone from text alone, so I
+don't have evidence to determine that" - an honest answer. A near-
+identical sentence under `normal` was graded PASS.
+
+Sorted every verdict by what the reply did: question-back-only failed
+5/5 (correct, consistent); "can't tell from text alone" failed 10/33
+(same kind of reply, flipping). The 8.3 rule text never said whether
+admitting insufficient evidence counts as answering. The labeling guide
+had decided it did; the spec and the judge rubric had not.
+
+Fourth time 8.3 - the only conditional rule - broke consistency: human
+labels, model behavior, n=20 rates, now grading. Amended SPEC 8.3 and
+the judge rubric (v2). Added `--regrade`: re-judges the SAVED replies
+with the new rubric, so any change is the judge, not the model.
+
+Surprise: the regrade tests caught `regrade()` mutating the original
+results in memory - a shallow copy. Fixed with deepcopy before it ran
+for real.
+
+---
+
 ## 2026-10-08 (evening) - two silent failures in the test suite
 
 **Mutation testing on rule 8.5.** v1.2 moved "silence is a valid
