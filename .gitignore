@@ -4,3 +4,10 @@ __pycache__/
 aurix_memory.txt
 docs/.obsidian/workspace.json
 aurix_vision.jpg
+aurix_state.json
+aurix_interactions.jsonl
+aurix_bandit.json
+aurix_world.db
+aurix_world.db-shm
+aurix_world.db-wal
+aurix_pending.json

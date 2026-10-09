@@ -79,8 +79,9 @@ Tests, which need no API key and no Windows:
 Working: voice I/O, local command routing, file reading and summarization,
 conversation memory, 45 passing tests.
 
-Next: an LLM-as-judge grader for the spec rules that assertions cannot
-check - tone, length, and the quality of clarifying questions.
+Next: writeups 03 and 04 - measurement precision as the binding
+constraint on automated behavior optimization. Then SPEC section 9,
+extending the honesty rules to vision.
 
 Open design questions are tracked in section 7 of the spec rather than
 left implicit.
@@ -99,3 +100,4 @@ MIT
 | Automated regression tests | 45 passing |
 
 Writeups: [judge failure modes](writeups/01-judge-failures.md) - [the labeler was the problem](writeups/02-labeler-was-the-problem.md)
+
