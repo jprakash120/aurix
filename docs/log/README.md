@@ -6,6 +6,44 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-08 (evening) - two silent failures in the test suite
+
+**Mutation testing on rule 8.5.** v1.2 moved "silence is a valid
+response" out of the prompt and into `eligible_actions()` - five guards
+that remove silence for direct requests, problem reports, detail
+requests and non-trivial input. 11 tests covered the module.
+
+Deleted each guard in turn. All five deletions left the suite green.
+The only "no silence" test used "why is my code failing?" - not
+low-information AND a direct question, so two guards removed silence for
+it and each covered for the other. Problem-language and detail guards
+were never reached at all.
+
+Added `test_eligibility_guards.py`: one input per guard, chosen so
+exactly one guard is responsible ("why?", "bug again", "full code"),
+plus a test that asserts the inputs still trip the signals they're meant
+to - so a change in signal extraction fails loudly instead of quietly
+testing nothing. Now 5 of 5 deletions are caught, each by one named test.
+
+**pytest was running the webcam.** Default collection includes
+`*_test.py`, which matched `vision_test.py`, `voice_test.py`,
+`ab_test.py`, `rate_test.py`. `vision_test.py` has top-level code:
+importing it opened the camera, called Gemini and spoke. Every test run
+spent API quota. That's why the suite took 46-77s. Added `pytest.ini`
+restricting collection to `test_*.py`. Suite: 77 passed in under a
+second.
+
+Surprise: both problems were invisible because the suite was green.
+Fifth instance of a passing number that didn't mean what it looked like
+- first one in unit tests rather than evals. See
+[[finding-measurement-needs-honesty]].
+
+SPEC 8.10 rewritten from "no rule has a test" to a per-rule enforcement
+table. Also recorded that all judge-measured rates describe the v0.9.1
+prompt, which v1.3 no longer runs.
+
+---
+
 ## 2026-10-08 (catch-up entry)
 
 Project dormant ~6 weeks. Recording what happened before the gap.

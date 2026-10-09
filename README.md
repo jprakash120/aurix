@@ -22,8 +22,13 @@ test is an aspiration, not a specification.
 |---|---|
 | `SPEC.md` | Behavior specification. The source of truth. |
 | `aurix_core.py` | Pure logic. No platform dependencies. Testable anywhere. |
-| `test_aurix_core.py` | 45 tests enforcing the spec. |
-| `aurix_v091.py` | Windows runner: voice, microphone, OS commands. |
+| `test_aurix_core.py` | 59 tests: routing, input handling, file commands. |
+| `test_eligibility_guards.py` | Rule 8.5 silence guards, one test per guard, mutation-verified. |
+| `aurix_v13.py` | Current runner: voice, vision, bandit policy, episodic memory. |
+| `aurix_ai.py` | Provider layer: Groq first (reasoning, Whisper STT, vision), Gemini fallback. |
+| `aurix_learning.py` | LinUCB contextual bandit choosing response *behavior*, not emotion labels. |
+| `aurix_world_memory.py` | SQLite episodic memory with scene-novelty change detection. |
+| `eval_judge.py`, `rate_test.py`, `optimizer.py` | LLM-as-judge evals, violation rates, prompt optimizer. |
 | `TASK.md` | Standing rules for automated coding agents working on this repo. |
 
 The core/runner split is deliberate. `aurix_core.py` imports nothing
@@ -77,11 +82,12 @@ Tests, which need no API key and no Windows:
 ## Status and next steps
 
 Working: voice I/O, local command routing, file reading and summarization,
-conversation memory, 45 passing tests.
+vision, episodic world memory, a learned response policy, 77 passing tests
+(under a second, no API calls).
 
-Next: writeups 03 and 04 - measurement precision as the binding
-constraint on automated behavior optimization. Then SPEC section 9,
-extending the honesty rules to vision.
+Next: point the eval harness at v1.3. The judge-measured rates below were
+taken against the v0.9.1 fixed prompt, which v1.3 no longer uses. Then
+writeups 03 and 04, and SPEC section 9 extending the honesty rules to vision.
 
 Open design questions are tracked in section 7 of the spec rather than
 left implicit.
@@ -97,7 +103,10 @@ MIT
 | Labeler self-consistency across 3 rounds | 50% (chance) |
 | LLM judge vs gold labels | 7/8 |
 | Human labeler vs gold labels | 6/8 |
-| Automated regression tests | 45 passing |
+| Rule 8.3 violation rate, n=20 (v0.9.1 prompt) | 0.59-0.70 |
+| Optimizer changes kept | 0 of 2 |
+| Rule 8.5 guards protected by tests, before / after mutation testing | 0 of 5 / 5 of 5 |
+| Automated tests | 77 passing |
 
 Writeups: [judge failure modes](writeups/01-judge-failures.md) - [the labeler was the problem](writeups/02-labeler-was-the-problem.md)
 

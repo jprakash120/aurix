@@ -239,8 +239,32 @@ Attachment increases the obligation.
 - Does 8.5 conflict with the companion goal? A device that mostly does
   not react may read as cold rather than respectful.
 
-### 8.10 Not yet enforceable
+### 8.10 Enforcement status
 
-No rule in section 8 currently has a test. Every rule here needs an
-LLM-judge grader with labeled cases before it can be claimed as
-implemented. Until then this section describes intent, not behavior.
+Updated 2026-10-08. Previously this section said no rule in section 8 had
+a test. That stopped being true when v1.2 moved some rules out of the
+prompt and into code. How each rule is enforced, as of v1.3:
+
+| Rule | Enforced by | Strength |
+|---|---|---|
+| 8.1 inference is not observation | `extract_signals()` emits interaction features, never emotion labels | structural, untested |
+| 8.2 adjust, don't narrate | action space is behaviors (`brief_direct`, `clarify`, ...), not emotions; narration in model text measured by judge | structural + judge |
+| 8.3 answer when asked | LLM judge only, on the v0.9.1 prompt | weak: 0.59-0.70 violation rate at n=20 |
+| 8.4 confidence bands | not implemented | none |
+| 8.5 silence is valid | `eligible_actions()` guards; `test_eligibility_guards.py` | **structural + tested, mutation-verified** |
+| 8.6 no inner states | LLM judge only | judge: 0.00-0.10 at n=20 |
+| 8.7 cheap recovery | negative feedback lowers the chosen action's reward | partial, untested |
+| 8.8 not a mental health system | nothing | none |
+
+Rule 4.1 also reaches the learner: only explicit feedback updates the
+policy. Nothing is inferred from tone, faces or silence.
+
+**Mutation-verified** means each guard was deleted in turn and a named
+test failed. Before 2026-10-08 all five 8.5 guards could be deleted with
+the suite still green: the single "no silence" test used input that
+tripped two guards at once, so each covered for the other.
+
+**Known gap.** The judge-measured rates above were taken against the
+v0.9.1 fixed prompt. v1.2+ picks a style per turn through the bandit, so
+those numbers describe a prompt the system no longer runs. Re-measuring
+against v1.3 is open work.
