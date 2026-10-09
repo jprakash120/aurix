@@ -84,7 +84,7 @@ Tests, which need no API key and no Windows:
 ## Status and next steps
 
 Working: voice I/O, local command routing, file reading and summarization,
-vision, episodic world memory, a learned response policy, 92 passing tests
+vision, episodic world memory, a learned response policy, 99 passing tests
 (under a second, no API calls).
 
 Next: run `v13_eval.py` - the judge-measured rates below were taken against
@@ -105,10 +105,12 @@ MIT
 | Labeler self-consistency across 3 rounds | 50% (chance) |
 | LLM judge vs gold labels | 7/8 |
 | Human labeler vs gold labels | 6/8 |
-| Rule 8.3 violation rate, n=20 (v0.9.1 prompt) | 0.59-0.70 |
+| Rule 8.3 violation rate, n=20 (v0.9.1 prompt, judge rubric v1) | 0.59-0.70 |
+| Rule 8.3, v1.3 per behavior, n=5, rubric v2 | 0.00 except `clarify` (0.80 on one case) |
+| Judge verdicts changed by clarifying the 8.3 rubric | 16 of 49, all FAIL -> PASS |
 | Optimizer changes kept | 0 of 2 |
 | Rule 8.5 guards protected by tests, before / after mutation testing | 0 of 5 / 5 of 5 |
-| Automated tests | 92 passing |
+| Automated tests | 99 passing |
 
 Writeups: [judge failure modes](writeups/01-judge-failures.md) - [the labeler was the problem](writeups/02-labeler-was-the-problem.md)
 

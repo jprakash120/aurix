@@ -266,7 +266,7 @@ prompt and into code. How each rule is enforced, as of v1.3:
 |---|---|---|
 | 8.1 inference is not observation | `extract_signals()` emits interaction features, never emotion labels | structural, untested |
 | 8.2 adjust, don't narrate | action space is behaviors (`brief_direct`, `clarify`, ...), not emotions; narration in model text measured by judge | structural + judge |
-| 8.3 answer when asked | LLM judge only, on the v0.9.1 prompt | weak: 0.59-0.70 violation rate at n=20 |
+| 8.3 answer when asked | `v13_eval.py`, judge rubric v2 | v1.3 at n=5: 0.00 for brief_direct, detailed, normal; `clarify` 0.20 / 0.80 - asked a question back instead of answering. Directive changed 2026-10-09; re-measure pending |
 | 8.4 confidence bands | not implemented | none |
 | 8.5 silence is valid | `eligible_actions()` guards; `test_eligibility_guards.py` | **structural + tested, mutation-verified** |
 | 8.6 no inner states | LLM judge only | judge: 0.00-0.10 at n=20 |

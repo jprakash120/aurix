@@ -210,3 +210,29 @@ def test_regrade_skips_errors_and_other_models():
         {"verdict": "ERROR", "model": None},
         {"verdict": "SKIPPED", "model": "openai/gpt-oss-20b", "response": "x"}]
     assert E.judge_calls_for_regrade(old) == 1
+
+
+# ---------------------------------------------------------------
+# clarify answers first; fingerprint covers directives; filter
+# ---------------------------------------------------------------
+
+def test_clarify_directive_answers_before_asking():
+    d = E.policy_directive("clarify").lower()
+    assert "answer it first" in d
+    assert "never reply to a question with only a question" in d
+    assert d.index("answer it first") < d.index("clarifying question")
+
+
+def test_fingerprint_changes_when_a_directive_changes(monkeypatch):
+    import aurix_learning
+    before = E.prompt_fingerprint()
+    original = aurix_learning.policy_directive
+    monkeypatch.setattr(E, "policy_directive",
+                        lambda a: original(a) + ("x" if a == "clarify" else ""))
+    assert E.prompt_fingerprint() != before
+
+
+def test_behaviors_filter():
+    plan = E.build_plan({"e83-02"}, {"v091", "clarify"})
+    assert [c["name"] for c in plan[0]["conditions"]] == ["v091", "v13:clarify"]
+    assert E.call_count(plan, 5) == 2 * 5 * 2

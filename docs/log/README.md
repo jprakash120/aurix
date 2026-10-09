@@ -6,6 +6,34 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-09 (later) - regrade confirmed; clarify was the real problem
+
+Regraded the 49 saved replies with rubric v2. Wrote four predictions
+first. All four held: question-back-only replies stayed FAIL (5/5);
+all 16 flips were "can't tell from text alone" moving FAIL -> PASS;
+brief_direct on e83-01 went 0.80 -> 0.00; clarify on e83-02 stayed 0.80.
+Zero flips PASS -> FAIL, so v2 got more specific, not just more lenient.
+
+Caveat I owe myself: v2 was written after reading these replies. The
+defense is that "can't tell is an answer" was in the labeling guide in
+August, and question-backs still fail. The real test is fresh replies.
+
+So the "v1.3 is worse than v0.9.1" headline was the judge. The only
+genuine 8.3 problem: the clarify directive ("Do not guess the user's
+intent. Ask one clarifying question") fires on clear questions and
+answers "what mood am I in?" with "how are you feeling?".
+
+Changed the directive to answer first, ask after, never a question
+alone. Did NOT ban clarify for direct questions - "just tell me how to
+fix it" is a direct request where asking *what* to fix is right.
+
+Also caught: the eval's prompt fingerprint hashed only SYSTEM_PROMPT,
+so a directive change would have left before/after runs with the same
+label. Now it hashes the directives too. Added --behaviors to measure
+one behavior across all 8 cases (160 calls instead of 400).
+
+---
+
 ## 2026-10-09 - first v1.3 measurement, and the judge was the problem again
 
 Built `aurix_prompting.py` so the runner and eval import one prompt -

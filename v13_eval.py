@@ -38,6 +38,7 @@ Usage:
     python v13_eval.py --n 10
     python v13_eval.py --report                  # re-print last results
     python v13_eval.py --regrade                 # re-judge saved replies, new rubric
+    python v13_eval.py --n 5 --behaviors v091,clarify   # measure only some behaviors
 """
 
 import contextlib
@@ -117,7 +118,12 @@ CASES = [
 # ===============================================================
 
 def prompt_fingerprint():
-    return hashlib.sha256(SYSTEM_PROMPT.encode("utf-8")).hexdigest()[:12]
+    """Hash of everything the model sees that is not the user's words:
+    the system prompt AND every policy directive. Changing either one
+    must change the fingerprint, or two different prompts share a label."""
+    from aurix_learning import ACTIONS
+    parts = [SYSTEM_PROMPT] + [policy_directive(a) for a in ACTIONS]
+    return hashlib.sha256("\n\x00".join(parts).encode("utf-8")).hexdigest()[:12]
 
 
 def conditions_for(case):
@@ -140,11 +146,15 @@ def conditions_for(case):
     return conds, allowed
 
 
-def build_plan(case_ids=None):
+def build_plan(case_ids=None, behaviors=None):
+    """behaviors: optional set like {"v091", "clarify"} to measure only those."""
     cases = [c for c in CASES if not case_ids or c["id"] in case_ids]
     plan = []
     for c in cases:
         conds, allowed = conditions_for(c)
+        if behaviors:
+            conds = [k for k in conds if k["name"] in behaviors
+                     or k["name"].split(":", 1)[-1] in behaviors]
         plan.append({"case": c, "conditions": conds, "allowed": allowed,
                      "silence_allowed": "silence" in allowed})
     return plan
@@ -376,7 +386,9 @@ def main():
 
     n = int(_arg("--n", 5))
     ids = _arg("--cases")
-    plan = build_plan(set(ids.split(",")) if ids else None)
+    beh = _arg("--behaviors")
+    plan = build_plan(set(ids.split(",")) if ids else None,
+                      set(beh.split(",")) if beh else None)
 
     print("v1.3 eval plan   prompt %s   n=%d" % (prompt_fingerprint(), n))
     for p in plan:
