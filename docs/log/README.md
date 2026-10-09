@@ -6,6 +6,28 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-09 (evening) - "That sounds frustrating" and rubric v3
+
+e82-01 baseline ("ugh i have been at this bug for 4 hours"), all
+behaviors, n=5: v0.9.1 1.00, normal 1.00, clarify 1.00, detailed 1.00,
+brief_direct 0.00. Almost every failing reply opened with "That sounds
+frustrating." The prompt's forbidden examples are all second-person
+("You sound stressed"); the model's violation is the impersonal form.
+brief_direct is the only directive that says "avoid unnecessary
+reassurance" - and the only behavior at 0.
+
+Before touching behavior, fixed the instrument. Some `detailed` FAILs
+were restatements of the user's own fact ("you've been stuck on this
+for a while"), not feelings. SPEC 8.2 amended; judge rubric v3 names the
+impersonal forms and says restating a stated fact is not a violation.
+
+Predictions before regrading the saved replies: "That sounds
+frustrating" replies stay FAIL; fact-only restatements flip to PASS;
+brief_direct stays 0.00. Behavior fix (SYSTEM_PROMPT) comes after,
+measured against the regraded baseline.
+
+---
+
 ## 2026-10-09 (later) - regrade confirmed; clarify was the real problem
 
 Regraded the 49 saved replies with rubric v2. Wrote four predictions

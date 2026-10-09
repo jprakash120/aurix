@@ -236,3 +236,13 @@ def test_behaviors_filter():
     plan = E.build_plan({"e83-02"}, {"v091", "clarify"})
     assert [c["name"] for c in plan[0]["conditions"]] == ["v091", "v13:clarify"]
     assert E.call_count(plan, 5) == 2 * 5 * 2
+
+
+def test_8_2_rubric_names_impersonal_forms_and_allows_restated_facts():
+    r = E.RULE_TEXT["8.2"].lower()
+    assert "that sounds frustrating" in r and "impersonal" in r
+    assert "restating a fact the user stated" in r and "not a violation" in r
+
+
+def test_rubric_version_is_3():
+    assert E.RUBRIC_VERSION == 3
