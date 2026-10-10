@@ -290,3 +290,13 @@ def test_v091_control_prompt_is_frozen():
     """The v0.9.1 baseline is the control. A prompt fix must not touch it."""
     assert "That sounds frustrating" not in E.V091_PROMPT
     assert E.V091_PROMPT is not aurix_prompting.SYSTEM_PROMPT
+
+
+def test_normal_directive_carries_brief_directs_anti_reassurance_line():
+    """2026-10-10 experiment: the same idea in SYSTEM_PROMPT left normal at
+    0.60 ('Four hours on a bug can be draining'); brief_direct, which has
+    this exact line in its per-turn directive, stayed 0/5. Same words,
+    different position."""
+    line = "Avoid unnecessary reassurance or conversational padding."
+    assert line in E.policy_directive("brief_direct")
+    assert line in E.policy_directive("normal")

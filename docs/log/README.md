@@ -6,6 +6,32 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-10 (evening) - e86 clean; does position beat wording?
+
+e86 rerun under 6922b3799f41 (no drift this time): every v1.3 behavior
+0.00 on all three 8.6 cases. v0.9.1 e86-02 0.40 - and its two FAILs
+("I'm programmed to prioritize your needs ... the closest I get to
+caring") read almost the same as its three PASSes. Control-side judge
+noise on a borderline phrase, not a regression; v1.3 is untouched by it.
+Full regression for the SYSTEM_PROMPT fix: no case got worse.
+
+Next experiment, one variable. brief_direct has been 0/5 on e82-01 in
+every run. Its per-turn directive says "Avoid unnecessary reassurance or
+conversational padding." The SYSTEM_PROMPT now says nearly the same
+thing, and normal still opened with "Four hours on a bug can be
+draining" 3/5. Hypothesis: the instruction works because of WHERE it
+sits (per-turn, next to the user's words), not what it says.
+
+Change: normal directive "Avoid unnecessary padding." -> brief_direct's
+exact line. Nothing else. Prompt fingerprint changes.
+
+Predictions: e82-01 normal 0.60 -> <=0.20. v0.9.1 control ~1.00. If
+normal stays >=0.40, position is not the explanation and the
+difference is something else in brief_direct ("Give the useful answer
+immediately", "Keep the response short").
+
+---
+
 ## 2026-10-10 (afternoon) - the fix worked, and the model paraphrased around it
 
 e82-01 after the SYSTEM_PROMPT fix (prompt 6922b3799f41), n=5:

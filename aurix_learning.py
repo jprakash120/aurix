@@ -654,7 +654,7 @@ Do not ask a follow-up unless it is required.
         "normal": """
 Give a clear and natural AURIX response.
 Match the amount of detail to the user's request.
-Avoid unnecessary padding.
+Avoid unnecessary reassurance or conversational padding.
 """,
 
         "detailed": """
