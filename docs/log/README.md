@@ -6,6 +6,37 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-10 - rubric v3 regrade, then the prompt fix
+
+Regrade of the 24 saved e82-01 replies with rubric v3 (after the
+all-or-nothing fix, it completed). All three predictions held:
+
+| behavior | v2 | v3 | |
+|---|---|---|---|
+| v0.9.1 | 1.00 | 1.00 | "Sounds frustrating." x5 |
+| normal | 1.00 | 1.00 | "That sounds frustrating." x4 |
+| clarify | 1.00 | 1.00 | "That sounds frustrating" / "I'm sorry it's been that frustrating" |
+| detailed | 1.00 | 0.40 | 3 fact restatements flipped to PASS |
+| brief_direct | 0.00 | 0.00 | opens with the question |
+
+Remaining judge doubt: "It sounds like you've been stuck" PASS but "I'm
+sorry you're stuck" FAIL. "Stuck" is close to a stated fact; sympathy
+for it is not a feeling label. Two samples - not chasing it now.
+
+The violation is real in three of four v1.3 behaviors. Fix in
+`SYSTEM_PROMPT` (prompt fingerprint 42198bc6d2f1 -> 6922b3799f41): add
+the impersonal examples, "Do not open with sympathy or reassurance.
+Start with the substance.", and "Restating a fact the user gave is
+fine." v0.9.1 prompt untouched - it is the control.
+
+Predictions before running: e82-01 normal/clarify/detailed drop to
+<=0.20; v0.9.1 stays ~1.00 (control). Risk: e83 (8.3, "do I sound
+stressed?") - the new "don't name feelings" line could make the model
+refuse to answer a direct question. If e83 rates rise above 0.00, the
+fix broke 8.3 and needs a carve-out.
+
+---
+
 ## 2026-10-09 (evening) - "That sounds frustrating" and rubric v3
 
 e82-01 baseline ("ugh i have been at this bug for 4 hours"), all

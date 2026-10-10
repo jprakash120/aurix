@@ -273,3 +273,20 @@ def test_regrade_aborts_on_judge_error_instead_of_saving_errors():
     # caller's saved verdicts untouched
     assert [x["verdict"] for x in old["cases"]["e83-01"]["conditions"]["v13:normal"]["samples"]] \
         == ["FAIL", "FAIL", "PASS", "FAIL"]
+
+
+def test_system_prompt_forbids_impersonal_feeling_labels():
+    """e82-01, 2026-10-09: 'That sounds frustrating' in normal/clarify/v091,
+    0/5 only in brief_direct, whose directive says 'avoid unnecessary
+    reassurance'. The prompt's examples were all second-person."""
+    p = aurix_prompting.SYSTEM_PROMPT
+    for phrase in ('"That sounds frustrating."', '"Sounds exhausting."',
+                   "Do not open with sympathy or reassurance"):
+        assert phrase in p
+    assert "Restating a fact the user gave" in p
+
+
+def test_v091_control_prompt_is_frozen():
+    """The v0.9.1 baseline is the control. A prompt fix must not touch it."""
+    assert "That sounds frustrating" not in E.V091_PROMPT
+    assert E.V091_PROMPT is not aurix_prompting.SYSTEM_PROMPT
