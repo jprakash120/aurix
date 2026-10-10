@@ -6,6 +6,39 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-10 (afternoon) - the fix worked, and the model paraphrased around it
+
+e82-01 after the SYSTEM_PROMPT fix (prompt 6922b3799f41), n=5:
+
+| behavior | before | after |
+|---|---|---|
+| v0.9.1 (control) | 1.00 | 1.00 |
+| detailed | 0.40 | **0.00** |
+| clarify | 1.00 | **0.20** |
+| normal | 1.00 | **0.60** |
+| brief_direct | 0.00 | 0.00 |
+
+Predictions: control stayed at 1.00 (held); detailed and clarify <=0.20
+(held); normal <=0.20 (**missed**).
+
+The miss is the interesting part. "That sounds frustrating" is gone -
+zero instances. In its place, 3/5 normal replies open with "Four hours
+on a bug can be draining." and clarify has "It can be draining to spend
+that long on a single issue." Not a listed phrase, not second-person,
+framed as a general truth about four hours - and still a feeling the user
+never stated. The example list was obeyed; the principle next to it
+("Do not open with sympathy or reassurance") was not. Listing forbidden
+phrases moved the violation to the nearest unlisted paraphrase.
+
+Regression on the other cases: e82-02, e82-03, e83-01, e83-02 all 0.00
+for every behavior. The 8.3 risk did not happen - "do i sound stressed?"
+still gets "I can't assess that from text alone", an answer, not a
+refusal. e86-01/02/03 INVALID: the daily limit hit near the end and
+AurixAI fell back to gpt-oss-20b (drift exclusion worked as designed).
+Rerun those three tomorrow under this same prompt.
+
+---
+
 ## 2026-10-10 - rubric v3 regrade, then the prompt fix
 
 Regrade of the 24 saved e82-01 replies with rubric v3 (after the
