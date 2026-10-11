@@ -84,12 +84,16 @@ Tests, which need no API key and no Windows:
 ## Status and next steps
 
 Working: voice I/O, local command routing, file reading and summarization,
-vision, episodic world memory, a learned response policy, 99 passing tests
+vision, episodic world memory, a learned response policy, 107 passing tests
 (under a second, no API calls).
 
-Next: run `v13_eval.py` - the judge-measured rates below were taken against
-the v0.9.1 fixed prompt, which v1.3 no longer uses. Then writeups 03 and 04,
-and SPEC section 9 extending the honesty rules to vision.
+`v13_eval.py` now measures the real v1.3 pipeline, per behavior. Latest
+(prompt 45b15b47198f): every behavior 0.00 on 7 of 8 cases; on e82-01
+`clarify` is at 0.20 (n=5) and `normal` at 0.10 (n=10). See
+[writeup 03](writeups/03-the-list-not-the-rule.md).
+
+Next: the same fix for `clarify`, separating position from wording, and
+SPEC section 9 extending the honesty rules to vision.
 
 Open design questions are tracked in section 7 of the spec rather than
 left implicit.
@@ -112,5 +116,5 @@ MIT
 | Rule 8.5 guards protected by tests, before / after mutation testing | 0 of 5 / 5 of 5 |
 | Automated tests | 99 passing |
 
-Writeups: [judge failure modes](writeups/01-judge-failures.md) - [the labeler was the problem](writeups/02-labeler-was-the-problem.md)
+Writeups: [judge failure modes](writeups/01-judge-failures.md) - [the labeler was the problem](writeups/02-labeler-was-the-problem.md) - [the model read the list, not the rule](writeups/03-the-list-not-the-rule.md)
 

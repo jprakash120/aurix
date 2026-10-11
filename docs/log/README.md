@@ -6,6 +6,23 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-11 (later) - normal regression clean; writeup 03
+
+`normal` under 45b15b47198f on the other 7 cases, n=5: 0.00 on all.
+e83 still answers ("From that alone I can't determine whether you're
+stressed"); the anti-reassurance line did not turn into refusing to talk
+about feelings when asked. e82-01 arc closed.
+
+Wrote writeups/03-the-list-not-the-rule.md. Corrected a count in the
+previous entry while checking it against the replies (5 question-first,
+4 restatements, not 6 and 3).
+
+Open: `clarify` 0.20 on e82-01 ("It can be draining to spend that long
+on a single issue"). Same one-line fix is a separate experiment.
+Position vs wording not separated - needs two runs.
+
+---
+
 ## 2026-10-11 - position test: prediction held
 
 e82-01, prompt 45b15b47198f, n=10: normal **0.10 (1/10)**, down from
@@ -13,7 +30,7 @@ e82-01, prompt 45b15b47198f, n=10: normal **0.10 (1/10)**, down from
 (<=0.20) held.
 
 The one FAIL is the same paraphrase: "Four hours on a single bug can be
-draining." Six of the nine PASSes open with the question; three restate
+draining." Five of the nine PASSes open with the question; four restate
 the fact ("Four hours is a long stretch", "you've been stuck on this for
 a while") - exactly what the rubric v3 and labeling guide call allowed.
 
