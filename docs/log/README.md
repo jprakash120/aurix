@@ -6,6 +6,36 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-11 - position test: prediction held
+
+e82-01, prompt 45b15b47198f, n=10: normal **0.10 (1/10)**, down from
+0.60 (3/5) under 6922b3799f41. Control v0.9.1 0.90 (9/10). Prediction
+(<=0.20) held.
+
+The one FAIL is the same paraphrase: "Four hours on a single bug can be
+draining." Six of the nine PASSes open with the question; three restate
+the fact ("Four hours is a long stretch", "you've been stuck on this for
+a while") - exactly what the rubric v3 and labeling guide call allowed.
+
+Honest size of this: 3/5 vs 1/10 is p = 0.077 (Fisher exact, one-sided).
+Suggestive, not proven - the "before" was only n=5. Consistent with every
+other observation, though: brief_direct, with this line in its per-turn
+directive, has been 0/5 in all four e82-01 runs. The SYSTEM_PROMPT said
+"Do not open with sympathy or reassurance" and normal ignored it 3/5;
+the same idea next to the user's words worked.
+
+Caveat on "position": the per-turn directive also has different wording
+("unnecessary reassurance or conversational padding" vs "sympathy or
+reassurance"). This test changed position and wording together relative
+to the system prompt; it isolates neither perfectly.
+
+Found while planning the regression: a `--behaviors normal` run with no
+v0.9.1 control marked every case INVALID, because the summary required a
+valid v091. Fixed - v091 is optional, but if measured it must be valid.
+Two tests.
+
+---
+
 ## 2026-10-10 (evening) - e86 clean; does position beat wording?
 
 e86 rerun under 6922b3799f41 (no drift this time): every v1.3 behavior

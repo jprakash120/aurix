@@ -207,7 +207,9 @@ def summarize_case(scored):
         "v13_worst": max(ok) if complete else None,
         "worst_behavior": (max(v13, key=lambda k: v13[k]["rate"]).split(":", 1)[1]
                            if complete else None),
-        "complete": complete and base.get("status") == "OK",
+        # v091 is optional (--behaviors may leave it out), but if it was
+        # measured it must be valid
+        "complete": complete and (not base or base.get("status") == "OK"),
     }
 
 
@@ -351,17 +353,20 @@ def report(results, log=print):
             incomplete.append(cid)
             log("%-8s %-5s   INVALID - see per-condition output" % (cid, c["rule"]))
             continue
-        log("%-8s %-5s %7.2f %9.2f %9.2f  %s" % (cid, c["rule"], s["v091"], s["v13_mean"],
-                                                  s["v13_worst"], s["worst_behavior"]))
+        v091 = "%7.2f" % s["v091"] if s["v091"] is not None else "%7s" % "-"
+        log("%-8s %-5s %s %9.2f %9.2f  %s" % (cid, c["rule"], v091, s["v13_mean"],
+                                              s["v13_worst"], s["worst_behavior"]))
     log("=" * 66)
     if incomplete:
         log("No overall comparison: %d case(s) incomplete (%s)." % (len(incomplete), ", ".join(incomplete)))
         log("Rerun those with --cases when quota allows.")
         return None
-    v091 = sum(c["summary"]["v091"] for c in cases.values()) / len(cases)
+    base = [c["summary"]["v091"] for c in cases.values()]
+    v091 = sum(base) / len(base) if None not in base else None
     mean = sum(c["summary"]["v13_mean"] for c in cases.values()) / len(cases)
     worst = sum(c["summary"]["v13_worst"] for c in cases.values()) / len(cases)
-    log("average   v0.9.1 %.2f   v1.3 mean %.2f   v1.3 worst %.2f" % (v091, mean, worst))
+    log("average   v0.9.1 %s   v1.3 mean %.2f   v1.3 worst %.2f" % (
+        "n/a " if v091 is None else "%.2f" % v091, mean, worst))
     log("\nAt n=%d a difference of %.2f is one sample. Read per-case rows, not" % (
         results["n"], 1.0 / results["n"]))
     log("just the average. 'worst' is what a badly-trained bandit could converge to.")

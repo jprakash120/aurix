@@ -300,3 +300,22 @@ def test_normal_directive_carries_brief_directs_anti_reassurance_line():
     line = "Avoid unnecessary reassurance or conversational padding."
     assert line in E.policy_directive("brief_direct")
     assert line in E.policy_directive("normal")
+
+
+def test_case_without_v091_is_complete_and_reports():
+    """--behaviors normal (no control) must not mark every case INVALID."""
+    ok = {"rate": 0.0, "status": "OK"}
+    summ = E.summarize_case({"v13:normal": ok})
+    assert summ["complete"] and summ["v091"] is None
+    results = {"n": 5, "prompt_fingerprint": "x", "primary_model": P,
+               "cases": {"a": {"rule": "8.2", "summary": summ}}}
+    lines = []
+    out = E.report(results, log=lines.append)
+    assert out is not None and out["v091"] is None
+    assert any("n/a" in l for l in lines)
+
+
+def test_measured_but_invalid_v091_still_blocks():
+    ok = {"rate": 0.0, "status": "OK"}
+    bad = {"rate": None, "status": "INVALID"}
+    assert not E.summarize_case({"v091": bad, "v13:normal": ok})["complete"]
