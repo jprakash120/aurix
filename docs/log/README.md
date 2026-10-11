@@ -6,6 +6,31 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-11 (evening) - position vs wording, set up as a 2x2
+
+Writeup 03's biggest caveat: the fix moved the anti-reassurance idea into
+the per-turn directive AND reworded it. `position_experiment.py`
+separates the two on e82-01 / `normal`, n=10 per cell, 80 calls:
+
+|  | directive - | directive S | directive D |
+|---|---|---|---|
+| system S | A | C | B (production) |
+| system D | D | | |
+
+S = system prompt wording ("Do not open with sympathy or reassurance.
+Start with the substance."), D = brief_direct wording ("Avoid
+unnecessary reassurance or conversational padding.").
+
+Production untouched; cells are built from literals and asserted (B must
+be byte-identical to what production sends). Own results file. 5 tests.
+
+Predictions: A ~0.60 (replicates), B ~0.10 (replicates), C <=0.20 and
+D >=0.40 - i.e. position, not wording. If C is high and D low, wording
+was the whole story and writeup 03's "same instruction, different place"
+framing is wrong and gets corrected.
+
+---
+
 ## 2026-10-11 (later) - normal regression clean; writeup 03
 
 `normal` under 45b15b47198f on the other 7 cases, n=5: 0.00 on all.
