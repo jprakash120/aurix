@@ -319,3 +319,12 @@ def test_measured_but_invalid_v091_still_blocks():
     ok = {"rate": 0.0, "status": "OK"}
     bad = {"rate": None, "status": "INVALID"}
     assert not E.summarize_case({"v091": bad, "v13:normal": ok})["complete"]
+
+
+def test_system_prompt_carries_both_wordings():
+    """2x2 (2026-10-11): S alone left 'can be draining' (0.70); D alone let
+    listed phrases back in (0.30). Production carries both."""
+    p = aurix_prompting.SYSTEM_PROMPT
+    s = "Do not open with sympathy or reassurance. Start with the substance."
+    d = "Avoid unnecessary reassurance or conversational padding."
+    assert s in p and d in p and p.index(s) < p.index(d)

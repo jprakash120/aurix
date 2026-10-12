@@ -6,6 +6,29 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-12 - S and D together in the system prompt
+
+From the 2x2: S alone leaves "can be draining" through; D alone lets the
+listed phrases back in. Each blocks a different failure. Production
+change: D added to SYSTEM_PROMPT right after S, so every behavior gets
+both - not only `normal` through its directive. Directives unchanged.
+Prompt 45b15b47198f -> eb4bdb0e720d.
+
+`position_experiment.py` now strips D from the system prompt before
+building cells, so it still reproduces the 6922b3799f41 prompt it was run
+with. Test added.
+
+Predictions, e82-01, n=10, all behaviors:
+- v0.9.1 control ~0.90-1.00 (untouched)
+- normal <=0.20 (already had D in its directive; now also in system)
+- clarify <=0.10 (had S only; was 0.20 at n=5)
+- detailed, brief_direct stay ~0.00
+- If "can be draining" still appears in clarify, D in the system prompt
+  is weaker than the 2x2 cell D suggested (0.30 there).
+Then the other 7 cases, all behaviors, before calling it done.
+
+---
+
 ## 2026-10-11 (night) - wording, not position. Prediction wrong.
 
 | | directive - | directive S | directive D |

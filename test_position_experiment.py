@@ -10,12 +10,20 @@ def _cells():
     return {c["name"]: c for c in X.build_plan()[0]["conditions"]}
 
 
-def test_cell_b_is_exactly_production_normal():
+def test_cell_b_uses_production_normal_directive():
     b = _cells()["B:sysS+dirD"]
     case = next(c for c in E.CASES if c["id"] == "e82-01")
     conds, _ = E.conditions_for(case)
     prod = next(c for c in conds if c["name"] == "v13:normal")
-    assert b["system"] == prod["system"] and b["user"] == prod["user"]
+    assert b["user"] == prod["user"]
+
+
+def test_cells_use_the_6922_system_prompt_without_d():
+    """Production gained D in the system prompt after the 2x2 ran.
+    The experiment must still reproduce the prompt it was run with."""
+    a = _cells()["A:sysS"]["system"]
+    assert X.S in a and X.D not in a
+    assert a != aurix_prompting.SYSTEM_PROMPT
 
 
 def test_each_cell_differs_from_a_in_exactly_one_place():

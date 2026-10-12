@@ -14,7 +14,7 @@ Two wordings:
 
 Four cells, all using the `normal` behavior on e82-01:
     A  system S,  directive -      the 6922b3799f41 state (was 0.60, n=5)
-    B  system S,  directive D      current production (was 0.10, n=10)
+    B  system S,  directive D      production as of 45b15b47198f (was 0.10, n=10)
     C  system S,  directive S      S wording, moved into the directive
     D  system D,  directive -      D wording, left in the system prompt
 
@@ -52,9 +52,16 @@ NORMAL_BASE = ("\nGive a clear and natural AURIX response.\n"
 OLD_PAD = "Avoid unnecessary padding.\n"
 
 
+# The 2x2 was run against the 6922b3799f41 system prompt, which had S
+# but not D. Production later added D after S (2026-10-12). Strip it so
+# the cells keep meaning what they meant when the results were recorded.
+BASE_SYSTEM = SYSTEM_PROMPT.replace(D + "\n", "", 1)
+
+
 def system_with(wording):
-    assert SYSTEM_PROMPT.count(S) == 1, "SYSTEM_PROMPT no longer contains S - cells are stale"
-    return SYSTEM_PROMPT if wording == "S" else SYSTEM_PROMPT.replace(S, D)
+    assert BASE_SYSTEM.count(S) == 1 and D not in BASE_SYSTEM, \
+        "base system prompt changed shape - cells are stale"
+    return BASE_SYSTEM if wording == "S" else BASE_SYSTEM.replace(S, D)
 
 
 def directive_with(wording):
@@ -72,9 +79,9 @@ CELLS = [
 
 def build_plan():
     case = next(c for c in E.CASES if c["id"] == CASE_ID)
-    # cell B must be byte-identical to what production sends for `normal`
+    # cell B's directive must be what production sends for `normal`
     assert directive_with("D") == policy_directive("normal"), \
-        "production normal directive changed - cell B no longer means 'current production'"
+        "production normal directive changed - cell B is stale"
     conds = [{"name": name,
               "system": system_with(sys_w),
               "user": build_turn_prompt(directive_with(dir_w), E.EMPTY_CHAT,
