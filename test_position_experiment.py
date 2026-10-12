@@ -56,3 +56,8 @@ def test_runs_end_to_end_with_fakes():
             return SimpleNamespace(text="What's the bug?", model=P)
     out = E.run(X.build_plan(), 2, AI(), FakeJudge("PASS"), P, sleep=0, log=lambda *_: None)
     assert set(out["e82-01"]["conditions"]) == {n for n, _, _ in X.CELLS}
+
+
+def test_cells_filter():
+    names = [c["name"] for c in X.build_plan({"B"})[0]["conditions"]]
+    assert names == ["B:sysS+dirD"]

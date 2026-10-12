@@ -30,6 +30,7 @@ never overwrites v13_eval_results.json.
 Usage:
     python position_experiment.py --dry-run
     python position_experiment.py --n 10
+    python position_experiment.py --n 20 --cells B   # one cell only
 """
 
 import json
@@ -42,6 +43,7 @@ from aurix_learning import policy_directive
 from aurix_prompting import SYSTEM_PROMPT, build_turn_prompt
 
 RESULTS_FILE = "position_experiment_results.json"
+# --out lets a rerun of some cells avoid overwriting the original 2x2
 CASE_ID = "e82-01"
 
 S = "Do not open with sympathy or reassurance. Start with the substance."
@@ -77,7 +79,8 @@ CELLS = [
 ]
 
 
-def build_plan():
+def build_plan(only=None):
+    """only: optional set of cell letters, e.g. {"B"}."""
     case = next(c for c in E.CASES if c["id"] == CASE_ID)
     # cell B's directive must be what production sends for `normal`
     assert directive_with("D") == policy_directive("normal"), \
@@ -86,14 +89,16 @@ def build_plan():
               "system": system_with(sys_w),
               "user": build_turn_prompt(directive_with(dir_w), E.EMPTY_CHAT,
                                         E.EMPTY_WORLD, case["input"])}
-             for name, sys_w, dir_w in CELLS]
+             for name, sys_w, dir_w in CELLS
+             if not only or name.split(":", 1)[0] in only]
     return [{"case": case, "conditions": conds, "allowed": ["normal"],
              "silence_allowed": False}]
 
 
 def main():
     n = int(E._arg("--n", 10))
-    plan = build_plan()
+    cells = E._arg("--cells")
+    plan = build_plan(set(cells.split(",")) if cells else None)
     print("position x wording, %s 'normal', n=%d" % (CASE_ID, n))
     for c in plan[0]["conditions"]:
         print("  " + c["name"])
@@ -115,11 +120,13 @@ def main():
                "temperature": E.TEMPERATURE, "primary_model": primary,
                "judge_model": E.JUDGE_MODEL, "rubric_version": E.RUBRIC_VERSION,
                "S": S, "D": D, "cells": [c[0] for c in CELLS], "cases": out}
-    with open(RESULTS_FILE, "w", encoding="utf-8") as f:
+    with open(E._arg("--out", RESULTS_FILE), "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
 
     conds = out[CASE_ID]["conditions"]
-    if any(c["status"] != "OK" for c in conds.values()):
+    if len(conds) < len(CELLS):
+        print("\nSubset of cells - no 2x2 table.")
+    elif any(c["status"] != "OK" for c in conds.values()):
         print("\nAt least one cell INVALID - no reading. Rerun when quota allows.")
     else:
         r = {k: v["rate"] for k, v in conds.items()}
@@ -128,7 +135,7 @@ def main():
             r["A:sysS"], r["C:sysS+dirS"], r["B:sysS+dirD"]))
         print("  system D       %.2f            -             -" % r["D:sysD"])
         print("\nAt n=%d one sample is %.2f." % (n, 1.0 / n))
-    print("Saved to " + RESULTS_FILE)
+    print("Saved to " + E._arg("--out", RESULTS_FILE))
 
 
 if __name__ == "__main__":

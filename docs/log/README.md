@@ -6,6 +6,32 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-12 (later) - S+D: clarify fixed, normal went the wrong way
+
+e82-01, prompt eb4bdb0e720d, n=10:
+
+| behavior | predicted | got |
+|---|---|---|
+| v0.9.1 control | 0.90-1.00 | 0.90 |
+| brief_direct | ~0.00 | 0.00 |
+| detailed | ~0.00 | 0.00 |
+| clarify | <=0.10 | **0.00** (was 0.20) |
+| normal | <=0.20 | **0.60** |
+
+clarify: held - no "can be draining" in 10; openers are steps or the
+question, two restate the fact. normal: missed. 6/10 open "Four hours on
+a (single) bug can be draining/frustrating".
+
+normal now has D twice (system + directive). Same prompt minus D in the
+system (45b15b47198f / cell B) measured 1/10 and 2/10 on two days.
+Pooled 3/20 vs 6/10: p = 0.018 (one-sided). Either D-twice really hurts normal, or
+run-to-run variance at n=10 is larger than I have been assuming. Not
+deciding from one run. Next: same session, both prompts, n=20 each -
+cell B via `position_experiment.py --cells B` (new flag, own output
+file) and normal via v13_eval. 80 calls.
+
+---
+
 ## 2026-10-12 - S and D together in the system prompt
 
 From the 2x2: S alone leaves "can be draining" through; D alone lets the
