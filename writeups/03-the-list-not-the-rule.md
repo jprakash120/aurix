@@ -1,10 +1,27 @@
 # The Model Read the List, Not the Rule
 
 *I banned a phrase. The model stopped saying it and found the nearest
-phrase I had not banned. What worked was the same instruction placed
-somewhere else.*
+phrase I had not banned. Measuring the fix turned out to be the hard
+part, because the model itself behaved differently from one day to the
+next.*
 
 Jayaprakash Makkena - October 2026
+
+> **Updated 2026-10-12 - the 0.10 did not replicate.** The next day,
+> the exact prompt behind "normal: 0.60 -> 0.10" measured **0.60
+> (12/20)**. The judge was not the cause: every FAIL was a real "can be
+> draining" opener. The same prompt gave 3/20 on Oct 11 and 12/20 on
+> Oct 12 (p = 0.008), so the served model's behavior changed between
+> days. Comparisons across days in this writeup (Fix 1, Fix 2) are
+> weaker than they look. Only comparisons run in the same session hold.
+> The 2x2 below was same-session; whether it replicates is being
+> re-run. See "Second follow-up" at the end.
+>
+> **Updated 2026-10-11.** The first version of this writeup concluded
+> that the fix worked because of *where* the instruction sat. A follow-up
+> 2x2 experiment (last section) separated position from wording. The
+> wording mattered and the position did not. The original Fix 2 section
+> is kept as written, with the correction added after it.
 
 ---
 
@@ -136,7 +153,7 @@ behavior. The case I worried about, "do i sound stressed?" (rule 8.3,
 where the assistant *should* talk about feelings because it was asked),
 still got real answers: "I can't assess stress from the text alone."
 
-## Fix 2: same idea, different place
+## Fix 2: brief_direct's line
 
 `brief_direct` had been at 0/5 in every run, and its anti-reassurance
 line is in the per-turn directive, placed right next to the user's
@@ -168,14 +185,92 @@ Less than the table suggests.
 - **Position and wording changed together.** Compared with the system
   prompt, the directive is in a different place *and* worded differently
   ("unnecessary reassurance or conversational padding" vs "sympathy or
-  reassurance"). This test cannot tell which one mattered. Isolating
-  them needs two more runs: the system prompt's wording moved into the
-  directive, and the directive's wording moved into the system prompt.
+  reassurance"). This test cannot tell which one mattered. *Resolved
+  below: it was the wording.*
 - **One input.** Every number here is one user message. A different
   message might produce different paraphrases.
 - **One model, one judge, one author.** I wrote the spec, the cases, the
   rubric and the fixes. The judge is the same model as the generator
   (`gpt-oss-120b`, at temperature 0).
+
+## Follow-up: it was the wording, not the place
+
+I separated the two with a 2x2 on the same input and the same
+behavior, n=10 per cell. S is the system prompt's wording (*"Do not open
+with sympathy or reassurance. Start with the substance."*). D is
+`brief_direct`'s wording (*"Avoid unnecessary reassurance or
+conversational padding."*).
+
+| | no extra directive | S in directive | D in directive |
+|---|---|---|---|
+| **S in system prompt** | A: 0.70 | C: 0.60 | B: 0.20 |
+| **D in system prompt** | D: 0.30 | | |
+
+My written prediction was C at 0.20 or below and D at 0.40 or above,
+which would mean position. The results came out the other way.
+
+- **Wording S fails wherever it goes.** It fails in the system prompt
+  (A, 0.70), and it still fails when also repeated in the directive
+  (C, 0.60). Saying it twice, once next to the user's words, did not help.
+- **Wording D works wherever it goes.** In the directive (B) it scored
+  0.20; moved into the system prompt instead (D) it scored 0.30. That is
+  one sample apart.
+- Pooled, the S cells failed 13/20 and the D cells 5/20: **p = 0.012**
+  (Fisher's exact test, one-sided). Position within the D cells: 2/10 vs 3/10, no
+  detectable difference.
+- A and B reproduce the earlier runs (0.60 and 0.10 then, 0.70 and 0.20
+  now).
+
+The replies show what each wording does. Under S, the opener is "Four
+hours on a single bug can be draining" in 12 of the 20 replies (plus
+one "can be exhausting"). The
+model does not seem to read that as sympathy, so S never applies to it.
+Under D, the most common opener becomes "Four hours is a long stretch":
+the same slot in the sentence, filled with the user's fact instead of a
+feeling. My guess is that "conversational padding" covers the whole
+opener, while "sympathy" only covers the forms the model recognizes as
+sympathy. That is a hypothesis; this experiment does not test it.
+
+One more detail. With D in the system prompt *in place of* S, "That
+sounds exhausting" and "Sounds frustrating" came back (2/10), even
+though both are on the forbidden list in that same prompt. With S
+present, the listed phrases never appeared. Each wording seems to
+suppress something different.
+
+The judge has a problem at this level of detail too: "Four hours is a
+long stretch" passes, "Four hours is a lot" fails once. Both restate the
+user's fact.
+
+## Second follow-up: the same prompt, a different day
+
+On Oct 12 I ran two prompts in the same session at n=20: cell B (D in
+the directive only, the "0.10" prompt) and D in both the directive and
+the system prompt.
+
+| prompt | Oct 11 | Oct 12 |
+|---|---|---|
+| B: D in directive only | 1/10, 2/10 | **12/20** |
+| D in directive and system | - | 9/20 |
+
+On Oct 12 the two prompts did not differ (p = 0.53). Prompt B changed
+between days (3/20 vs 12/20, p = 0.008). Every FAIL on Oct 12 was the
+same real opener, "Four hours on a single bug can be draining", so this
+was not the judge.
+
+I cannot see what changed. The provider reports the same model name.
+The control prompt sat at 0.90 on both days, but a condition that fails
+90% of the time cannot show drift, so it could not have caught this.
+
+What this does to the claims above:
+
+- **Fix 1 and Fix 2 compared runs from different days.** Their
+  before/after numbers mix my change with whatever the provider changed.
+- **The 2x2 ran all four cells in one session**, so the wording result
+  is not affected by drift *between* days. But the cells ran one after
+  another in blocks, so drift *during* the run could still land on one
+  cell. The harness now interleaves conditions (one sample of each,
+  then the next round) so any drift hits all of them equally. The 2x2 is
+  being re-run that way.
 
 ## Takeaways
 
@@ -195,6 +290,15 @@ Less than the table suggests.
    each have made a behavior change look better or worse than it was.
 5. **Write predictions before running.** Four predictions held and one
    missed. The miss was the finding.
+6. **A plausible mechanism is not a tested one.** I wrote "same idea,
+   different place" because it fit the evidence I had. Testing it cost 80
+   API calls and showed the explanation was wrong. The fix still works.
+   My explanation for why it worked did not survive the test.
+7. **The model you are measuring may not hold still.** An API model
+   with the same name gave 3/20 one day and 12/20 the next on the same
+   prompt. Compare conditions only within one session, interleave them,
+   and keep an anchor condition that is not near 0 or 1 so that drift
+   would show up in it.
 
 ## Reproducing
 
@@ -203,4 +307,5 @@ github.com/jprakash120/aurix
 
 Prompt fingerprints identify each state: `42198bc6d2f1` (baseline),
 `6922b3799f41` (system-prompt fix), `45b15b47198f` (directive fix).
-Each run is a separate commit.
+Each run is a separate commit. The 2x2 is `position_experiment.py`;
+its results are in `position_experiment_results.json`.

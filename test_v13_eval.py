@@ -328,3 +328,18 @@ def test_system_prompt_carries_both_wordings():
     s = "Do not open with sympathy or reassurance. Start with the substance."
     d = "Avoid unnecessary reassurance or conversational padding."
     assert s in p and d in p and p.index(s) < p.index(d)
+
+
+def test_conditions_are_interleaved_not_blocked():
+    """Drift during a run must hit every condition equally."""
+    seen = []
+
+    class AI:
+        def ask_text(self, system, user, temperature):
+            seen.append(user)
+            return SimpleNamespace(text="ok", model=P)
+    plan = E.build_plan({"e82-01"}, {"v091", "normal"})
+    E.run(plan, 3, AI(), FakeJudge("PASS"), P, sleep=0, log=lambda *_: None)
+    conds = plan[0]["conditions"]
+    order = [next(c["name"] for c in conds if c["user"] == u) for u in seen]
+    assert order == ["v091", "v13:normal"] * 3

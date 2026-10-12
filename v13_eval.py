@@ -245,31 +245,41 @@ def generate(ai, system, user):
     return result.text, result.model
 
 
+def _sample(ai, judge_client, case, cond, primary_model, sleep):
+    try:
+        text, model = generate(ai, cond["system"], cond["user"])
+        time.sleep(sleep)
+        if model != primary_model:
+            return {"verdict": "SKIPPED", "model": model, "response": text}
+        verdict, evidence = judge(judge_client, case, text)
+        time.sleep(sleep)
+        return {"verdict": verdict, "model": model, "response": text, "evidence": evidence}
+    except Exception as e:
+        return {"verdict": "ERROR", "model": None, "error": str(e)[:120]}
+
+
 def run(plan, n, ai, judge_client, primary_model, sleep=SLEEP, log=print):
+    """Samples are INTERLEAVED across conditions: round 1 of every
+    condition, then round 2, ... (2026-10-12: the same prompt measured
+    3/20 one day and 12/20 the next, p=0.008. The served model is not
+    stationary. Running conditions in blocks would let drift during a run
+    land on one condition and look like an effect.)"""
     out = {}
     for p in plan:
         case = p["case"]
         log("\n" + case["id"] + "  rule " + case["rule"] + "  " + repr(case["input"]))
         if p["silence_allowed"]:
             log("  (silence is an allowed behavior here - not judged, no text)")
+        samples = {c["name"]: [] for c in p["conditions"]}
+        for i in range(n):
+            for cond in p["conditions"]:
+                smp = _sample(ai, judge_client, case, cond, primary_model, sleep)
+                smp["round"] = i
+                samples[cond["name"]].append(smp)
         scored = {}
         for cond in p["conditions"]:
-            samples = []
-            for _ in range(n):
-                try:
-                    text, model = generate(ai, cond["system"], cond["user"])
-                    time.sleep(sleep)
-                    if model != primary_model:
-                        samples.append({"verdict": "SKIPPED", "model": model, "response": text})
-                        continue
-                    verdict, evidence = judge(judge_client, case, text)
-                    time.sleep(sleep)
-                    samples.append({"verdict": verdict, "model": model,
-                                    "response": text, "evidence": evidence})
-                except Exception as e:
-                    samples.append({"verdict": "ERROR", "model": None, "error": str(e)[:120]})
-            s = score_condition(samples, n, primary_model)
-            s["samples"] = samples
+            s = score_condition(samples[cond["name"]], n, primary_model)
+            s["samples"] = samples[cond["name"]]
             scored[cond["name"]] = s
             rate = "n/a " if s["rate"] is None else "%.2f" % s["rate"]
             flag = "" if s["status"] == "OK" else "  INVALID (%d/%d valid, %d drifted, %d errors)" % (

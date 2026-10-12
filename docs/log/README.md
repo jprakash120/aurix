@@ -6,6 +6,38 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-12 (afternoon) - the model is not stationary
+
+Same session, n=20 each:
+- cell B (D in directive only - the "0.10" prompt): **12/20**
+- D in directive + system (eb4bdb0e720d): 9/20
+Not different from each other (p=0.53). But cell B was 1/10 and 2/10 on
+Oct 11. 3/20 vs 12/20, p=0.008. Every FAIL today is a real "can be
+draining" opener - not the judge. Identical prompt, same model name,
+different behavior across days.
+
+Consequences:
+- Every cross-day before/after in writeup 03 (Fix 1, Fix 2) is confounded
+  with provider-side change.
+- The 2x2 was same-session, but cells ran in blocks, so drift within
+  the run was possible too.
+- The v0.9.1 control (0.90 both days) cannot detect drift - it is
+  saturated.
+
+Fixes:
+- `run()` now interleaves: round i of every condition, then round i+1.
+  Each sample records its round. Test checks the order.
+- Writeup 03: the correction from Oct 11 had been reverted by commit
+  8408322 ("my edits" - a stale notepad buffer saved over the new file;
+  content identical to 541adc6). Restored, plus a second update note,
+  "Second follow-up" section, takeaway 7.
+
+Next: replicate the full 2x2, interleaved, n=20 (160 calls). If S vs D
+still separates in one interleaved session, the wording finding stands;
+if not, it was within-run drift or noise.
+
+---
+
 ## 2026-10-12 (later) - S+D: clarify fixed, normal went the wrong way
 
 e82-01, prompt eb4bdb0e720d, n=10:
