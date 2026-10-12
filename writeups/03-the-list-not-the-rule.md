@@ -1,10 +1,16 @@
 # The Model Read the List, Not the Rule
 
 *I banned a phrase. The model stopped saying it and found the nearest
-phrase I had not banned. What worked was the same instruction placed
-somewhere else.*
+phrase I had not banned. What worked was a differently worded version of
+the same instruction, and where I put it turned out not to matter.*
 
 Jayaprakash Makkena - October 2026
+
+> **Updated 2026-10-11.** The first version of this writeup concluded
+> that the fix worked because of *where* the instruction sat. A follow-up
+> 2x2 experiment (last section) separated position from wording. The
+> wording mattered and the position did not. The original Fix 2 section
+> is kept as written, with the correction added after it.
 
 ---
 
@@ -136,7 +142,7 @@ behavior. The case I worried about, "do i sound stressed?" (rule 8.3,
 where the assistant *should* talk about feelings because it was asked),
 still got real answers: "I can't assess stress from the text alone."
 
-## Fix 2: same idea, different place
+## Fix 2: brief_direct's line
 
 `brief_direct` had been at 0/5 in every run, and its anti-reassurance
 line is in the per-turn directive, placed right next to the user's
@@ -168,14 +174,61 @@ Less than the table suggests.
 - **Position and wording changed together.** Compared with the system
   prompt, the directive is in a different place *and* worded differently
   ("unnecessary reassurance or conversational padding" vs "sympathy or
-  reassurance"). This test cannot tell which one mattered. Isolating
-  them needs two more runs: the system prompt's wording moved into the
-  directive, and the directive's wording moved into the system prompt.
+  reassurance"). This test cannot tell which one mattered. *Resolved
+  below: it was the wording.*
 - **One input.** Every number here is one user message. A different
   message might produce different paraphrases.
 - **One model, one judge, one author.** I wrote the spec, the cases, the
   rubric and the fixes. The judge is the same model as the generator
   (`gpt-oss-120b`, at temperature 0).
+
+## Follow-up: it was the wording, not the place
+
+I separated the two with a 2x2 on the same input and the same
+behavior, n=10 per cell. S is the system prompt's wording (*"Do not open
+with sympathy or reassurance. Start with the substance."*). D is
+`brief_direct`'s wording (*"Avoid unnecessary reassurance or
+conversational padding."*).
+
+| | no extra directive | S in directive | D in directive |
+|---|---|---|---|
+| **S in system prompt** | A: 0.70 | C: 0.60 | B: 0.20 |
+| **D in system prompt** | D: 0.30 | | |
+
+My written prediction was C at 0.20 or below and D at 0.40 or above,
+which would mean position. The results came out the other way.
+
+- **Wording S fails wherever it goes.** It fails in the system prompt
+  (A, 0.70), and it still fails when also repeated in the directive
+  (C, 0.60). Saying it twice, once next to the user's words, did not help.
+- **Wording D works wherever it goes.** In the directive (B) it scored
+  0.20; moved into the system prompt instead (D) it scored 0.30. That is
+  one sample apart.
+- Pooled, the S cells failed 13/20 and the D cells 5/20: **p = 0.012**
+  (Fisher's exact test, one-sided). Position within the D cells: 2/10 vs 3/10, no
+  detectable difference.
+- A and B reproduce the earlier runs (0.60 and 0.10 then, 0.70 and 0.20
+  now).
+
+The replies show what each wording does. Under S, the opener is "Four
+hours on a single bug can be draining" in 12 of the 20 replies (plus
+one "can be exhausting"). The
+model does not seem to read that as sympathy, so S never applies to it.
+Under D, the most common opener becomes "Four hours is a long stretch":
+the same slot in the sentence, filled with the user's fact instead of a
+feeling. My guess is that "conversational padding" covers the whole
+opener, while "sympathy" only covers the forms the model recognizes as
+sympathy. That is a hypothesis; this experiment does not test it.
+
+One more detail. With D in the system prompt *in place of* S, "That
+sounds exhausting" and "Sounds frustrating" came back (2/10), even
+though both are on the forbidden list in that same prompt. With S
+present, the listed phrases never appeared. Each wording seems to
+suppress something different.
+
+The judge has a problem at this level of detail too: "Four hours is a
+long stretch" passes, "Four hours is a lot" fails once. Both restate the
+user's fact.
 
 ## Takeaways
 
@@ -195,6 +248,10 @@ Less than the table suggests.
    each have made a behavior change look better or worse than it was.
 5. **Write predictions before running.** Four predictions held and one
    missed. The miss was the finding.
+6. **A plausible mechanism is not a tested one.** I wrote "same idea,
+   different place" because it fit the evidence I had. Testing it cost 80
+   API calls and showed the explanation was wrong. The fix still works.
+   My explanation for why it worked did not survive the test.
 
 ## Reproducing
 
@@ -203,4 +260,5 @@ github.com/jprakash120/aurix
 
 Prompt fingerprints identify each state: `42198bc6d2f1` (baseline),
 `6922b3799f41` (system-prompt fix), `45b15b47198f` (directive fix).
-Each run is a separate commit.
+Each run is a separate commit. The 2x2 is `position_experiment.py`;
+its results are in `position_experiment_results.json`.

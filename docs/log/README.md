@@ -6,6 +6,34 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-11 (night) - wording, not position. Prediction wrong.
+
+| | directive - | directive S | directive D |
+|---|---|---|---|
+| system S | A 0.70 | C 0.60 | B 0.20 |
+| system D | D 0.30 | | |
+
+Predicted C <=0.20, D >=0.40 (position). Got the reverse: S fails in
+both positions, D works in both. Pooled S 13/20 vs D 5/20, p=0.012.
+Position within D: 2/10 vs 3/10, nothing. A and B replicate.
+
+Under S the opener is "Four hours on a single bug can be draining"
+(12/20, plus one "can be exhausting"). Under D it becomes "Four hours is a long stretch" - same slot,
+fact instead of feeling. Under D-without-S the *listed* phrases came back
+("That sounds exhausting", "Sounds frustrating", 2/10) - S was what kept
+the list working.
+
+Writeup 03 corrected in place: update note at the top, original Fix 2
+kept, follow-up section added, takeaway 6. Not quietly rewritten.
+
+Judge nit: "Four hours is a lot" FAIL vs "Four hours is a long stretch"
+PASS.
+
+Possible production change (not made): S and D together in the system
+prompt, so every behavior gets both. That needs its own measurement.
+
+---
+
 ## 2026-10-11 (evening) - position vs wording, set up as a 2x2
 
 Writeup 03's biggest caveat: the fix moved the anti-reassurance idea into
