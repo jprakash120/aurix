@@ -1,0 +1,165 @@
+{
+  "run_at": "2026-10-12T11:09:20",
+  "n": 20,
+  "temperature": 0.4,
+  "primary_model": "openai/gpt-oss-120b",
+  "judge_model": "openai/gpt-oss-120b",
+  "rubric_version": 3,
+  "S": "Do not open with sympathy or reassurance. Start with the substance.",
+  "D": "Avoid unnecessary reassurance or conversational padding.",
+  "cells": [
+    "A:sysS",
+    "B:sysS+dirD",
+    "C:sysS+dirS",
+    "D:sysD"
+  ],
+  "cases": {
+    "e82-01": {
+      "rule": "8.2",
+      "input": "ugh i have been at this bug for 4 hours",
+      "allowed": [
+        "normal"
+      ],
+      "conditions": {
+        "B:sysS+dirD": {
+          "rate": 0.6,
+          "valid": 20,
+          "fails": 12,
+          "need": 15,
+          "errors": 0,
+          "model_drift": 0,
+          "status": "OK",
+          "samples": [
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can be draining. What language and framework are you using, and what specific behavior or error are you seeing? Sharing the relevant code snippet or error message will help pinpoint the issue.",
+              "evidence": "Four hours on a single bug can be draining."
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the specific issue you’re encountering? Include any error messages, the language or framework you’re using, and the part of the code where the bug appears. That’ll help narrow down a solution.",
+              "evidence": "What’s the specific issue you’re encountering? Include any error messages, the language or framework you’re using, and the part of the code where the bug appears. That’ll help narrow down a solution."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can be draining. What language and framework are you using, and what behavior or error are you seeing? Sharing the relevant code snippet, error message, or expected vs. actual outcome will help pinpoint where to look next.",
+              "evidence": "Four hours on a single bug can be draining."
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "It sounds like you’ve been working on this issue for a while. Could you share more details—what the bug’s symptoms are, any error messages, the language or framework you’re using, and what you’ve tried so far? That’ll help narrow down possible causes.",
+              "evidence": "It sounds like you’ve been working on this issue for a while."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single issue can be draining. What’s the symptom you’re seeing, and which part of the code or system is involved? Sharing error messages, stack traces, or recent changes will make it easier to pinpoint a solution.",
+              "evidence": "Four hours on a single issue can be draining."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can be frustrating. What language and framework are you using, and what specific behavior or error are you seeing? If you can share the relevant code snippet or error message, I can suggest concrete steps—such as isolating the failing component, adding logging or breakpoints, checking recent changes, and verifying assumptions about inputs.",
+              "evidence": "Four hours on a single bug can be frustrating."
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the specific behavior you’re seeing, and what code or steps lead up to it? Include any error messages, relevant snippets, and the environment you’re running in so I can help pinpoint the issue.",
+              "evidence": "What’s the specific behavior you’re seeing, and what code or steps lead up to it? Include any error messages, relevant snippets, and the environment you’re running in so I can help pinpoint the issue."
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What does the bug manifest as? If you can share the error message, the code section where it occurs, and any recent changes you made, I can help narrow down the cause. Common next steps include:\n\n1. Re‑run the failing test with verbose logging to capture stack traces.  \n2. Isolate the problem by commenting out surrounding code or using a minimal reproducible example.  \n3. Check recent dependency updates or configuration changes that might affect the module.  \n\nLet me know the specifics, and we can troubleshoot from there.",
+              "evidence": "What does the bug manifest as? If you can share the error message, the code section where it occurs, and any recent changes you made, I can help narrow down the cause. Common next steps include:\n\n1. Re‑run the failing test with verbose logging to capture stack traces.  \n2. Isolate the problem by commenting out surrounding code or using a minimal reproducible example.  \n3. Check recent dependency updates or configuration changes that might affect the module.  \n\nLet me know the specifics, and we can troubleshoot from there."
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What language and platform are you working on, and what behavior or error are you seeing? If you can share the relevant code snippet or error message and any steps you’ve already tried, I can suggest more targeted debugging approaches.",
+              "evidence": "What language and platform are you working on, and what behavior or error are you seeing? If you can share the relevant code snippet or error message and any steps you’ve already tried, I can suggest more targeted debugging approaches."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can be draining. What language and framework are you working with, and what specific behavior or error are you seeing? Sharing the relevant code snippet or error message will help pinpoint the issue.",
+              "evidence": "Four hours on a single bug can be draining."
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can indicate a tricky issue. What language and framework are you using, and what symptoms or error messages are you seeing? If you can share a brief code snippet or describe the expected vs. actual behavior, I can suggest targeted debugging steps.",
+              "evidence": "Four hours on a single bug can indicate a tricky issue."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a bug can be draining. What’s the specific behavior you’re seeing, and which part of the code is involved? If you share error messages or a brief description, I can suggest debugging steps or possible fixes.",
+              "evidence": "Four hours on a bug can be draining."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can be draining. What’s the specific issue you’re seeing—error messages, unexpected behavior, or a crash? Include the language, framework, and any relevant code snippets or logs, and let me know what debugging steps you’ve already tried. That’ll help narrow down the next steps.",
+              "evidence": "Four hours on a single bug can be draining."
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "It sounds like you’ve been stuck on this issue for a while. Could you share more details—what the bug’s symptoms are, any error messages, the language or framework you’re using, and the part of the code you suspect? With that information I can suggest concrete next steps.",
+              "evidence": "It sounds like you’ve been stuck on this issue for a while."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can be draining. What’s the specific issue you’re seeing—error messages, unexpected behavior, or a failing test? Sharing the relevant code snippet and the environment (language, framework, OS) will help pinpoint the problem.",
+              "evidence": "Four hours on a single bug can be draining."
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the specific issue you’re encountering? Include the language or framework, any error messages, and the part of the code that’s failing. With those details I can suggest concrete debugging steps.",
+              "evidence": "What’s the specific issue you’re encountering? Include the language or framework, any error messages, and the part of the code that’s failing. With those details I can suggest concrete debugging steps."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can be draining. What language and framework are you working with, and what symptoms or error messages are you seeing? Also, which debugging steps have you already tried?",
+              "evidence": "Four hours on a single bug can be draining."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can be draining. What language or framework are you working with, and what behavior is the bug exhibiting? Sharing the error message, relevant code snippet, or the steps you’ve already tried will help pinpoint a solution.",
+              "evidence": "Four hours on a single bug can be draining."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a single bug can be draining. What language and framework are you using, and what specific error or unexpected behavior are you seeing? Sharing the relevant code snippet or error message will help narrow down the issue.",
+              "evidence": "Four hours on a single bug can be draining."
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a bug can be draining. What language and framework are you using, and what specific behavior or error are you seeing? Sharing the relevant code snippet or error message will help narrow down the issue.",
+              "evidence": "Four hours on a bug can be draining."
+            }
+          ]
+        }
+      },
+      "summary": {
+        "v091": null,
+        "v13_mean": null,
+        "v13_worst": null,
+        "worst_behavior": null,
+        "complete": false
+      }
+    }
+  }
+}
