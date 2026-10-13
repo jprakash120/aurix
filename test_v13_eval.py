@@ -281,7 +281,7 @@ def test_system_prompt_forbids_impersonal_feeling_labels():
     reassurance'. The prompt's examples were all second-person."""
     p = aurix_prompting.SYSTEM_PROMPT
     for phrase in ('"That sounds frustrating."', '"Sounds exhausting."',
-                   "Do not open with sympathy or reassurance"):
+                   "Avoid unnecessary reassurance or conversational padding."):
         assert phrase in p
     assert "Restating a fact the user gave" in p
 
@@ -321,13 +321,16 @@ def test_measured_but_invalid_v091_still_blocks():
     assert not E.summarize_case({"v091": bad, "v13:normal": ok})["complete"]
 
 
-def test_system_prompt_carries_both_wordings():
-    """2x2 (2026-10-11): S alone left 'can be draining' (0.70); D alone let
-    listed phrases back in (0.30). Production carries both."""
+def test_system_prompt_has_d_and_not_s():
+    """Two same-session 2x2s (2026-10-11, -12): every cell with S in the
+    system prompt produced 'Four hours on a bug can be draining' (50/90);
+    cells with D instead, never (0/30). S did not stop the sympathy
+    opener - it reshaped it. Production keeps D and drops S."""
     p = aurix_prompting.SYSTEM_PROMPT
-    s = "Do not open with sympathy or reassurance. Start with the substance."
+    s = "Do not open with sympathy or reassurance"
     d = "Avoid unnecessary reassurance or conversational padding."
-    assert s in p and d in p and p.index(s) < p.index(d)
+    assert d in p and s not in p
+
 
 
 def test_conditions_are_interleaved_not_blocked():

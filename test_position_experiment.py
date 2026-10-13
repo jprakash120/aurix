@@ -46,7 +46,12 @@ def test_wordings_land_where_the_cell_says():
 def test_production_prompt_is_not_modified():
     before = aurix_prompting.SYSTEM_PROMPT
     X.build_plan()
-    assert aurix_prompting.SYSTEM_PROMPT is before and X.S in before
+    assert aurix_prompting.SYSTEM_PROMPT is before
+
+
+def test_base_system_is_the_6922_prompt_byte_for_byte():
+    import hashlib
+    assert hashlib.sha256(X.BASE_SYSTEM.encode("utf-8")).hexdigest()[:16] == X.SYSTEM_6922_SHA
 
 
 def test_runs_end_to_end_with_fakes():
@@ -61,3 +66,9 @@ def test_runs_end_to_end_with_fakes():
 def test_cells_filter():
     names = [c["name"] for c in X.build_plan({"B"})[0]["conditions"]]
     assert names == ["B:sysS+dirD"]
+
+
+def test_new_production_system_prompt_is_cell_d():
+    """Production (2026-10-12) = cell D's system prompt, measured 0.30 and
+    0.15 in two sessions. Only normal's directive differs (D vs old pad)."""
+    assert _cells()["D:sysD"]["system"] == aurix_prompting.SYSTEM_PROMPT

@@ -6,6 +6,51 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-12 (evening) - the instruction I added made the paraphrase
+
+2x2 replication, interleaved, n=20 per cell, one session:
+
+| | directive - | directive S | directive D |
+|---|---|---|---|
+| system S | A 0.65 | C 0.65 | B 0.45 |
+| system D | D **0.15** | | |
+
+Session 1 (Oct 11, n=10): A 0.70, C 0.60, B 0.20, D 0.30.
+
+Wording effect replicates: S cells 26/40 vs D cells 12/40, p=0.002.
+Best cell both times: D (S replaced by D in the system prompt).
+D vs A today 3/20 vs 13/20, p=0.002. A and C identical (S twice = S once).
+
+Counting the opener itself ("can be draining/exhausting/frustrating"),
+both sessions:
+- cells with S in the system prompt: 50/90
+- cell D (no S anywhere): **0/30**
+And before S existed (prompt 42198bc6d2f1) the opener was "That sounds
+frustrating", never "can be draining". "Can be draining" first appeared
+the day S was added. S did not remove the sympathy opener - it turned it
+into a general statement about four hours, which then evaded S itself.
+
+Cell D's failures are the listed phrases leaking back ("Sounds
+frustrating", "Sounds like a tough spot": 2/10, 2/20). Its passes open
+"Four hours is a lot" / "a long stretch" - the user's fact.
+
+Production change: drop S from SYSTEM_PROMPT, keep D. New system prompt
+is byte-identical to cell D's (test). normal keeps D in its directive.
+Prompt eb4bdb0e720d -> 823c240d3c7e.
+
+`position_experiment.py` rebuilds the 6922 system prompt from whatever
+production holds and checks it by hash (a1904d041e15c29b), so the 2x2
+stays reproducible after production moved.
+
+Predictions for production on e82-01, interleaved, n=20, plus cell D as
+a same-session anchor:
+- anchor cell D ~0.15-0.30 (if far off, the session drifted - say so)
+- normal <=0.25, no "can be draining"
+- clarify, detailed, brief_direct <=0.10
+- v0.9.1 control ~0.90
+
+---
+
 ## 2026-10-12 (afternoon) - the model is not stationary
 
 Same session, n=20 each:

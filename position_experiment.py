@@ -33,6 +33,7 @@ Usage:
     python position_experiment.py --n 20 --cells B   # one cell only
 """
 
+import hashlib
 import json
 import os
 import sys
@@ -54,15 +55,28 @@ NORMAL_BASE = ("\nGive a clear and natural AURIX response.\n"
 OLD_PAD = "Avoid unnecessary padding.\n"
 
 
-# The 2x2 was run against the 6922b3799f41 system prompt, which had S
-# but not D. Production later added D after S (2026-10-12). Strip it so
-# the cells keep meaning what they meant when the results were recorded.
-BASE_SYSTEM = SYSTEM_PROMPT.replace(D + "\n", "", 1)
+# The 2x2 was run against the 6922b3799f41 system prompt: S, no D.
+# Production has since changed (S+D on 2026-10-12, then D only). Rebuild
+# the 6922 prompt from whatever production holds now, and check it
+# byte-for-byte by hash, so the cells keep meaning what they meant.
+SYSTEM_6922_SHA = "a1904d041e15c29b"
+
+
+def _base_system():
+    p = SYSTEM_PROMPT
+    if S in p:
+        p = p.replace(D + "\n", "", 1)       # S+D -> S
+    else:
+        p = p.replace(D + "\n", S + "\n", 1)  # D -> S
+    return p
+
+
+BASE_SYSTEM = _base_system()
 
 
 def system_with(wording):
-    assert BASE_SYSTEM.count(S) == 1 and D not in BASE_SYSTEM, \
-        "base system prompt changed shape - cells are stale"
+    assert hashlib.sha256(BASE_SYSTEM.encode("utf-8")).hexdigest()[:16] == SYSTEM_6922_SHA, \
+        "cannot rebuild the 6922b3799f41 system prompt - cells are stale"
     return BASE_SYSTEM if wording == "S" else BASE_SYSTEM.replace(S, D)
 
 
