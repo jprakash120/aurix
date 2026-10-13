@@ -1,0 +1,171 @@
+{
+  "run_at": "2026-10-13T00:16:23",
+  "n": 20,
+  "temperature": 0.4,
+  "primary_model": "openai/gpt-oss-120b",
+  "judge_model": "openai/gpt-oss-120b",
+  "rubric_version": 3,
+  "S": "Do not open with sympathy or reassurance. Start with the substance.",
+  "D": "Avoid unnecessary reassurance or conversational padding.",
+  "cells": [
+    "A:sysS",
+    "B:sysS+dirD",
+    "C:sysS+dirS",
+    "D:sysD"
+  ],
+  "cases": {
+    "e82-01": {
+      "rule": "8.2",
+      "input": "ugh i have been at this bug for 4 hours",
+      "allowed": [
+        "normal"
+      ],
+      "conditions": {
+        "D:sysD": {
+          "rate": 0.16666666666666666,
+          "valid": 6,
+          "fails": 1,
+          "need": 15,
+          "errors": 3,
+          "model_drift": 11,
+          "status": "INVALID",
+          "samples": [
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "That sounds exhausting. What’s the bug about? Maybe I can help you troubleshoot.",
+              "evidence": "That sounds exhausting.",
+              "round": 0
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "It sounds like you’ve been on this bug for a while. What’s the issue you’re seeing, and what have you tried so far?",
+              "evidence": "It sounds like you’ve been on this bug for a while.",
+              "round": 1
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the behavior you’re seeing, and what have you tried so far?",
+              "evidence": "Four hours is a lot.",
+              "round": 2
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What specifically is the bug doing, and where are you getting stuck?",
+              "evidence": "Four hours is a lot.",
+              "round": 3
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the behavior you’re seeing, and what have you tried so far?",
+              "evidence": "Four hours is a lot.",
+              "round": 4
+            },
+            {
+              "verdict": "ERROR",
+              "model": null,
+              "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0pbq",
+              "round": 5
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "It sounds like you’re stuck. What’s the bug you’re working on? If you share the error message or a snippet, I can help troubleshoot.",
+              "round": 6
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "That’s a long time. Try breaking the problem into smaller parts: isolate the failing function, add logging around the suspected lines, and run a unit test that reproduces the error. If you can narrow it to a specific input or state, it’s easier to spot the root cause. Also, check recent changes—sometimes a refactor elsewhere introduces a subtle bug. If you share the error message or a snippet, I can help pinpoint it.",
+              "round": 7
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "Sounds like a tough one. What’s the bug doing? Is it a compile error, runtime crash, or something else? If you can share the error message or a snippet of the code, I can help pinpoint the issue. In the meantime, try:\n\n1. **Reproduce the error in a minimal test case** – this often reveals hidden dependencies.  \n2. **Check recent changes** – a new commit or library update can introduce regressions.  \n3. **Run a static analysis or lint tool** – it may flag obvious problems.  \n4. **Add logging around the failing area** – to see the state just before the failure.  \n\nLet me know what you find, and we can dig deeper.",
+              "round": 8
+            },
+            {
+              "verdict": "ERROR",
+              "model": null,
+              "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0pbq",
+              "round": 9
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "You’ve spent four hours on this bug. What’s the specific problem you’re encountering?",
+              "round": 10
+            },
+            {
+              "verdict": "ERROR",
+              "model": null,
+              "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0pbq",
+              "round": 11
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "Sounds like a tough one. What’s the bug doing? A quick checklist might help:\n\n1. **Reproduce** – can you get it to happen with a minimal test case?\n2. **Logs** – any error messages or stack traces?  \n3. **Recent changes** – what was last modified before it started?  \n4. **Isolation** – comment out or disable recent code to see if the issue disappears.  \n5. **Debug** – set breakpoints around the suspect area and step through.  \n\nIf you can share the error output or a snippet, I can help pinpoint it further.",
+              "round": 12
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "I see you’ve spent a good amount of time on this. What’s the current state of the code or the error message you’re seeing? Let’s walk through the steps together.",
+              "round": 13
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "I’ve been at this bug for four hours. What’s the issue you’re encountering? If you can share the error message or the part of the code that’s causing trouble, I can help you pinpoint the problem.",
+              "round": 14
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "Sounds like a tough one. What’s the bug doing? Have you checked the logs or added any breakpoints? If you can share the error message or the code snippet, I can help pinpoint the issue.",
+              "round": 15
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "That’s a long time. What’s the bug doing? If you can share the error message or the code snippet, I can help troubleshoot.",
+              "round": 16
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "Sounds frustrating. What’s the bug you’re working on? Any error messages or recent changes that might help narrow it down?",
+              "round": 17
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "That’s a long stretch. What’s the bug about, and where are you stuck? I can help walk through possible fixes or debugging steps.",
+              "evidence": "That’s a long stretch.",
+              "round": 18
+            },
+            {
+              "verdict": "SKIPPED",
+              "model": "openai/gpt-oss-20b",
+              "response": "What’s the error message or behavior you’re seeing?  \n- Which language or framework is it in?  \n- Have you checked the stack trace or logs for clues?  \n- Tried a clean build or clearing caches?  \n- Any recent code changes that might trigger it?  \n\nIf you can share a snippet or the exact error, I can help pinpoint it.",
+              "round": 19
+            }
+          ]
+        }
+      },
+      "summary": {
+        "v091": null,
+        "v13_mean": null,
+        "v13_worst": null,
+        "worst_behavior": null,
+        "complete": false
+      }
+    }
+  }
+}
