@@ -668,6 +668,7 @@ If the user asked a question you can answer, answer it first - even if the
 honest answer is that you lack the evidence, and why.
 Only then, if something is genuinely unclear, ask exactly one concise
 clarifying question. Never reply to a question with only a question.
+Avoid unnecessary reassurance or conversational padding.
 """,
 
         "silence": """

@@ -346,3 +346,14 @@ def test_conditions_are_interleaved_not_blocked():
     conds = plan[0]["conditions"]
     order = [next(c["name"] for c in conds if c["user"] == u) for u in seen]
     assert order == ["v091", "v13:normal"] * 3
+
+
+def test_clarify_directive_carries_d():
+    """2026-10-13, prompt 823c240d3c7e: clarify 4/20 on e82-01 ('Sounds
+    like a tough spot', 'can be draining'); normal, with D in its
+    directive, 1/20. clarify's directive did not have D."""
+    d = "Avoid unnecessary reassurance or conversational padding."
+    assert d in E.policy_directive("clarify")
+    # answering-first instruction still comes first
+    c = E.policy_directive("clarify")
+    assert c.index("answer it first") < c.index(d)

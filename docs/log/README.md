@@ -6,6 +6,42 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-13 - production 823c240d3c7e; writeup 03 rewritten
+
+Same session, n=20, interleaved, anchor first:
+
+| | predicted | got |
+|---|---|---|
+| anchor (2x2 cell D) | 0.15-0.30 | 0.25 |
+| v0.9.1 control | ~0.90 | 0.75 |
+| brief_direct | <=0.10 | 0.00 |
+| detailed | <=0.10 | 0.00 |
+| normal | <=0.25, no "draining" | **0.05**, no "draining" |
+| clarify | <=0.10 | **0.20** - missed |
+
+normal's one FAIL: "That sounds exhausting". clarify's four: "Sounds like
+a tough spot" x2, "can really wear you down", "can be draining" - so the
+"can be" form does occur without S, just rarely.
+
+Correction to the Oct 12 (evening) entry: "can be draining" did NOT
+first appear with S. Checked every earlier result file: once in 35
+replies to e82-01 before S (a clarify reply, "It can be exhausting to
+stare at a stubborn bug for that long"). After S it was the dominant
+opener. The 50/90 vs 0/30 numbers stand; the "first appeared" sentence
+was wrong. Writeup states it correctly.
+
+normal (D in system + D in directive) 1/20 vs anchor (D in system only)
+5/20: p=0.09. clarify has no D in its directive and sits near the
+anchor. Next: D added to clarify's directive (test). Predict clarify
+<=0.10 against a same-session anchor.
+
+Writeup 03 rewritten around the replicated finding - title now "The
+Instruction That Wrote the Violation" (same filename so links hold),
+summary first, revision history at the end instead of stacked update
+notes.
+
+---
+
 ## 2026-10-12 (evening) - the instruction I added made the paraphrase
 
 2x2 replication, interleaved, n=20 per cell, one session:

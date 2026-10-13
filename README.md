@@ -116,5 +116,5 @@ MIT
 | Rule 8.5 guards protected by tests, before / after mutation testing | 0 of 5 / 5 of 5 |
 | Automated tests | 99 passing |
 
-Writeups: [judge failure modes](writeups/01-judge-failures.md) - [the labeler was the problem](writeups/02-labeler-was-the-problem.md) - [the model read the list, not the rule](writeups/03-the-list-not-the-rule.md)
+Writeups: [judge failure modes](writeups/01-judge-failures.md) - [the labeler was the problem](writeups/02-labeler-was-the-problem.md) - [the instruction that wrote the violation](writeups/03-the-list-not-the-rule.md)
 

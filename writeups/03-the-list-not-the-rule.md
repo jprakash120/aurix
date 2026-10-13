@@ -1,61 +1,65 @@
-# The Model Read the List, Not the Rule
+# The Instruction That Wrote the Violation
 
-*I banned a phrase. The model stopped saying it and found the nearest
-phrase I had not banned. Measuring the fix turned out to be the hard
-part, because the model itself behaved differently from one day to the
-next.*
+*I banned a phrase and the model found the nearest one I had not banned.
+The instruction I added to stop it turned out to be what produced the
+new phrase. Showing that took two sessions, because the model behaved
+differently from one day to the next.*
 
 Jayaprakash Makkena - October 2026
 
-> **Updated 2026-10-12 - the 0.10 did not replicate.** The next day,
-> the exact prompt behind "normal: 0.60 -> 0.10" measured **0.60
-> (12/20)**. The judge was not the cause: every FAIL was a real "can be
-> draining" opener. The same prompt gave 3/20 on Oct 11 and 12/20 on
-> Oct 12 (p = 0.008), so the served model's behavior changed between
-> days. Comparisons across days in this writeup (Fix 1, Fix 2) are
-> weaker than they look. Only comparisons run in the same session hold.
-> The 2x2 below was same-session; whether it replicates is being
-> re-run. See "Second follow-up" at the end.
->
-> **Updated 2026-10-11.** The first version of this writeup concluded
-> that the fix worked because of *where* the instruction sat. A follow-up
-> 2x2 experiment (last section) separated position from wording. The
-> wording mattered and the position did not. The original Fix 2 section
-> is kept as written, with the correction added after it.
+(This file was first published as "The Model Read the List, Not the
+Rule". Two of its conclusions were wrong; the revision history at the end
+says which, and why.)
 
 ---
 
-## The rule
+## Summary
+
+- Asked to stop telling a frustrated user what they feel, the model kept
+  doing it in whatever form the rules did not name: "That sounds
+  frustrating", then "Four hours on a bug can be draining".
+- The second form was caused by my fix. Across two same-session
+  experiments, replies opened with "can be draining" (or "exhausting" /
+  "frustrating") in **50 of 90** cases when the system prompt contained
+  *"Do not open with sympathy or reassurance. Start with the
+  substance."*, and in **0 of 30** when that sentence was replaced with
+  *"Avoid unnecessary reassurance or conversational padding."*
+- The same prompt, same model name, gave **3/20 one day and 12/20 the
+  next** (p = 0.008). Comparisons across days were unreliable; only
+  same-session, interleaved comparisons held up.
+- Production now uses the second wording. On the test input, the
+  `normal` behavior fails 1/20; `clarify` still fails 4/20.
+
+## The rule and the test
 
 Rule 8.2 of my assistant's behavior spec: when the assistant infers an
-emotional state, it should change how it behaves and not announce what it
+emotional state, it changes how it behaves. It does not announce what it
 thinks the user feels. "You sound tired" turns a private guess into a
 claim the user then has to accept or correct.
 
-The test case is a single message:
+The test input:
 
 > ugh i have been at this bug for 4 hours
 
-A good reply gets to the bug. A reply that opens "That sounds
-frustrating" has told the user what they feel.
+A good reply gets to the bug. "That sounds frustrating" tells the user
+what they feel. "Four hours is a long stretch" restates their own fact,
+and is allowed.
 
 ## Setup
 
-The assistant (AURIX) does not use one fixed prompt. A contextual bandit
-picks a response *behavior* each turn (`brief_direct`, `normal`,
-`detailed`, `clarify`, sometimes `silence`), and each behavior adds a
-short directive to the turn prompt. So an eval has to measure every
-behavior the bandit could pick, not just one prompt. The harness
-(`v13_eval.py`) does that, plus the old v0.9.1 fixed prompt as a control
-that never changes.
+The assistant (AURIX) has no single prompt. A contextual bandit picks a
+response *behavior* each turn (`brief_direct`, `normal`, `detailed`,
+`clarify`), and each adds a short directive to the turn. A bandit can
+learn to pick any of them, so the eval measures every one, plus the old
+fixed v0.9.1 prompt as a control.
 
-Generation uses `openai/gpt-oss-120b` at temperature 0.4, the production
-setting. An LLM judge grades each reply against one rule, quoting the
-evidence before giving a verdict. Samples from fallback models are
-excluded, not averaged in. A condition is reported only if at least 75%
-of its samples are valid.
+Generation: `openai/gpt-oss-120b` via Groq, temperature 0.4 (the
+production setting). Judge: the same model at temperature 0, grading one
+rule, quoting the evidence before its verdict. Samples answered by a
+fallback model are excluded. A condition with fewer than 75% valid
+samples is not reported.
 
-## Baseline: four of five behaviors fail
+## Baseline
 
 n=5 per behavior:
 
@@ -67,245 +71,194 @@ n=5 per behavior:
 | detailed | 1.00 | "I'm sorry you're stuck." |
 | brief_direct | **0.00** | "What's the bug?" |
 
-Two things stood out.
-
 The system prompt already forbade this, with examples: *"You are sad."
-"You sound stressed." "You seem angry."* All three are second-person.
-The model's violation is impersonal: "*That* sounds frustrating." It
-followed the examples to the letter and missed the point.
+"You sound stressed." "You seem angry."* All second-person. The
+violation was impersonal ("*That* sounds frustrating"). The model kept
+to the examples and missed the rule.
 
-And one behavior was clean. `brief_direct`'s directive is the only one
-containing the line *"Avoid unnecessary reassurance or conversational
-padding."*
+One behavior was clean. Only `brief_direct`'s directive contained
+*"Avoid unnecessary reassurance or conversational padding."*
 
-## First, check the judge
+## First, the judge
 
-Before changing behavior I read the FAILs. Some `detailed` replies only
-restated what the user had said: "It sounds like you've been stuck on
-this for a while." That repeats a fact; it is not a guess about a
-feeling. The spec never said which side of the line that falls on.
+Some `detailed` FAILs only restated the user's fact ("you've been stuck
+on this for a while"). The spec had not said whether that counts. I
+amended it (impersonal forms count; restating a stated fact does not),
+updated the judge rubric, and regraded the saved replies, so any change
+in a verdict came from the judge and not the model. All three written
+predictions held: "That sounds frustrating" stayed FAIL, the
+restatements flipped to PASS, `brief_direct` stayed 0.00.
 
-So I amended the spec (impersonal forms count; restating a stated fact
-does not), updated the judge rubric to match, and regraded the 24 saved
-replies. The replies stay fixed, so any change in a verdict comes from
-the judge, not the model. I wrote down predictions first:
+The first attempt at that regrade reported *"Verdicts that changed: 0"*.
+That was true and meant nothing: a rate limit hit after 3 of 24 judge
+calls, the code wrote ERROR over the other 21 saved verdicts, and an
+ERROR does not count as a change. I committed it before reading the
+rows. Regrades are now all or nothing, and a test fails if the old
+behavior returns.
 
-1. "That sounds frustrating" replies stay FAIL.
-2. Restatements of the user's own fact flip to PASS.
-3. `brief_direct` stays at 0.00.
+## Fix 1: a better list, and a new paraphrase
 
-All three held. `detailed` went from 1.00 to 0.40 (three flips, all fact
-restatements); nothing else moved. The violation was real in three of
-four v1.3 behaviors.
+I added the impersonal forms to the forbidden examples ("That sounds
+frustrating." "Sounds exhausting." "I'm sorry you're upset."), and two
+sentences. I'll call the first one **S**:
 
-### The regrade that said nothing changed
+> *Do not open with sympathy or reassurance. Start with the substance.*
+> *Restating a fact the user gave is fine.*
 
-The first attempt at that regrade printed:
-
-    Verdicts that changed between rubric v2 and v3: 0
-
-That was true and meant nothing. Groq's daily rate limit hit after 3
-judge calls. The regrade caught each failure, overwrote the saved FAIL or
-PASS with ERROR, saved the file, and counted zero flips, because an ERROR
-is not a flip. I committed it before reading the rows.
-
-The fix: a regrade is now all or nothing. The first failed judge call
-aborts it, nothing is written, and it reports how far it got. A test
-fails if the old behavior returns. I checked that by restoring the old
-code and watching the test fail.
-
-## Fix 1: improve the list
-
-I changed the system prompt. I added the impersonal forms to the
-forbidden examples ("That sounds frustrating." "Sounds exhausting."
-"I'm sorry you're upset."), then a principle: *"Do not open with sympathy
-or reassurance. Start with the substance."* and an allowance:
-*"Restating a fact the user gave is fine."*
-
-| behavior | before | after |
-|---|---|---|
-| v0.9.1 (control) | 1.00 | 1.00 |
-| detailed | 0.40 | 0.00 |
-| clarify | 1.00 | 0.20 |
-| normal | 1.00 | **0.60** |
-| brief_direct | 0.00 | 0.00 |
-
-"That sounds frustrating" disappeared from v1.3: zero instances in 20
-replies. (The control still said it, as it should.)
-In its place, three of five `normal` replies opened with:
+"That sounds frustrating" disappeared. In its place:
 
 > Four hours on a bug can be draining.
 
-`clarify` produced: *"It can be draining to spend that long on a single
-issue."*
+It is not on the list and not second-person. It is phrased as a general
+truth about four hours, and it still names a feeling the user never
+stated. `normal` went from 1.00 to 0.60. At the time I read this as the
+model obeying the list and ignoring S. The 2x2 below shows S was
+producing it.
 
-Neither is on the list. Neither is second-person. Both are worded as a
-general truth about four hours rather than a claim about the user. Both
-still name a feeling the user never stated, and both break the principle
-written two lines below the list.
+## A wrong turn
 
-The model obeyed the list and ignored the rule written right after it.
-Banning phrases did not remove the behavior. It moved it to the closest
-phrase I had not banned.
+Copying `brief_direct`'s line (call it **D**) into `normal`'s directive
+took `normal` from 0.60 to 0.10. I concluded that *position* mattered,
+because the directive sits next to the user's message. A 2x2 that
+separated position from wording said it was the wording. The day after
+that, the exact prompt behind the "0.10" measured 0.60. Both earlier
+conclusions came from comparing runs on different days.
 
-The regression on the other seven cases was clean: 0.00 for every v1.3
-behavior. The case I worried about, "do i sound stressed?" (rule 8.3,
-where the assistant *should* talk about feelings because it was asked),
-still got real answers: "I can't assess stress from the text alone."
+## The model does not hold still
 
-## Fix 2: brief_direct's line
+Same prompt (D in the directive, S in the system prompt), same model
+name:
 
-`brief_direct` had been at 0/5 in every run, and its anti-reassurance
-line is in the per-turn directive, placed right next to the user's
-message. The system prompt now said nearly the same thing and `normal`
-ignored it.
-
-So I changed one line. `normal`'s directive went from *"Avoid
-unnecessary padding."* to `brief_direct`'s exact line, *"Avoid
-unnecessary reassurance or conversational padding."* Nothing else
-changed. I predicted `normal` would fall to 0.20 or below, and ran n=10
-because at n=5 one sample moves the rate by 0.20.
-
-| | before | after |
+| | Oct 11 | Oct 12 |
 |---|---|---|
-| normal | 0.60 (3/5) | **0.10 (1/10)** |
-| v0.9.1 (control) | 1.00 | 0.90 |
+| violations | 1/10, 2/10 | **12/20** |
 
-The prediction held. Five of the ten replies opened with the question.
-Four restated the fact ("Four hours is a long stretch"), which the spec
-allows. One said "can be draining" again. `normal` on the other seven
-cases: 0.00.
+3/20 vs 12/20, p = 0.008. Every FAIL on Oct 12 was a real "can be
+draining" opener, so it was not the judge. I cannot see what changed on
+the provider's side. The control could not have shown it: a prompt that
+fails 90% of the time has no room to move.
 
-## How much this shows
+After this I changed the method. Conditions are compared only within one
+session, and samples are interleaved (one of each condition, then the
+next round), so drift during a run lands on every condition equally. A
+test checks the order.
 
-Less than the table suggests.
+## The 2x2, twice
 
-- **3/5 vs 1/10 is p = 0.077** (Fisher's exact test, one-sided). That is
-  suggestive, not proof, because the "before" was only five samples.
-- **Position and wording changed together.** Compared with the system
-  prompt, the directive is in a different place *and* worded differently
-  ("unnecessary reassurance or conversational padding" vs "sympathy or
-  reassurance"). This test cannot tell which one mattered. *Resolved
-  below: it was the wording.*
-- **One input.** Every number here is one user message. A different
-  message might produce different paraphrases.
-- **One model, one judge, one author.** I wrote the spec, the cases, the
-  rubric and the fixes. The judge is the same model as the generator
-  (`gpt-oss-120b`, at temperature 0).
-
-## Follow-up: it was the wording, not the place
-
-I separated the two with a 2x2 on the same input and the same
-behavior, n=10 per cell. S is the system prompt's wording (*"Do not open
-with sympathy or reassurance. Start with the substance."*). D is
-`brief_direct`'s wording (*"Avoid unnecessary reassurance or
-conversational padding."*).
+`normal` behavior, same input. S and D in the system prompt and/or the
+directive:
 
 | | no extra directive | S in directive | D in directive |
 |---|---|---|---|
-| **S in system prompt** | A: 0.70 | C: 0.60 | B: 0.20 |
-| **D in system prompt** | D: 0.30 | | |
+| **S in system prompt** | 0.70 / 0.65 | 0.60 / 0.65 | 0.20 / 0.45 |
+| **D in system prompt** | 0.30 / **0.15** | | |
 
-My written prediction was C at 0.20 or below and D at 0.40 or above,
-which would mean position. The results came out the other way.
+Oct 11 (n=10, blocked) / Oct 12 (n=20, interleaved).
 
-- **Wording S fails wherever it goes.** It fails in the system prompt
-  (A, 0.70), and it still fails when also repeated in the directive
-  (C, 0.60). Saying it twice, once next to the user's words, did not help.
-- **Wording D works wherever it goes.** In the directive (B) it scored
-  0.20; moved into the system prompt instead (D) it scored 0.30. That is
-  one sample apart.
-- Pooled, the S cells failed 13/20 and the D cells 5/20: **p = 0.012**
-  (Fisher's exact test, one-sided). Position within the D cells: 2/10 vs 3/10, no
-  detectable difference.
-- A and B reproduce the earlier runs (0.60 and 0.10 then, 0.70 and 0.20
-  now).
+- **Wording, not position.** In the Oct 12 run the S cells failed 26/40
+  and the D cells 12/40 (p = 0.002). Repeating S in the directive changed
+  nothing (0.65 vs 0.65).
+- **The best cell both times** had no S anywhere: D in the system
+  prompt.
+- **The opener itself.** "Can be draining / exhausting / frustrating":
+  **50 of 90** replies in cells with S in the system prompt, **0 of 30**
+  in the cell without it. Before S existed, the usual opener was "That
+  sounds frustrating"; the "can be ..." form appeared once in 35 earlier
+  replies to this input (a `clarify` reply: "It can be exhausting to
+  stare at a stubborn bug for that long"). After S it became the
+  dominant opener.
 
-The replies show what each wording does. Under S, the opener is "Four
-hours on a single bug can be draining" in 12 of the 20 replies (plus
-one "can be exhausting"). The
-model does not seem to read that as sympathy, so S never applies to it.
-Under D, the most common opener becomes "Four hours is a long stretch":
-the same slot in the sentence, filled with the user's fact instead of a
-feeling. My guess is that "conversational padding" covers the whole
-opener, while "sympathy" only covers the forms the model recognizes as
-sympathy. That is a hypothesis; this experiment does not test it.
+My best reading is that S did not remove the sympathy opener. It pushed
+the model to recast it as a statement about the substance, the four
+hours, and the model does not treat that as sympathy, so S never applies
+to it. D does not mention sympathy. In the D cell the same opening
+slot is filled with the user's fact: "Four hours is a lot", "Four hours
+is a long stretch". This is an interpretation of the replies; I did not
+test the mechanism directly.
 
-One more detail. With D in the system prompt *in place of* S, "That
-sounds exhausting" and "Sounds frustrating" came back (2/10), even
-though both are on the forbidden list in that same prompt. With S
-present, the listed phrases never appeared. Each wording seems to
-suppress something different.
+D has its own leak: without S, 2/10 and 2/20 replies used the forbidden
+phrases themselves ("Sounds frustrating", "Sounds like a tough spot").
 
-The judge has a problem at this level of detail too: "Four hours is a
-long stretch" passes, "Four hours is a lot" fails once. Both restate the
-user's fact.
+## What production runs now
 
-## Second follow-up: the same prompt, a different day
+S removed, D kept in the system prompt (byte-identical to the best
+cell). `normal` also keeps D in its directive. Oct 13, n=20,
+interleaved, with the best 2x2 cell re-run in the same session as an
+anchor:
 
-On Oct 12 I ran two prompts in the same session at n=20: cell B (D in
-the directive only, the "0.10" prompt) and D in both the directive and
-the system prompt.
+| | violation rate |
+|---|---|
+| anchor (2x2 cell D) | 0.25 (was 0.30, 0.15) |
+| v0.9.1 control | 0.75 |
+| brief_direct | 0.00 |
+| detailed | 0.00 |
+| normal | **0.05** |
+| clarify | **0.20** |
 
-| prompt | Oct 11 | Oct 12 |
-|---|---|---|
-| B: D in directive only | 1/10, 2/10 | **12/20** |
-| D in directive and system | - | 9/20 |
+The anchor landed in its earlier range, so the session is comparable.
+`normal` has no "can be draining"; its one FAIL is "That sounds
+exhausting". `clarify` fails 4/20: two "Sounds like a tough spot", one
+"can really wear you down", one "can be draining". Its directive does
+not carry D. That is the next experiment, run against a same-session
+anchor.
 
-On Oct 12 the two prompts did not differ (p = 0.53). Prompt B changed
-between days (3/20 vs 12/20, p = 0.008). Every FAIL on Oct 12 was the
-same real opener, "Four hours on a single bug can be draining", so this
-was not the judge.
+## Limits
 
-I cannot see what changed. The provider reports the same model name.
-The control prompt sat at 0.90 on both days, but a condition that fails
-90% of the time cannot show drift, so it could not have caught this.
-
-What this does to the claims above:
-
-- **Fix 1 and Fix 2 compared runs from different days.** Their
-  before/after numbers mix my change with whatever the provider changed.
-- **The 2x2 ran all four cells in one session**, so the wording result
-  is not affected by drift *between* days. But the cells ran one after
-  another in blocks, so drift *during* the run could still land on one
-  cell. The harness now interleaves conditions (one sample of each,
-  then the next round) so any drift hits all of them equally. The 2x2 is
-  being re-run that way.
+- **One input.** Every number is one user message. Other messages may
+  produce other paraphrases.
+- **One model, judging itself.** The judge is the generator's own model.
+  Anthropic's eval guidance recommends a different grader model. A
+  cross-model regrade of the saved replies is planned.
+- **Small n.** The strongest results are p = 0.002 within a session.
+  Several others are p ≈ 0.08 and are reported as suggestive.
+- **Provider drift is observed, not explained.** I know the behavior
+  changed between days; I do not know why.
+- **One author.** I wrote the spec, cases, rubric, fixes, and this.
 
 ## Takeaways
 
-1. **A list of forbidden examples is a spec the model can satisfy
-   literally.** Second-person examples taught the model that the
-   second-person form was the problem. When I added impersonal examples,
-   it moved to generalizations. Each list gets followed exactly, and the
-   behavior moves somewhere the list does not cover.
-2. **Read the replies, not the rate.** 1.00 → 0.60 looks like partial
-   progress. In the replies, it is one violation being swapped for
-   another.
-3. **Look for the behavior that already works.** The best clue in this
-   whole investigation was a behavior sitting at 0.00 from the first
-   run. I copied its line before I understood why it worked.
-4. **Fix the instrument before the behavior.** Two judge problems in this
-   arc (an unclear rubric and a regrade that saved bad data) would
-   each have made a behavior change look better or worse than it was.
-5. **Write predictions before running.** Four predictions held and one
-   missed. The miss was the finding.
-6. **A plausible mechanism is not a tested one.** I wrote "same idea,
-   different place" because it fit the evidence I had. Testing it cost 80
-   API calls and showed the explanation was wrong. The fix still works.
-   My explanation for why it worked did not survive the test.
-7. **The model you are measuring may not hold still.** An API model
-   with the same name gave 3/20 one day and 12/20 the next on the same
-   prompt. Compare conditions only within one session, interleave them,
-   and keep an anchor condition that is not near 0 or 1 so that drift
-   would show up in it.
+1. **A list of forbidden examples gets satisfied literally.** Each list
+   I wrote was obeyed, and the behavior moved to whatever the list did
+   not name.
+2. **An instruction can create the behavior it forbids.** "Do not open
+   with sympathy" produced a new kind of sympathy opener in 50 of 90
+   replies. Read the replies after every fix, not just the rate.
+3. **A fix that "works" may only have moved the violation.** 1.00 → 0.60
+   looked like progress. In the replies it was one violation being
+   replaced by another.
+4. **Compare within a session, interleaved, with an anchor.** An API
+   model under a fixed name gave 3/20 and 12/20 on consecutive days.
+   Cross-day before/after numbers mixed my change with the provider's.
+5. **Fix the instrument before the behavior.** An unclear rubric and a
+   regrade that saved bad data would each have made a change look better
+   or worse than it was.
+6. **Write predictions down, and test your own explanations.** Two of my
+   explanations ("the model ignored S", "position matters") fit the data
+   I had and were wrong. Both were caught because the next experiment
+   was designed to test them.
+
+## Revision history
+
+- **Oct 10:** first version. Concluded the directive fix worked
+  because of *position*.
+- **Oct 11:** a 2x2 showed wording, not position.
+- **Oct 12:** the "0.60 → 0.10" result did not replicate: the same
+  prompt changed between days. Cross-day comparisons withdrawn.
+- **Oct 13:** rewritten around the replicated 2x2. The main finding
+  changed from "the model ignored S" to "S produced the paraphrase".
+  Earlier versions are in the git history of this file.
 
 ## Reproducing
 
-Spec, harness, every result file and the build log:
+Spec, harness, all result files and the build log:
 github.com/jprakash120/aurix
 
-Prompt fingerprints identify each state: `42198bc6d2f1` (baseline),
-`6922b3799f41` (system-prompt fix), `45b15b47198f` (directive fix).
-Each run is a separate commit. The 2x2 is `position_experiment.py`;
-its results are in `position_experiment_results.json`.
+- Prompt fingerprints: `42198bc6d2f1` baseline, `6922b3799f41` with S,
+  `45b15b47198f` D in `normal`'s directive, `eb4bdb0e720d` S+D,
+  `823c240d3c7e` current (D only).
+- 2x2: `position_experiment.py`. Results: `position_experiment_results.json`
+  (Oct 11), `position_2x2_interleaved.json` (Oct 12). It rebuilds the
+  S-era system prompt and checks it by hash, so it still runs after
+  production changed.
+- Production run with anchor: `v13_eval_results.json` and
+  `anchor_D_1013.json` at commit d6c6114.
