@@ -85,7 +85,36 @@ def summarize(rows):
     }
 
 
-def run(files, client, model, sleep=E.SLEEP, log=print):
+# Preview models on Groq have small per-minute token limits. Without a
+# cap, the requested output budget counts toward the limit and a single
+# call can be "Request too large" (2026-10-14, after 9 calls).
+MAX_TOKENS = 2048
+MAX_RETRIES = 6
+
+
+def _wait_seconds(msg):
+    """Parse 'try again in 12.5s' / '1m3.2s' from a Groq 429 message."""
+    import re
+    m = re.search(r"try again in (?:(\d+)m)?([\d.]+)s", msg)
+    if not m:
+        return None
+    return int(m.group(1) or 0) * 60 + float(m.group(2))
+
+
+def _judge_with_retry(client, case, response, model, sleep_fn=time.sleep, log=print):
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            return E.judge(client, case, response, model=model, max_tokens=MAX_TOKENS)
+        except Exception as e:
+            msg = str(e)
+            wait = _wait_seconds(msg) if "Rate limit reached" in msg else None
+            if wait is None or attempt == MAX_RETRIES:
+                raise
+            log("  rate limit - waiting %.0fs" % (wait + 1))
+            sleep_fn(wait + 1)
+
+
+def run(files, client, model, sleep=E.SLEEP, log=print, sleep_fn=time.sleep):
     rows = []
     todo = []
     for f in files:
@@ -94,9 +123,12 @@ def run(files, client, model, sleep=E.SLEEP, log=print):
         todo += [(f,) + t for t in gradeable(res)]
     for k, (f, cid, case, name, i, s) in enumerate(todo):
         try:
-            v, ev = E.judge(client, case, s["response"], model=model)
+            v, ev = _judge_with_retry(client, case, s["response"], model,
+                                      sleep_fn=sleep_fn, log=log)
         except Exception as e:
             raise E.RegradeAborted(k, len(todo), str(e)[:160])
+        if (k + 1) % 10 == 0:
+            log("  %d/%d" % (k + 1, len(todo)))
         rows.append({"file": f, "case": cid, "condition": name, "index": i,
                      "judge_a": s["verdict"], "judge_b": v, "evidence_b": ev,
                      "evidence_a": s.get("evidence", ""), "response": s["response"]})

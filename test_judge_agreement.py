@@ -34,7 +34,7 @@ def _file(tmp_path, verdicts):
 
 def test_summary_counts_disagreement_direction(tmp_path):
     f = _file(tmp_path, ["FAIL", "FAIL", "PASS"])
-    rows = J.run([f], FakeJudge("PASS"), "other", sleep=0)
+    rows = J.run([f], FakeJudge("PASS"), "other", sleep=0, log=lambda *_: None)
     s = J.summarize(rows)
     assert s["confusion"] == {"both_FAIL": 0, "both_PASS": 1, "A_FAIL_B_PASS": 2, "A_PASS_B_FAIL": 0}
     d = list(s["per_condition"].values())[0]
@@ -46,7 +46,7 @@ def test_aborts_on_judge_error(tmp_path):
     boom = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(
         create=lambda **kw: (_ for _ in ()).throw(RuntimeError("429")))))
     with pytest.raises(E.RegradeAborted):
-        J.run([f], boom, "other", sleep=0)
+        J.run([f], boom, "other", sleep=0, log=lambda *_: None)
 
 
 def test_judge_uses_the_model_it_is_given():
@@ -75,3 +75,35 @@ def test_judge_skips_a_think_block_with_braces_in_it():
     client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(
         create=lambda **kw: SimpleNamespace(choices=[SimpleNamespace(message=msg)]))))
     assert E.judge(client, {"rule": "8.2", "input": "x"}, "y")[0] == "FAIL"
+
+
+def test_wait_parsing():
+    assert J._wait_seconds("Rate limit reached ... try again in 12.5s.") == 12.5
+    assert J._wait_seconds("try again in 1m3.2s") == 63.2
+    assert J._wait_seconds("Request too large") is None
+
+
+def test_retries_rate_limit_then_succeeds():
+    calls = {"n": 0}
+    ok = FakeJudge("PASS").chat.completions.create
+
+    def create(**kw):
+        calls["n"] += 1
+        assert kw.get("max_tokens") == J.MAX_TOKENS
+        if calls["n"] <= 2:
+            raise RuntimeError("Error code: 429 - Rate limit reached ... try again in 3s")
+        return ok(**kw)
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    waits = []
+    v = J._judge_with_retry(client, {"rule": "8.2", "input": "x"}, "y", "q",
+                            sleep_fn=waits.append, log=lambda *_: None)
+    assert v[0] == "PASS" and waits == [4, 4]
+
+
+def test_request_too_large_is_not_retried():
+    def create(**kw):
+        raise RuntimeError("Error code: 429 - Request too large for model")
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    with pytest.raises(RuntimeError):
+        J._judge_with_retry(client, {"rule": "8.2", "input": "x"}, "y", "q",
+                            sleep_fn=lambda s: None, log=lambda *_: None)

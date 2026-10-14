@@ -20,6 +20,12 @@ Caveats for the result: Qwen is a preview model and smaller (27B vs
 120B), so disagreement could reflect weaker grading, not a better one.
 Reading the disagreements decides which judge is right on each.
 
+First Qwen run: 9/120, then 429 "Request too large". Preview models have
+small per-minute token limits, and with no max_tokens the requested
+output budget counts against it. Now: max_tokens=2048 for the second
+judge, and per-minute 429s ("try again in Ns") are waited out and
+retried (up to 6 times); anything else still aborts. Nothing was saved.
+
 ---
 
 ## 2026-10-14 (later) - regression part 1 clean; second judge set up
