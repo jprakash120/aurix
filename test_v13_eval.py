@@ -357,3 +357,23 @@ def test_clarify_directive_carries_d():
     # answering-first instruction still comes first
     c = E.policy_directive("clarify")
     assert c.index("answer it first") < c.index(d)
+
+
+def test_run_aborts_after_consecutive_fallbacks():
+    """2026-10-13: a 429 turned 40 of 60 calls into excluded fallback
+    samples, and the INVALID run was saved over good results."""
+    import pytest
+
+    class AI:
+        def __init__(self):
+            self.calls = 0
+
+        def ask_text(self, system, user, temperature):
+            self.calls += 1
+            model = P if self.calls <= 4 else "openai/gpt-oss-20b"
+            return SimpleNamespace(text="ok", model=model)
+    ai = AI()
+    with pytest.raises(E.RunAborted) as info:
+        E.run(E.build_plan({"e82-01"}, {"normal"}), 20, ai, FakeJudge("PASS"), P,
+              sleep=0, log=lambda *_: None)
+    assert info.value.done == 7 and ai.calls == 7

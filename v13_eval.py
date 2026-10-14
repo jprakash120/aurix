@@ -258,13 +258,30 @@ def _sample(ai, judge_client, case, cond, primary_model, sleep):
         return {"verdict": "ERROR", "model": None, "error": str(e)[:120]}
 
 
-def run(plan, n, ai, judge_client, primary_model, sleep=SLEEP, log=print):
+class RunAborted(Exception):
+    """The primary model stopped answering mid-run (usually a 429), so
+    every further sample would be fallback-model output that gets excluded
+    anyway. 2026-10-13: 40 of 60 calls were spent after the limit hit,
+    and the INVALID result was saved over the last good results file."""
+    def __init__(self, done, total, last):
+        self.done, self.total, self.last = done, total, last
+        super().__init__("primary model unavailable after %d/%d samples (%s)"
+                         % (done, total, last))
+
+
+MAX_CONSECUTIVE_UNUSABLE = 3
+
+
+def run(plan, n, ai, judge_client, primary_model, sleep=SLEEP, log=print,
+        max_unusable=MAX_CONSECUTIVE_UNUSABLE):
     """Samples are INTERLEAVED across conditions: round 1 of every
     condition, then round 2, ... (2026-10-12: the same prompt measured
     3/20 one day and 12/20 the next, p=0.008. The served model is not
     stationary. Running conditions in blocks would let drift during a run
     land on one condition and look like an effect.)"""
     out = {}
+    done, unusable = 0, 0
+    total = sum(len(p["conditions"]) for p in plan) * n
     for p in plan:
         case = p["case"]
         log("\n" + case["id"] + "  rule " + case["rule"] + "  " + repr(case["input"]))
@@ -276,6 +293,13 @@ def run(plan, n, ai, judge_client, primary_model, sleep=SLEEP, log=print):
                 smp = _sample(ai, judge_client, case, cond, primary_model, sleep)
                 smp["round"] = i
                 samples[cond["name"]].append(smp)
+                done += 1
+                if smp["verdict"] in ("SKIPPED", "ERROR"):
+                    unusable += 1
+                    if unusable >= max_unusable:
+                        raise RunAborted(done, total, smp.get("error") or smp.get("model"))
+                else:
+                    unusable = 0
         scored = {}
         for cond in p["conditions"]:
             s = score_condition(samples[cond["name"]], n, primary_model)
@@ -451,7 +475,13 @@ def main():
     judge_client = OpenAI(api_key=os.environ["GROQ_API_KEY"], base_url=GROQ_BASE)
     primary = aurix_ai.TEXT_MODELS[0]
 
-    cases = run(plan, n, ai, judge_client, primary)
+    try:
+        cases = run(plan, n, ai, judge_client, primary)
+    except RunAborted as e:
+        print("\nRUN ABORTED - %s" % e)
+        print("Nothing saved; %s still holds the last complete run." % RESULTS_FILE)
+        print("Rerun when the rate limit resets.")
+        sys.exit(1)
     results = {"run_at": datetime.now().isoformat(timespec="seconds"), "n": n,
                "temperature": TEMPERATURE, "primary_model": primary,
                "judge_model": JUDGE_MODEL, "prompt_fingerprint": prompt_fingerprint(),

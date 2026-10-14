@@ -129,7 +129,12 @@ def main():
     judge_client = OpenAI(api_key=os.environ["GROQ_API_KEY"], base_url=E.GROQ_BASE)
     primary = aurix_ai.TEXT_MODELS[0]
 
-    out = E.run(plan, n, ai, judge_client, primary)
+    try:
+        out = E.run(plan, n, ai, judge_client, primary)
+    except E.RunAborted as e:
+        print("\nRUN ABORTED - %s" % e)
+        print("Nothing saved. Rerun when the rate limit resets.")
+        sys.exit(1)
     results = {"run_at": datetime.now().isoformat(timespec="seconds"), "n": n,
                "temperature": E.TEMPERATURE, "primary_model": primary,
                "judge_model": E.JUDGE_MODEL, "rubric_version": E.RUBRIC_VERSION,

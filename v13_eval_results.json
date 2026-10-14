@@ -1,10 +1,10 @@
 {
-  "run_at": "2026-10-13T00:17:31",
+  "run_at": "2026-10-13T00:08:40",
   "n": 20,
   "temperature": 0.4,
   "primary_model": "openai/gpt-oss-120b",
   "judge_model": "openai/gpt-oss-120b",
-  "prompt_fingerprint": "4f05abba7fb5",
+  "prompt_fingerprint": "823c240d3c7e",
   "rubric_version": 3,
   "cases": {
     "e82-01": {
@@ -17,144 +17,768 @@
         "normal"
       ],
       "conditions": {
-        "v13:clarify": {
-          "rate": null,
-          "valid": 0,
-          "fails": 0,
+        "v091": {
+          "rate": 0.75,
+          "valid": 20,
+          "fails": 15,
           "need": 15,
           "errors": 0,
-          "model_drift": 20,
-          "status": "INVALID",
+          "model_drift": 0,
+          "status": "OK",
           "samples": [
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "It can be tough to debug. What is the bug about?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. Let’s narrow it down quickly:\n\n1. **Language / framework?** (e.g., Python, JavaScript, C#, etc.)  \n2. **What’s the expected behavior vs. what’s actually happening?**  \n3. **Any error messages or stack traces?**  \n4. **What have you tried so far?**  \n\nGive me those details and we’ll squash it.",
+              "evidence": "Sounds frustrating.",
               "round": 0
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "It sounds like you’ve spent a good chunk of time on this. What’s the bug you’re dealing with—code, configuration, or something else?",
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "I hear you—let's cut through that. What’s the language, framework, and the specific error or unexpected behavior you’re seeing? Provide the relevant code snippet or log, and I’ll help you isolate the cause.",
+              "evidence": "I hear you—let's cut through that.",
               "round": 1
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "I can help you troubleshoot. What’s the bug you’re working on?",
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "I’m sorry you’re stuck. Let’s cut through the noise—what’s the bug?  \n\n- Language / framework?  \n- Expected behavior vs. actual output?  \n- Any error messages or logs?  \n\nGive me the key details and I’ll help you troubleshoot fast.",
+              "evidence": "I’m sorry you’re stuck.",
               "round": 2
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "What’s the bug you’re dealing with?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. What’s the bug? Include the language, framework, error message, and the code snippet where it occurs. I’ll help you troubleshoot.",
+              "evidence": "Sounds frustrating.",
               "round": 3
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "It sounds like you’re stuck on a persistent issue.  \nCould you describe the bug in a bit more detail—what language or framework you’re using, the error message or symptom, and what you’ve tried so far?",
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "I hear you—let’s cut through the noise. What’s the bug?  \n- Language / framework?  \n- Error message or symptoms?  \n- Recent changes before it appeared?  \n\nGive me the basics and we’ll troubleshoot together.",
+              "evidence": "I hear you—let’s cut through the noise.",
               "round": 4
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "Sounds like it’s been a tough one. What’s the specific issue you’re running into?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. Let’s cut to the chase:\n\n1. **What language / framework** are you using?  \n2. **Exact error message** (or stack trace) you’re seeing.  \n3. **What you’ve tried** so far (breakpoints, logs, recent changes).  \n\nDrop those details and I’ll help you squash it fast.",
+              "evidence": "Sounds frustrating.",
               "round": 5
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "You’ve spent four hours on this bug. What’s the issue you’re encountering?",
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "I’m sorry you’re stuck. Let’s cut through the noise.\n\n1. **Language / framework?** (e.g., Python, JavaScript, C#…)  \n2. **What you expect vs. what’s happening?**  \n3. **Error messages / logs?** (copy the exact text)  \n4. **Any recent changes** (new library, refactor, config)?\n\nGive me those details and I’ll pinpoint the issue.",
+              "evidence": "I’m sorry you’re stuck.",
               "round": 6
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "I don’t have details about the bug you’re encountering. Could you describe what you’re working on and what the issue looks like?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. Let’s cut to the chase.\n\n1. **What’s the context?**  \n   - Language / framework (e.g., Python, JavaScript, C++)  \n   - Platform (Windows, Linux, embedded, etc.)  \n\n2. **What’s the exact symptom?**  \n   - Error message / stack trace  \n   - Unexpected output, crash, freeze, etc.  \n\n3. **Relevant code** (the function or block where it fails).  \n\nDrop those details and I’ll give you a targeted fix—no more wasted hours.",
+              "evidence": "Sounds frustrating.",
               "round": 7
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "It sounds like you’ve been wrestling with a bug for a long time. What’s the code or environment you’re working in?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. What’s the bug? Give me the language, framework, error message, and the code snippet where it occurs, and I’ll help you troubleshoot.",
+              "evidence": "Sounds frustrating.",
               "round": 8
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "What’s the bug you’re stuck on?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. Let’s cut to the chase.\n\n1. **What’s the stack?** (language, framework, OS)  \n2. **Exact error/message** you’re seeing.  \n3. **Relevant code snippet** (the part that triggers it).  \n\nDrop those details and I’ll help you squash it fast.",
+              "evidence": "Sounds frustrating.",
               "round": 9
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "I see you’ve been working on a bug for four hours. What’s the specific issue you’re encountering?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "I hear you—debugging can be a grind.  \nLet’s cut to the chase:\n\n1. **What language / framework?** (e.g., Python, JavaScript, C#…)  \n2. **Where does it fail?** (error message, stack trace, console output)  \n3. **What have you already tried?** (breakpoints, logging, recent changes)\n\nDrop those details and I’ll give you a focused fix in seconds.",
+              "evidence": "I hear you—debugging can be a grind.",
               "round": 10
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "You’ve spent four hours on this bug. What’s the issue you’re encountering?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. What’s the exact error you’re seeing, and which language/framework are you using? Provide the relevant code snippet and any stack trace, and I’ll help you troubleshoot.",
+              "evidence": "Sounds frustrating.",
               "round": 11
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "It sounds like you’ve been stuck on this issue for a while.  \nWhat specifically is the bug doing (or not doing) that’s causing trouble?",
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "I’m on it. What’s the bug?  \n- Language / framework?  \n- OS / toolchain?  \n- Error message or symptoms?  \n\nGive me the key details and I’ll suggest a fix.",
+              "evidence": "I’m on it. What’s the bug?",
               "round": 12
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "It sounds like you’ve been stuck on this for a while. What specifically is the bug you’re encountering?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. What’s the bug? Provide the error message, language, and the code snippet where it occurs, and I’ll help you troubleshoot.",
+              "evidence": "Sounds frustrating.",
               "round": 13
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "It sounds like you’re stuck. What language or framework is the bug in?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. What’s the bug? Include:\n\n1. Language / framework  \n2. Error message or symptoms  \n3. Recent code change (if any)  \n\nI’ll help you troubleshoot.",
+              "evidence": "Sounds frustrating.",
               "round": 14
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "I’m not sure what the bug is about. Could you tell me the programming language or framework you’re working with and a brief description of the issue?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "I hear you—four hours is too long. What’s the exact symptom? Give me:\n\n* The language/framework you’re using  \n* The error message or unexpected behavior you see  \n* A brief snippet of the code around where it fails (or the relevant function)  \n\nWith that info I can pinpoint the issue and get you moving fast.",
+              "evidence": "I hear you—four hours is too long.",
               "round": 15
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "What kind of bug are you dealing with?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. Let’s cut to the chase—what’s the bug?  \n\n- Language / framework?  \n- Expected vs. actual behavior?  \n- Any error messages or logs?  \n\nGive me the key details and we’ll troubleshoot together.",
+              "evidence": "Sounds frustrating.",
               "round": 16
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "It sounds like you've been working on a bug for 4 hours. What part of the bug is giving you trouble?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. Let’s cut through it—what’s the language and framework, and what error or behavior are you seeing? Include any relevant code snippets or logs, and I’ll give you a focused fix.",
+              "evidence": "Sounds frustrating.",
               "round": 17
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "It sounds like you’ve spent a lot of time on this issue.  \nWhat exactly is the bug you’re dealing with?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. What’s the bug? Tell me the language, framework, error message, and where it’s occurring, and I’ll help you troubleshoot.",
+              "evidence": "Sounds frustrating.",
               "round": 18
             },
             {
-              "verdict": "SKIPPED",
-              "model": "openai/gpt-oss-20b",
-              "response": "You've spent 4 hours on this bug.  \nWhat is the bug about?",
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds frustrating. What’s the bug? Briefly describe the symptom, environment (OS, language, tools), and any error messages you’ve seen. I’ll help you troubleshoot.",
+              "evidence": "Sounds frustrating.",
+              "round": 19
+            }
+          ]
+        },
+        "v13:brief_direct": {
+          "rate": 0.0,
+          "valid": 20,
+          "fails": 0,
+          "need": 15,
+          "errors": 0,
+          "model_drift": 0,
+          "status": "OK",
+          "samples": [
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Try these steps:\n\n1. Reproduce the bug reliably (same inputs, environment).  \n2. Add logging or breakpoints at the point of failure to capture state.  \n3. Check recent changes in the affected module.  \n4. Simplify the code path—comment out non‑essential parts to narrow the cause.  \n5. Search error messages or stack traces online for similar issues.  \n\nIf you can share the error details or a code snippet, I can suggest more specific fixes.",
+              "evidence": "Try these steps:\n\n1. Reproduce the bug reliably (same inputs, environment).  \n2. Add logging or breakpoints at the point of failure to capture state.  \n3. Check recent changes in the affected module.  \n4. Simplify the code path—comment out non‑essential parts to narrow the cause.  \n5. Search error messages or stack traces online for similar issues.  \n\nIf you can share the error details or a code snippet, I can suggest more specific fixes.",
+              "round": 0
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Try these steps:\n\n1. Reproduce the issue consistently and note the exact inputs/state.\n2. Check recent logs or console output for error messages at the failure point.\n3. Isolate the problematic module by commenting out surrounding code or using a minimal test case.\n4. Add targeted breakpoints or print statements around the suspected area to verify assumptions.\n5. Search the error message or stack trace online; similar cases often have known fixes.",
+              "evidence": "Try these steps:\n\n1. Reproduce the issue consistently and note the exact inputs/state.\n2. Check recent logs or console output for error messages at the failure point.\n3. Isolate the problematic module by commenting out surrounding code or using a minimal test case.\n4. Add targeted breakpoints or print statements around the suspected area to verify assumptions.\n5. Search the error message or stack trace online; similar cases often have known fixes.",
+              "round": 1
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Try these steps:\n\n1. **Reproduce consistently** – note exact steps, inputs, and environment.\n2. **Check logs / console** for errors or warnings at the failure point.\n3. **Add breakpoints or print statements** around the suspected code to verify state and variable values.\n4. **Isolate the code** – comment out surrounding sections or create a minimal test case that still shows the bug.\n5. **Search the error message** (if any) and recent changes in version control that touch the affected area.\n6. **Swap in known‑good components** (e.g., previous version of a module) to see if the bug disappears.\n\nIf you can share the specific error or a short code snippet, I can suggest a more targeted fix.",
+              "evidence": "Try these steps:\n\n1. **Reproduce consistently** – note exact steps, inputs, and environment.\n2. **Check logs / console** for errors or warnings at the failure point.\n3. **Add breakpoints or print statements** around the suspected code to verify state and variable values.\n4. **Isolate the code** – comment out surrounding sections or create a minimal test case that still shows the bug.\n5. **Search the error message** (if any) and recent changes in version control that touch the affected area.\n6. **Swap in known‑good components** (e.g., previous version of a module) to see if the bug disappears.\n\nIf you can share the specific error or a short code snippet, I can suggest a more targeted fix.",
+              "round": 2
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the bug you’re dealing with (language, environment, symptoms)?",
+              "evidence": "What’s the bug you’re dealing with (language, environment, symptoms)?",
+              "round": 3
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Take a short break (5‑10 min) to clear your mind, then try these steps:\n\n1. Reproduce the bug reliably and note exact inputs/conditions.  \n2. Add logging or use a debugger to pinpoint where execution diverges.  \n3. Isolate the smallest code segment that still triggers the issue.  \n4. Search error messages or stack traces online; often similar cases have solutions.  \n5. If still stuck, write a minimal reproducible example and ask for help, including relevant code snippets and environment details.",
+              "evidence": "Take a short break (5‑10 min) to clear your mind, then try these steps:",
+              "round": 4
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "- Reproduce the issue consistently; note exact inputs and environment.  \n- Check logs or console output for error messages or stack traces.  \n- Narrow the problem area: comment out sections or add breakpoints to isolate the failing code.  \n- Verify recent changes (e.g., recent commits, dependency updates) that might affect this part.  \n- Write a minimal test case that triggers the bug; compare behavior with expected output.  \n- If the bug persists, capture the relevant code snippet and error details for further analysis.",
+              "evidence": "- Reproduce the issue consistently; note exact inputs and environment.\n- Check logs or console output for error messages or stack traces.\n- Narrow the problem area: comment out sections or add breakpoints to isolate the failing code.\n- Verify recent changes (e.g., recent commits, dependency updates) that might affect this part.\n- Write a minimal test case that triggers the bug; compare behavior with expected output.\n- If the bug persists, capture the relevant code snippet and error details for further analysis.",
+              "round": 5
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the issue you’re debugging? Provide details or error messages so I can suggest next steps.",
+              "evidence": "What’s the issue you’re debugging? Provide details or error messages so I can suggest next steps.",
+              "round": 6
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Try these steps:\n\n1. Reproduce the issue reliably and note exact inputs and environment.\n2. Add logging or breakpoints around the failing code to capture state.\n3. Isolate the problem by commenting out or simplifying surrounding code.\n4. Search error messages or stack traces online for similar cases.\n5. Verify assumptions (e.g., data types, null checks, external dependencies).",
+              "evidence": "Try these steps:\n\n1. Reproduce the issue reliably and note exact inputs and environment.\n2. Add logging or breakpoints around the failing code to capture state.\n3. Isolate the problem by commenting out or simplifying surrounding code.\n4. Search error messages or stack traces online for similar cases.\n5. Verify assumptions (e.g., data types, null checks, external dependencies).",
+              "round": 7
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the specific error or behavior you’re seeing? Sharing the relevant code or message will help pinpoint the issue.",
+              "evidence": "What’s the specific error or behavior you’re seeing? Sharing the relevant code or message will help pinpoint the issue.",
+              "round": 8
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Try these steps:\n\n1. Reproduce the failure reliably; note inputs, state, and exact error.\n2. Add logging or breakpoints around the suspected area to capture values.\n3. Simplify the code path: comment out non‑essential parts to isolate the problem.\n4. Search the error message or stack trace; often similar issues are documented.\n5. If still stuck, create a minimal reproducible example and share it for review.",
+              "evidence": "Try these steps:\n\n1. Reproduce the failure reliably; note inputs, state, and exact error.\n2. Add logging or breakpoints around the suspected area to capture values.\n3. Simplify the code path: comment out non‑essential parts to isolate the problem.\n4. Search the error message or stack trace; often similar issues are documented.\n5. If still stuck, create a minimal reproducible example and share it for review.",
+              "round": 9
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the bug’s context (language, platform) and the error you’re seeing?",
+              "evidence": "What’s the bug’s context (language, platform) and the error you’re seeing?",
+              "round": 10
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Try these steps:\n\n1. Re‑create the issue in a minimal test case.  \n2. Check recent logs or console output for error messages.  \n3. Identify the last code change that could affect the failing path.  \n4. Add temporary logging or breakpoints around the suspected area.  \n5. Search the error text or stack trace online for similar reports.",
+              "evidence": "Try these steps:\n\n1. Re‑create the issue in a minimal test case.\n2. Check recent logs or console output for error messages.\n3. Identify the last code change that could affect the failing path.\n4. Add temporary logging or breakpoints around the suspected area.\n5. Search the error text or stack trace online for similar reports.",
+              "round": 11
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Take a short break, then try these steps:\n\n1. **Reproduce reliably** – note exact inputs and environment.\n2. **Check logs / console** for errors or warnings at the failure point.\n3. **Add breakpoints or print statements** around the suspected code to verify assumptions.\n4. **Simplify** – isolate the minimal code that still shows the bug.\n5. **Search** the error message or behavior online; similar issues often have known fixes.\n6. If still stuck, **pair program** with a colleague or share a minimal reproducible example for fresh eyes.",
+              "evidence": "Take a short break, then try these steps:\n\n1. **Reproduce reliably** – note exact inputs and environment.\n2. **Check logs / console** for errors or warnings at the failure point.\n3. **Add breakpoints or print statements** around the suspected code to verify assumptions.\n4. **Simplify** – isolate the minimal code that still shows the bug.\n5. **Search** the error message or behavior online; similar issues often have known fixes.\n6. If still stuck, **pair program** with a colleague or share a minimal reproducible example for fresh eyes.",
+              "round": 12
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the specific issue—error message, code snippet, and environment?",
+              "evidence": "What’s the specific issue—error message, code snippet, and environment?",
+              "round": 13
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the bug? Include the language, error message, and relevant code snippet so I can suggest a fix.",
+              "evidence": "What’s the bug? Include the language, error message, and relevant code snippet so I can suggest a fix.",
+              "round": 14
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the bug you’re facing? Include the relevant code or error message and the environment you’re working in.",
+              "evidence": "What’s the bug you’re facing? Include the relevant code or error message and the environment you’re working in.",
+              "round": 15
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Try these steps:\n\n1. Reproduce the issue reliably and note exact inputs/conditions.  \n2. Add logging or breakpoints around the failing code to capture state.  \n3. Check recent changes or dependencies that might affect this area.  \n4. Simplify the problem: isolate the smallest piece of code that still fails.  \n5. Search error messages or stack traces for known issues.  \n6. If possible, write a unit test that reproduces the bug—this can clarify expectations.  \n\nProceed with the step that seems most relevant to your current context.",
+              "evidence": "Try these steps:\n\n1. Reproduce the issue reliably and note exact inputs/conditions.\n2. Add logging or breakpoints around the failing code to capture state.\n3. Check recent changes or dependencies that might affect this area.\n4. Simplify the problem: isolate the smallest piece of code that still fails.\n5. Search error messages or stack traces for known issues.\n6. If possible, write a unit test that reproduces the bug—this can clarify expectations.\n\nProceed with the step that seems most relevant to your current context.",
+              "round": 16
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the bug? Share the error message, relevant code, and what you’ve tried so far.",
+              "evidence": "What’s the bug? Share the error message, relevant code, and what you’ve tried so far.",
+              "round": 17
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Try these steps:\n\n1. Reproduce the issue reliably and note the exact inputs and state.\n2. Add logging or breakpoints around the suspected code path to capture values.\n3. Isolate the failing component: comment out surrounding code or create a minimal test case.\n4. Check recent changes (commits, dependencies) that might affect this area.\n5. Search error messages or stack traces online for similar reports.",
+              "evidence": "Try these steps:\n\n1. Reproduce the issue reliably and note the exact inputs and state.\n2. Add logging or breakpoints around the suspected code path to capture values.\n3. Isolate the failing component: comment out surrounding code or create a minimal test case.\n4. Check recent changes (commits, dependencies) that might affect this area.\n5. Search error messages or stack traces online for similar reports.",
+              "round": 18
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Try these steps:\n\n1. Reproduce the issue reliably; note exact inputs and conditions.  \n2. Check logs or console output for error messages or warnings.  \n3. Isolate the problematic code: comment out sections or use breakpoints to narrow the failure point.  \n4. Verify assumptions (e.g., data types, API contracts, external dependencies).  \n5. Search the exact error text or stack trace online; similar cases often have solutions.  \n6. If still stuck, create a minimal reproducible example and compare it to the working version.",
+              "evidence": "Try these steps:\n\n1. Reproduce the issue reliably; note exact inputs and conditions.\n2. Check logs or console output for error messages or warnings.\n3. Isolate the problematic code: comment out sections or use breakpoints to narrow the failure point.\n4. Verify assumptions (e.g., data types, API contracts, external dependencies).\n5. Search the exact error text or stack trace online; similar cases often have solutions.\n6. If still stuck, create a minimal reproducible example and compare it to the working version.",
+              "round": 19
+            }
+          ]
+        },
+        "v13:clarify": {
+          "rate": 0.2,
+          "valid": 20,
+          "fails": 4,
+          "need": 15,
+          "errors": 0,
+          "model_drift": 0,
+          "status": "OK",
+          "samples": [
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You’ve been at this bug for four hours. What specifically is the issue you’re encountering?",
+              "evidence": "You’ve been at this bug for four hours.",
+              "round": 0
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You've been at this bug for four hours. What specifically is the issue you're encountering?",
+              "evidence": "You've been at this bug for four hours.",
+              "round": 1
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Spending several hours on a single bug often means the cause is hidden.  \n\nCan you describe the exact behavior you’re seeing versus what you expect, and any recent changes that might be related?",
+              "evidence": "Spending several hours on a single bug often means the cause is hidden.",
+              "round": 2
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the specific behavior you’re seeing, and what steps have you already tried?",
+              "evidence": "What’s the specific behavior you’re seeing, and what steps have you already tried?",
+              "round": 3
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the behavior you’re seeing, and what have you tried so far?",
+              "evidence": "What’s the behavior you’re seeing, and what have you tried so far?",
+              "round": 4
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long time to be stuck on a bug. What behavior does the bug exhibit?",
+              "evidence": "Four hours is a long time to be stuck on a bug.",
+              "round": 5
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a bug can really wear you down. What specifically is giving you trouble?",
+              "evidence": "Four hours on a bug can really wear you down.",
+              "round": 6
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Working on a bug for that long can be draining. Here are a few steps that often help break the stall:\n\n* Write down what you expect the code to do versus what it’s actually doing.  \n* Add targeted logging or breakpoints around the area you suspect.  \n* Search the exact error message or symptom; similar issues are often discussed online.  \n* Try simplifying or isolating the problematic section in a small test case.  \n* If possible, step away for a short break—fresh eyes can spot something missed.\n\nWhat language or framework is the bug occurring in?",
+              "evidence": "Working on a bug for that long can be draining.",
+              "round": 7
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "I see you’ve been at this bug for four hours. What specifically is the problem you’re trying to fix?",
+              "evidence": "I see you’ve been at this bug for four hours.",
+              "round": 8
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "What’s the specific behavior or error you’re seeing?",
+              "evidence": "What’s the specific behavior or error you’re seeing?",
+              "round": 9
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long time. Could you share more about the bug—what it’s supposed to do and what you’re seeing?",
+              "evidence": "Four hours is a long time.",
+              "round": 10
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds like a tough spot. What’s the specific behavior you’re seeing, and what have you tried so far?",
+              "evidence": "Sounds like a tough spot",
+              "round": 11
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "That does sound like a long session. What is the bug you’re working on?",
+              "evidence": "That does sound like a long session.",
+              "round": 12
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "I see you’ve spent four hours on this bug. What specifically is the issue you’re encountering?",
+              "evidence": "I see you’ve spent four hours on this bug.",
+              "round": 13
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You could try narrowing the problem by reproducing the failure with the smallest possible test case and adding detailed logging around the suspect code.  \nWhat language and framework are you working with?",
+              "evidence": "You could try narrowing the problem by reproducing the failure with the smallest possible test case and adding detailed logging around the suspect code.  What language and framework are you working with?",
+              "round": 14
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long time. What is the bug you’re working on?",
+              "evidence": "Four hours is a long time.",
+              "round": 15
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "That does sound time‑consuming. What’s the specific behavior or error you’re seeing?",
+              "evidence": "That does sound time‑consuming.",
+              "round": 16
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "Sounds like a tough spot. Want a hand figuring it out? What’s the specific issue you’re encountering?",
+              "evidence": "Sounds like a tough spot.",
+              "round": 17
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What specific behavior or error are you seeing with the bug?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 18
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What specifically is the bug you’re working on?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 19
+            }
+          ]
+        },
+        "v13:detailed": {
+          "rate": 0.0,
+          "valid": 20,
+          "fails": 0,
+          "need": 15,
+          "errors": 0,
+          "model_drift": 0,
+          "status": "OK",
+          "samples": [
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "### Systematic Debugging Workflow (4‑hour‑in‑the‑hole edition)\n\nBelow is a step‑by‑step process you can run through to isolate the cause of a stubborn bug. Adapt the order to fit the language, framework, and tooling you’re using.\n\n| Step | Goal | Concrete Actions | Typical Artefacts to Capture |\n|------|------|-------------------|------------------------------|\n| **1. Re‑capture the Symptom** | Verify the exact failure mode. | • Run the failing command / test case **exactly** as you did before.<br>• Record the full output, exit code, stack trace, or UI behaviour.<br>• Take a screenshot or copy‑paste the console log. | `stderr` dump, HTTP response, UI screenshot, core dump. |\n| **2. Define the Success Criterion** | Know what “working” looks like. | • Write a one‑sentence description of the expected result.<br>• If possible, write a minimal test that passes when the bug is fixed. | Test case file, expected output file. |\n| **3. Verify the Environment** | Eliminate configuration drift. | • `git status` / `git diff` to see uncommitted changes.<br>• `git log -1` to note the current commit hash.<br>• `env`, `python --version`, `node -v`, `docker images`, etc., to capture runtime versions.<br>• Check for environment variables, config files, or secrets that differ from a known‑good run. | `env.txt`, `versions.txt`, `git diff` patch. |\n| **4. Reproduce in Isolation** | Reduce the problem to the smallest reproducible example. | • Strip away unrelated modules, data, or UI layers.<br>• Create a new branch or sandbox project that contains only the code path that triggers the bug.<br>• Run the minimal example repeatedly to confirm it still fails. | Minimal repo, `README.md` with reproduction steps. |\n| **5. Add Instrumentation** | Surface hidden state. | • Insert logging statements (timestamp, variable values, entry/exit of functions).<br>• Use a profiler or tracer (`strace`, `perf`, `py-spy`, Chrome DevTools) if the bug is performance‑related.<br>• For concurrency issues, log thread IDs or lock acquisition/release. | Log files, profiler output. |\n| **6. Check Recent Changes** | Identify regressions. | • `git log --since=\"2 weeks ago\"` to list recent commits.<br>• Look for changes to the failing module, its dependencies, or build scripts.<br>• If using CI/CD, inspect the last successful pipeline run. | Diff patches, CI build logs. |\n| **7. Verify External Dependencies** | Rule out third‑party failures. | • Pin versions of libraries (`requirements.txt`, `package-lock.json`).<br>• Run `npm audit`, `pip check`, or equivalent to detect mismatched dependencies.<br>• If the bug involves a service (DB, API), test the service independently (e.g., `curl`, `psql`). | Dependency tree, service health check results. |\n| **8. Use a Debugger** | Step through the failure. | • Set breakpoints at the start of the suspect function.<br>• Inspect variable state at each step.<br>• For interpreted languages, use REPL/interactive console to evaluate expressions on the fly. | Debugger session transcript, watch expressions. |\n| **9. Search for Known Issues** | Leverage community knowledge. | • Query the project’s issue tracker with error keywords.<br>• Search Stack Overflow, GitHub Discussions, or vendor forums.<br>• Look for similar stack traces or symptom descriptions. | URLs to relevant issues, quoted excerpts. |\n| **10. Apply a Targeted Fix & Verify** | Confirm resolution. | • Implement the smallest change that addresses the root cause (e.g., guard clause, type conversion, configuration tweak).<br>• Run the full test suite and the specific reproduction steps.<br>• Commit with a descriptive message referencing the bug ID. | New commit, updated test results. |\n| **11. Document the Lesson** | Prevent recurrence. | • Add a comment in the code explaining why the bug occurred.<br>• Update README or internal wiki with “Gotchas”.<br>• If the bug was due to a missing test, add one. | Documentation entry, new test case. |\n\n---\n\n#### Quick‑Start Checklist (Copy‑Paste)\n\n```\n[ ] 1. Capture exact error output (log, stack trace)\n[ ] 2. Write expected behavior in one sentence\n[ ] 3. Record environment: git status/diff, versions, env vars\n[ ] 4. Build minimal reproducible example\n[ ] 5. Add detailed logging (timestamps, variable values)\n[ ] 6. Review recent commits (git log --since)\n[ ] 7.",
+              "evidence": "Below is a step‑by‑step process you can run through to isolate the cause of a stubborn bug. Adapt the order to fit the language, framework, and tooling you’re using.",
+              "round": 0
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Below is a systematic debugging workflow you can follow. It is organized into stages; you can jump to the parts that match your current situation.\n\n---\n\n## 1. Clarify the Problem Scope  \n\n| Question | Why it matters |\n|----------|----------------|\n| **What language / runtime** (e.g., C#, JavaScript, Python)? | Determines tooling (debugger, linters, profilers). |\n| **What platform** (Windows, Linux, embedded, web browser)? | Affects OS‑level logs and environment variables. |\n| **Exact symptom** (crash, wrong output, performance slowdown, exception message)? | Guides where to look (stack trace vs. logic error). |\n| **Reproducibility** – does it happen every run, only after certain inputs, or intermittently? | Intermittent bugs often involve race conditions, state leakage, or external resources. |\n| **Recent changes** – code, dependencies, configuration, OS updates? | A common source of regression. |\n| **Version control state** – are you on a branch, have you merged recently? | Helps isolate when the bug was introduced. |\n\n*If you can answer any of the above, we can narrow the next steps.*\n\n---\n\n## 2. Reproduce the Failure Consistently  \n\n1. **Create a minimal test case**  \n   - Strip the surrounding code until you have the smallest snippet that still triggers the bug.  \n   - If the bug disappears, the removed part is a clue about the context.\n\n2. **Automate the steps**  \n   - Write a script or unit test that performs the exact actions leading to the failure.  \n   - Automation removes human error and gives you a repeatable harness for later verification.\n\n3. **Record the environment**  \n   - `env` / `set` output, `python --version`, `node -v`, etc.  \n   - Dependency list (`pip freeze`, `npm ls`, `dotnet list package`).  \n   - Store this in a `README.debug` file next to the test case.\n\n---\n\n## 3. Gather Diagnostic Data  \n\n| Source | How to collect | Typical useful info |\n|--------|----------------|---------------------|\n| **Logs** | Enable verbose / debug logging (e.g., `loglevel=debug`). | Timestamps, request IDs, stack traces. |\n| **Console / stderr** | Redirect output to a file (`> out.txt 2>&1`). | Immediate error messages. |\n| **System monitors** | Windows Performance Monitor, `Task Manager`, `Resource Monitor`. | CPU, memory, I/O spikes. |\n| **Network traces** | `Wireshark`, `Fiddler`, or built‑in devtools network tab. | Failed HTTP calls, latency. |\n| **Core dumps / crash reports** | `procdump -ma <pid>` on Windows, `gcore` on Linux. | Post‑mortem stack, memory state. |\n| **Debugger** | Attach VSCode, Visual Studio, WinDbg, PyCharm, etc. | Breakpoint inspection, watch expressions. |\n\nCollect the data **before** the failure (if possible) and **immediately after**. The more context you have, the easier it is to pinpoint the root cause.\n\n---\n\n## 4. Isolate the Fault  \n\n1. **Binary search the code**  \n   - Comment out or `#if DEBUG` large sections, then re‑run the test.  \n   - Narrow down to the module/function where the failure manifests.\n\n2. **Instrument the suspect area**  \n   - Add temporary `printf`/`Console.WriteLine`/`logging.debug` statements before and after key operations.  \n   - Log variable values, entry/exit timestamps, and error codes.\n\n3. **Check external dependencies**  \n   - Verify that APIs, databases, file paths, and environment variables are reachable and correctly configured.  \n   - Use mock objects or stubs to replace them temporarily; if the bug disappears, the external component is implicated.\n\n4. **Validate assumptions**  \n   - Null checks, type expectations, boundary conditions (e.g., array indices, string lengths).  \n   - Use assertions (`Debug.Assert`, `assert`, `Contract.Requires`) to catch violations early.\n\n---\n\n## 5. Apply Targeted Fixes  \n\n| Category | Typical fix | Example |\n|----------|-------------|---------|\n| **Logic error** | Correct condition, loop bounds, state transitions. | Change `if (i <= n)` to `if (i < n)`. |\n| **Resource leak** | Ensure `Dispose`, `close`, or `using` blocks. | Wrap file streams in `using (var f = new FileStream(...)) { … }`. |\n| **Concurrency** | Add locks, use thread‑safe collections, avoid shared mutable state. | Replace `List<T>` with `ConcurrentBag<T>` for multi‑thread writes. |\n| **Configuration** | Update config files, environment variables, connection strings. | Set `APP_ENV=Development` to enable detailed logging. |\n|",
+              "evidence": "Below is a systematic debugging workflow you can follow. It is organized into stages; you can jump to the parts that match your current situation.",
+              "round": 1
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Below is a systematic, technical checklist you can run through to make progress on a stubborn bug that’s already taken four hours.\n\n---\n\n## 1. Clarify the Symptom  \n| Question | Why it matters |\n|----------|----------------|\n| **What is the exact observable failure?** (crash, wrong output, performance drop, UI glitch, etc.) | Gives a concrete target for reproduction. |\n| **When does it occur?** (on start‑up, after a specific action, intermittently) | Narrows the execution window you need to inspect. |\n| **What are the inputs / state that trigger it?** | Enables deterministic reproduction. |\n| **What was the last change that introduced the problem?** (code commit, dependency upgrade, config change) | Often the fastest way to locate the cause. |\n\nIf you can answer these, write them down in a short “bug spec” before moving on.\n\n---\n\n## 2. Re‑produce Consistently  \n1. **Automate the steps** – write a script or unit test that reproduces the failure.  \n2. **Run it repeatedly** – verify that the failure occurs on every run (or note the failure rate).  \n3. **Capture the environment** – OS version, runtime (e.g., Node 18, Python 3.11), hardware, Docker image hash, environment variables.\n\nA reproducible test case is the foundation for any deeper investigation.\n\n---\n\n## 3. Gather Evidence  \n| Tool | What to collect | How to enable |\n|------|----------------|---------------|\n| **Logs** | Timestamps, stack traces, error codes, custom debug messages | Increase log level (`DEBUG`/`TRACE`) for the affected module. |\n| **Core dump / crash report** | Memory snapshot at crash time | Enable `ulimit -c unlimited` (Linux) or configure Windows Error Reporting. |\n| **Profiler** | CPU / memory hotspots, GC pauses | Use `perf`, `dotTrace`, `py-spy`, Chrome DevTools, etc. |\n| **Network trace** (if relevant) | HTTP request/response payloads, latency | `tcpdump`, Wireshark, or built‑in devtools network tab. |\n| **Static analysis** | Uninitialized variables, type mismatches | Run `clang-tidy`, `eslint`, `mypy`, `pylint`. |\n| **Version diff** | Exact diff between last known‑good and current code | `git diff <good_commit>..<bad_commit>` |\n\nCollect the data **before** you start stepping through code; it often reveals the failure mode without heavy instrumentation.\n\n---\n\n## 4. Isolate the Faulty Area  \n1. **Binary search the commit history** – `git bisect start`, mark good/bad, let Git narrow the offending commit.  \n2. **Component slicing** – comment out or stub out large subsystems until the bug disappears; the last removed piece is the suspect.  \n3. **Input minimization** – shrink the input data to the smallest case that still triggers the bug (e.g., use delta debugging).  \n4. **Configuration matrix** – test with default config vs. custom config to see if a flag is the trigger.\n\nDocument each slice and its result; a table like:\n\n| Slice | Change | Result |\n|-------|--------|--------|\n| Remove DB layer | Stubbed DB calls | Bug persists |\n| Disable async workers | Run synchronously | Bug disappears |\n\nThe slice that flips the result points to the responsible module.\n\n---\n\n## 5. Deep Dive with a Debugger  \n* Choose the appropriate debugger for your language/runtime (e.g., `gdb`, `lldb`, Visual Studio, VS Code debugger, PyCharm, Chrome DevTools).  \n* Set breakpoints **just before** the observed failure point.  \n* Inspect variable states, watch expressions, and step through the control flow.  \n* Use **conditional breakpoints** to stop only on the failing input (e.g., `if (id == 42)`).\n\nTip: If the bug is a race condition, enable **record‑and‑replay** debugging (e.g., `rr` for Linux) or add deterministic timestamps to logs.\n\n---\n\n## 6. Verify the Fix  \n1. **Add a regression test** that reproduces the original failure and asserts the correct behavior.  \n2. **Run the full test suite** to ensure you didn’t break unrelated code.  \n3. **Perform a sanity performance check** if the bug involved latency or resource usage.  \n4. **Document the root cause** in the ticket/commit message: *what* was wrong, *why* it manifested, and *how* the fix resolves it.\n\n---\n\n##",
+              "evidence": "Below is a systematic, technical checklist you can run through to make progress on a stubborn bug that’s already taken four hours.",
+              "round": 2
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Below is a systematic debugging workflow you can apply to a problem that has already consumed several hours. Adjust the steps to match the language, framework, and platform you’re using.\n\n---\n\n## 1. Define the Symptom Precisely  \n| Item | What to Capture |\n|------|-----------------|\n| **Observed behavior** | Exact output, UI state, crash message, performance slowdown, etc. |\n| **Expected behavior** | What the program should do in the same situation. |\n| **Reproduction steps** | A minimal, ordered list of actions that reliably trigger the bug. |\n| **Environment** | OS version, hardware, runtime (e.g., Node 18, .NET 6), dependencies (library versions). |\n| **Recent changes** | Commits, configuration edits, library upgrades, deployment steps. |\n\n*Tip:* Write the above in a single markdown block; it becomes a reference point for later steps.\n\n---\n\n## 2. Verify Reproducibility  \n1. **Isolate the test case** – create a new project or sandbox that contains only the code needed to reproduce the bug.  \n2. **Run on multiple machines** (if possible) to rule out environment‑specific issues.  \n3. **Automate the steps** (script, unit test, or CI job) so you can rerun them quickly after each change.\n\nIf the bug is not reproducible in isolation, the cause is likely external (e.g., data corruption, race condition, or environment config).\n\n---\n\n## 3. Gather Diagnostic Data  \n| Source | How to collect |\n|--------|----------------|\n| **Logs** | Increase log level (debug/trace). Include timestamps, thread IDs, and correlation IDs. |\n| **Stack traces** | Capture full stack on exception; for native crashes, generate a core dump or minidump. |\n| **Metrics** | CPU, memory, I/O, network latency (e.g., via `perf`, `dotnet-trace`, `node --inspect`). |\n| **Profilers** | Use language‑specific profilers (Visual Studio Profiler, Chrome DevTools, Py‑Spy). |\n| **Debuggers** | Attach a debugger at the point of failure; set breakpoints on the suspected function or on exceptions. |\n| **Version control** | `git bisect` to locate the commit that introduced the regression. |\n\nCollect the data **before** you make any code changes, so you have a baseline.\n\n---\n\n## 4. Narrow the Search Space  \n1. **Binary search the code** – comment out or `#if DEBUG` large sections and verify whether the bug persists.  \n2. **Check assumptions** – add assertions or `Debug.Assert` statements for invariants (e.g., non‑null pointers, valid indices).  \n3. **Validate inputs** – log or assert the shape/size of data structures entering the failing component.  \n4. **Swap implementations** – if you have multiple algorithms (e.g., a LINQ query vs. a hand‑rolled loop), replace one with the other to see if the symptom changes.  \n5. **Dependency isolation** – temporarily replace third‑party libraries with mocks or stubs.\n\n---\n\n## 5. Hypothesis Testing  \nFor each plausible cause, formulate a hypothesis and design a minimal experiment:\n\n| Hypothesis | Test |\n|------------|------|\n| Null reference in `Foo.Bar()` | Add a guard `if (obj == null) throw new ArgumentNullException();` and observe if the exception changes. |\n| Race condition on shared state | Run the code under a thread‑sanitizer (e.g., `tsan` for C/C++, `ThreadSanitizer` for Java) or add a lock around the critical section. |\n| Incorrect configuration value | Override the config at runtime with a known good value and re‑run. |\n| External service latency | Mock the service response time and see if the bug disappears. |\n\nRecord the outcome of each test; eliminate hypotheses that are disproven.\n\n---\n\n## 6. Fix and Verify  \n1. **Apply the smallest change** that resolves the symptom.  \n2. **Run the full test suite** (including integration and performance tests).  \n3. **Re‑run the reproduction steps** manually to confirm the bug no longer appears.  \n4. **Add regression tests** that capture the original failure case, preventing future re‑introduction.\n\n---\n\n## 7. Post‑mortem Documentation  \nCreate a concise bug report containing:\n\n* Summary of the issue.  \n* Root cause analysis (including why it was missed initially).  \n* Fix description and code diff.  \n* New tests added.  \n* Any lingering risks or follow‑up actions.\n\nStore the report in your issue tracker (GitHub, Jira, etc.) and link it to the relevant commit.\n\n---\n\n### Quick Checklist (Copy‑Paste)\n\n```markdown\n- [ ] Symptom defined (observed vs. expected)\n- [ ] Reproducible in isolated sandbox\n- [ ] Diagnostic data collected (logs, stack trace, metrics)\n- [ ] Search space narrowed (binary search, assertions, mocks)",
+              "evidence": "Below is a systematic debugging workflow you can apply to a problem that has already consumed several hours.",
+              "round": 3
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Here’s a systematic approach you can follow to make progress on a bug that’s already taken four hours:\n\n---\n\n## 1. Clarify the Problem Space  \n\n| Question | Why it matters |\n|----------|----------------|\n| **What language / platform** (e.g., Python, C#, JavaScript, .NET, etc.)? | Determines tooling, debuggers, and common pitfalls. |\n| **What component** (frontend UI, backend service, database layer, etc.)? | Narrows the scope of investigation. |\n| **Exact symptom** (crash, incorrect output, performance slowdown, UI glitch, etc.)? | Guides which logs or metrics to examine. |\n| **Reproducibility** – can you trigger it reliably with the same steps? | If not reproducible, focus on environment variables. |\n| **Recent changes** – code commits, dependency upgrades, config edits? | Often the source of regressions. |\n| **Error messages / stack traces** (copy them verbatim). | Provides concrete entry points for search. |\n\nIf you can answer these, the subsequent steps become more targeted.\n\n---\n\n## 2. Re‑create the Failure in a Controlled Environment  \n\n1. **Isolate the test case**  \n   - Create a minimal script or unit test that reproduces the bug.  \n   - Remove unrelated code paths; the smaller the reproducer, the easier to reason about.\n\n2. **Check environment parity**  \n   - Verify OS version, runtime (e.g., Node 18 vs 20), library versions.  \n   - Use a container or virtual environment to lock dependencies (`docker`, `venv`, `conda`).\n\n3. **Enable deterministic inputs**  \n   - Fix random seeds, mock external services, and use static fixture data.\n\n---\n\n## 3. Gather Diagnostic Data  \n\n| Tool | Typical output | How to use it |\n|------|----------------|---------------|\n| **Debugger** (e.g., VS Code, gdb, WinDbg) | Call stack, variable values at breakpoints | Set breakpoints around the suspected code region; step through. |\n| **Logging** (structured JSON, log levels) | Timestamped events, error codes | Increase log level to `DEBUG` for the affected module; filter by request ID or correlation ID. |\n| **Profilers** (PerfView, dotTrace, Chrome DevTools) | CPU/memory hotspots, async call traces | Run the profiler while reproducing the bug; look for unexpected long‑running calls. |\n| **Static analysis** (linters, type checkers) | Potential null dereferences, type mismatches | Run `eslint`, `pylint`, `clang-tidy` etc. to catch obvious defects. |\n| **Network sniffers** (Wireshark, Fiddler) | HTTP request/response payloads | Verify that the server receives exactly what the client sends. |\n| **Core dumps / crash reports** | Memory snapshot at crash time | Load the dump into a debugger; inspect the faulting instruction. |\n\nCollect the relevant artifacts and keep them organized (e.g., `bug-2023-10-13/` folder).\n\n---\n\n## 4. Form Hypotheses and Test Them  \n\n1. **Identify the last successful state** – use version control `git bisect` to pinpoint the commit that introduced the regression.  \n2. **Swap out suspects** – replace a library version, comment out a block of code, or inject a mock to see if the symptom disappears.  \n3. **Instrument** – add temporary assertions (`assert`, `Debug.Assert`) or log statements around the area you suspect.  \n\nRecord each hypothesis, the test performed, and the outcome (pass/fail). This creates a decision tree you can backtrack if needed.\n\n---\n\n## 5. Common Categories of Bugs (with quick checks)\n\n| Category | Typical signs | Quick checks |\n|----------|---------------|--------------|\n| **Race condition / concurrency** | Intermittent failures, deadlocks | Add thread‑safe locks, run with a thread sanitizer (`tsan`). |\n| **Resource leak** | Gradual slowdown, out‑of‑memory errors | Monitor process memory over time; use valgrind or dotMemory. |\n| **Incorrect assumptions about data** | Wrong calculations, null reference | Validate input schemas; add defensive null checks. |\n| **Configuration drift** | Works on dev but not prod | Compare config files (`diff`) and environment variables. |\n| **External service change** | API version mismatch, authentication failures | Inspect HTTP status codes, request/response bodies. |\n\nIf any of these patterns match your observations, focus debugging there.\n\n---\n\n## 6. Document the Findings  \n\nCreate a short markdown file:\n\n```markdown\n# Bug Summary\n- **Component**: …\n- **Symptom**: …\n- **Repro steps**: …\n- **Environment**: …\n\n# Investigation Log\n| Time | Action | Observation |\n|------|--------|-------------|\n| 10:15 | Ran `git",
+              "evidence": "Here’s a systematic approach you can follow to make progress on a bug that’s already taken four hours:",
+              "round": 4
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You’ve spent four hours on a single defect. Below is a systematic debugging workflow that can help you isolate the root cause more efficiently, along with technical details you can apply directly to most codebases.\n\n---\n\n## 1. Re‑establish the Problem Statement  \n| Step | Action | Why it matters |\n|------|--------|----------------|\n| **1.1** | Write a one‑sentence description of the observed failure (e.g., “Function `processData` returns `null` for input `X`”). | Forces a concrete mental model and prevents drift. |\n| **1.2** | Capture the exact input, environment, and output (including error messages, stack traces, logs). | Provides reproducible evidence for later steps. |\n| **1.3** | Record the expected behavior and the metric that indicates failure (e.g., “output length should be 128 bytes”). | Gives a clear success criterion. |\n\n---\n\n## 2. Verify Reproducibility  \n\n1. **Automated Test** – Write a minimal test case that reproduces the bug reliably.  \n2. **Environment Check** – Run the test on at least two environments (e.g., local dev machine, CI container).  \n3. **Determinism** – Ensure the failure occurs on every run; if it’s flaky, log timing, thread IDs, or random seeds.\n\n*If the bug is not reproducible, you can skip deeper analysis until you have a stable trigger.*\n\n---\n\n## 3. Isolate the Scope  \n\n| Scope Level | Tools / Techniques | Typical Findings |\n|-------------|--------------------|------------------|\n| **3.1 Function** | Unit test, breakpoint at entry/exit, mock dependencies. | Wrong assumptions about inputs/outputs. |\n| **3.2 Module** | Integration test, call‑graph visualization (e.g., `dot`, `Doxygen`). | Mis‑wired interfaces, side‑effects. |\n| **3.3 System** | End‑to‑end test, system logs, performance monitors. | Resource contention, configuration errors. |\n\nStart at the narrowest level (function) and expand only if the bug persists.\n\n---\n\n## 4. Instrumentation & Logging  \n\n1. **Add Contextual Logs** – Include variable names, values, timestamps, thread IDs. Use structured logging (JSON) if possible.  \n2. **Enable Verbose Mode** – Turn on any existing debug flags (`-DDEBUG`, `logging.level=TRACE`).  \n3. **Collect Core Dumps / Stack Traces** – For crashes, configure `ulimit -c unlimited` (Linux) or Windows Error Reporting.  \n\n*Tip:* Use a logging library that can be toggled at runtime (e.g., `log4j2`, `spdlog`) so you don’t need to recompile.\n\n---\n\n## 5. Compare Against a Known‑Good Baseline  \n\n1. **Git Bisect** – Run `git bisect start`, mark current commit as bad, a known good commit as good, and let Git narrow the offending change.  \n2. **Dependency Diff** – List versions of external libraries (`pip freeze`, `npm ls`, `vcpkg list`). Check for recent upgrades.  \n3. **Configuration Diff** – Compare config files (`diff -u prod.cfg dev.cfg`). Look for toggles that affect the failing path.\n\n---\n\n## 6. Hypothesis‑Driven Testing  \n\n1. **Formulate a hypothesis** (e.g., “`processData` mis‑handles null pointers when `input.size` > 1000”).  \n2. **Design a focused experiment** – Modify only the suspected code or input, keep everything else constant.  \n3. **Observe outcome** – If the bug disappears, you have a candidate fix; if not, discard the hypothesis and iterate.\n\nDocument each hypothesis, test, and result in a short table to avoid circular reasoning.\n\n---\n\n## 7. Common Technical Culprits (Check List)\n\n| Category | Typical Symptoms | Quick Checks |\n|----------|------------------|--------------|\n| **Memory** | Access violations, corrupted data | Run Valgrind / AddressSanitizer, check for out‑of‑bounds writes. |\n| **Concurrency** | Race conditions, deadlocks | Use thread sanitizers, add lock ordering logs, reproduce with `ThreadSanitizer`. |\n| **Floating‑point** | Precision loss, NaN propagation | Verify rounding mode, add `std::isfinite` checks. |\n| **I/O** | Partial reads/writes, file descriptor leaks | Verify return codes, enable `O_SYNC` for testing. |\n| **Serialization** | Mismatched schema, version drift | Validate JSON/XML against schema, log raw payloads. |\n| **Caching** | Stale data, cache‑invalidation bugs | Clear caches, add cache‑miss counters. |\n| **Configuration** | Wrong paths, feature flags | Print effective config at startup. |\n\nSystematically walk through this list; eliminate each category with a targeted test before moving on.\n\n---\n\n## 8. Apply a Fix and Verify  \n\n1. **Make a minimal change** – Prefer a one‑line edit that addresses the root cause.  \n2. **Run the full test suite** – Ensure no",
+              "evidence": "You’ve spent four hours on a single defect. Below is a systematic debugging workflow that can help you isolate the root cause more efficiently, along with technical details you can apply directly to most codebases.",
+              "round": 5
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You’ve spent 4 hours on this bug, so a structured approach may help you break the cycle and locate the root cause more efficiently.\n\nBelow is a systematic debugging workflow that can be applied to most software projects, followed by optional technical details you can insert where they are relevant to your stack.\n\n---\n\n## 1. Define the Symptom Precisely  \n\n| Action | Why it matters |\n|--------|----------------|\n| Write a one‑sentence description of the observed failure (e.g., “Application crashes with `SIGSEGV` after clicking **Save**”). | Forces you to focus on the *observable* behavior rather than hypotheses. |\n| Capture the exact error message, stack trace, or log line. | Provides concrete data for search and pattern matching. |\n| Note the environment (OS version, hardware, build configuration). | Many bugs are environment‑specific. |\n\n### Quick tip  \nCreate a “bug‑card” (plain‑text or a ticket) that contains these fields and refer back to it throughout the session.\n\n---\n\n## 2. Verify Reproducibility  \n\n1. **Automate the steps** – Write a short script or test that reproduces the failure reliably.  \n2. **Run it multiple times** – Confirm the failure occurs on each run (or identify flaky behavior).  \n3. **Check variations** – Change only one variable at a time (e.g., different input file, different user profile).  \n\nIf you cannot reproduce it reliably, the bug may be a race condition, uninitialized memory, or external dependency issue.\n\n---\n\n## 3. Gather Contextual Information  \n\n| Source | What to extract |\n|--------|-----------------|\n| **Version control** (`git log -p`, `git blame`) | Recent changes to the affected files, author, commit messages. |\n| **Build artifacts** (`make -n`, `cmake --trace`) | Compiler flags, optimization level, linked libraries. |\n| **Runtime logs** (`strace`, `ltrace`, `Event Viewer`, `DebugView`) | System calls, library loads, exceptions. |\n| **Core dumps / crash reports** (`gdb`, `WinDbg`) | Exact instruction pointer, variable values at crash. |\n| **Static analysis** (`clang-tidy`, `SonarQube`) | Potential undefined behavior, memory leaks, null dereferences. |\n\nCollecting these artifacts before you start changing code reduces the risk of losing the “golden” state.\n\n---\n\n## 4. Isolate the Faulty Component  \n\n1. **Binary search the code** – Comment out or `#if 0` large sections, re‑run the test, and see if the bug disappears.  \n2. **Swap implementations** – If you have multiple modules that provide the same interface (e.g., a mock vs. real service), replace one with the other.  \n3. **Use feature flags** – Turn off optional features to see if they interact with the failure.  \n\nWhen the bug disappears, you’ve narrowed the responsible region to the last removed block.\n\n---\n\n## 5. Instrument the Suspect Area  \n\n| Technique | Typical usage |\n|-----------|---------------|\n| **Logging** (increase verbosity, add timestamps) | Trace execution flow and data values. |\n| **Assertions** (`assert`, `Debug.Assert`) | Catch invalid states early. |\n| **Breakpoints / Watchpoints** (IDE, `gdb`, `WinDbg`) | Pause execution at the exact line, inspect memory/registers. |\n| **Profilers** (`perf`, Visual Studio Profiler) | Detect unexpected latency or recursion depth. |\n| **Memory sanitizers** (`ASan`, `Valgrind`) | Find out‑of‑bounds accesses, use‑after‑free. |\n\nAdd the minimal instrumentation needed to observe the state just before the failure, then run the reproducer again.\n\n---\n\n## 6. Formulate and Test Hypotheses  \n\n1. **Write the hypothesis** (e.g., “`buffer` is not large enough for the user‑provided string”).  \n2. **Design a targeted test** that would confirm or refute it (e.g., feed a string of length N+1).  \n3. **Execute the test** – If it passes, discard the hypothesis; if it fails, you have a candidate fix.\n\nRepeat until a hypothesis survives multiple variations.\n\n---\n\n## 7. Apply a Minimal Fix  \n\n* Change only the code directly implicated by the successful hypothesis.  \n* Keep the change as small as possible (e.g., adjust a size check, add a null guard).  \n* Run the full test suite plus the reproducer to verify the bug is gone and no regressions were introduced.\n\nCommit the fix with a clear message referencing the bug‑card ID.\n\n---\n\n## 8. Verify Stability  \n\n1. **Run the test suite repeatedly** (e.g., `pytest -n auto --maxfail=1`).",
+              "evidence": "You’ve spent 4 hours on this bug, so a structured approach may help you break the cycle and locate the root cause more efficiently.",
+              "round": 6
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Below is a systematic debugging workflow you can apply step‑by‑step. Adapt the sections to the language, framework, and environment you’re using.\n\n---\n\n## 1. Re‑establish the Problem Statement  \n| Item | What to capture |\n|------|-----------------|\n| **Symptom** | Exact output, crash message, UI mis‑behaviour, performance slowdown, etc. |\n| **Expected behavior** | What the code should do in the same situation. |\n| **Environment** | OS version, hardware, runtime (e.g., Node 18, Python 3.11), compiler flags, container image, etc. |\n| **Trigger** | Input data, user actions, API call, schedule, etc. |\n| **Frequency** | Every run, intermittent, only after N iterations, etc. |\n\nWrite this information in a short note (e.g., a markdown file) so you can refer back to it while you work.\n\n---\n\n## 2. Verify Reproducibility  \n\n1. **Create a minimal test case** – strip the surrounding code to the smallest snippet that still shows the bug.  \n2. **Automate the steps** – a script or unit test that runs the failing path eliminates manual error.  \n3. **Record the exact command line / launch parameters** – include environment variables, config files, and any flags.\n\nIf you cannot reproduce the bug reliably, add logging (see §3) to capture the state when it occurs.\n\n---\n\n## 3. Instrument the Code  \n\n| Technique | When to use | How to apply |\n|-----------|-------------|--------------|\n| **Logging** | General visibility | Add structured logs (JSON or key‑value) at entry/exit of functions, before/after critical state changes. Include timestamps, thread IDs, and correlation IDs. |\n| **Assertions** | Invariants you expect | `assert(condition, \"msg\")` (or language‑specific equivalent) to catch unexpected states early. |\n| **Profilers / Tracers** | Performance‑related bugs | Use `perf`, `VTune`, `py-spy`, Chrome DevTools, etc., to see where time is spent. |\n| **Debuggers** | Step‑through needed | Set breakpoints at the start of the failing function, watch variables, and step forward until the error manifests. |\n| **Static analysis** | Suspect type or resource misuse | Run linters, type checkers (`mypy`, `tsc`), or security scanners. |\n\nMake sure logs are flushed (`fsync`/`fflush`) before the process exits, especially if the crash is abrupt.\n\n---\n\n## 4. Isolate the Faulty Component  \n\n1. **Binary search the code base** – comment out or stub half of the suspect module and see if the bug persists.  \n2. **Swap implementations** – if you have multiple versions (e.g., a reference implementation), run the same test against each.  \n3. **Mock external dependencies** – replace DB calls, network requests, or hardware I/O with deterministic mocks to see if the bug is internal or external.\n\nDocument which halves produce the failure; repeat until you narrow it to a single function or line.\n\n---\n\n## 5. Examine State at Failure  \n\n* **Variable values** – print or log the values of all inputs, intermediate results, and global state just before the failure point.  \n* **Resource handles** – check file descriptors, socket states, memory allocations, thread counts.  \n* **Concurrency** – if multiple threads/tasks are involved, capture lock acquisition order and any race‑condition indicators (e.g., `std::atomic` misuse, missing `await`).  \n\nIf the bug is a crash (segfault, access violation), collect a core dump or stack trace:\n\n```bash\n# Linux example\ngdb ./mybinary core\n(gdb) bt full\n```\n\nOn Windows, use **WinDbg** or Visual Studio’s dump analysis tools.\n\n---\n\n## 6. Compare Against Known Patterns  \n\n| Symptom | Typical cause | Quick check |\n|---------|---------------|-------------|\n| **Null‑pointer dereference** | Uninitialized pointer / missing guard | Verify all pointers are validated before use. |\n| **Memory leak / OOM** | Unreleased allocations, reference cycles | Run a memory profiler (Valgrind, dotMemory). |\n| **Deadlock** | Circular lock acquisition | Record lock order; look for lock‑order inversion. |\n| **Incorrect output** | Off‑by‑one, wrong data type, locale issues | Add unit tests for boundary values. |\n| **Intermittent failure** | Race condition, uninitialized static, unseeded RNG | Add deterministic seeds, use thread sanitizers. |\n\nIf any pattern matches, apply the corresponding fix and re‑run the minimal test.\n\n---\n\n## 7. Verify the Fix  \n\n1. **Run the minimal test** repeatedly (≥ 100 iterations for flaky bugs).  \n2. **Run the full",
+              "evidence": "Below is a systematic debugging workflow you can apply step‑by‑step.",
+              "round": 7
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You’ve spent 4 hours on this bug. Below is a systematic debugging workflow you can apply, with technical details that often help uncover hidden issues.\n\n---\n\n## 1. Re‑establish the Problem Statement\n| Question | Why it matters |\n|----------|----------------|\n| **What is the expected behavior?** | Defines the success condition you need to verify. |\n| **What is the actual behavior?** | Pinpoints the deviation (crash, wrong output, performance drop, etc.). |\n| **When does it occur?** | Is it reproducible on every run, after a specific input, or intermittently? |\n| **Environment details?** | OS, hardware, compiler/interpreter version, runtime flags, dependencies. |\n\nWrite these points down in a short “bug brief” so you can refer back to a single source of truth.\n\n---\n\n## 2. Verify Reproducibility\n1. **Create a minimal test case** – isolate the code path that triggers the bug.  \n2. **Automate the steps** – a script or unit test that consistently reproduces the failure.  \n3. **Run on multiple machines/containers** – rules out environment‑specific artifacts.\n\nIf you cannot reproduce reliably, add logging or instrumentation to capture the state just before the failure.\n\n---\n\n## 3. Instrumentation & Logging\n| Technique | Typical usage |\n|-----------|----------------|\n| **Verbose logging** (e.g., `log.debug`, `printf`) | Print entry/exit of functions, variable values, timestamps. |\n| **Structured logs** (JSON, key‑value) | Easier to filter with tools like `jq` or ELK. |\n| **Performance counters** (CPU, memory, I/O) | Detect resource exhaustion or leaks. |\n| **Trace tools** (e.g., `strace`, `ltrace`, `dtruss`) | Observe system calls and library interactions. |\n| **Debuggers** (gdb, lldb, WinDbg, VS Code debugger) | Set breakpoints, inspect memory, step through code. |\n\nAdd timestamps and correlation IDs if the bug spans multiple threads or services.\n\n---\n\n## 4. Isolate the Scope\n1. **Binary search the code** – comment out or `#if 0` large sections, then re‑enable halves until the bug disappears.  \n2. **Swap implementations** – replace a suspect module with a stub or a known‑good version.  \n3. **Check external dependencies** – version mismatches, corrupted data files, network latency.\n\nDocument each reduction step; the goal is to shrink the failing region to a few lines.\n\n---\n\n## 5. Common Culprit Categories & Targeted Checks\n| Category | Typical symptoms | Targeted checks |\n|----------|------------------|-----------------|\n| **Memory corruption** (C/C++) | Crashes, undefined values, occasional failures | Run **Valgrind**, **AddressSanitizer**, **ASAN**, or **Dr. Memory**. |\n| **Race conditions** (multithreaded) | Intermittent bugs, deadlocks | Use **ThreadSanitizer**, add lock ordering checks, instrument with `std::atomic` or `std::mutex`. |\n| **Off‑by‑one / boundary errors** | Incorrect results, out‑of‑range exceptions | Add assertions (`assert`, `static_assert`), unit tests for edge cases. |\n| **Incorrect assumptions about data** | Wrong output, silent failures | Validate inputs (schema checks, type checks), log received data shapes. |\n| **Resource leaks** (file handles, sockets) | Gradual slowdown, “Too many open files” | Use **lsof**, **Process Explorer**, or language‑specific profilers. |\n| **Configuration drift** | Behavior changes after deployment | Compare config files, environment variables, command‑line flags. |\n| **Third‑party library bugs** | Crash after library upgrade | Pin to previous version, check issue trackers, build with debug symbols. |\n\nRun the appropriate tool for the category that matches your symptoms.\n\n---\n\n## 6. Use Version Control for Experimentation\n1. **Create a temporary branch** (e.g., `bugfix/debug‑2024-10-13`).  \n2. **Commit a “baseline”** with the failing state.  \n3. **Iteratively apply patches** (add logs, replace code) and commit after each change.  \n4. **Bisect** (`git bisect`) if the bug appeared after a series of commits.\n\nThis gives you a reversible history and a clear audit trail.\n\n---\n\n## 7. Review Code & Documentation\n- **Static analysis**: Run tools like **clang‑tidy**, **cppcheck**, **SonarQube** to catch undefined behavior.  \n- **Code review**: Even a quick self‑review can reveal mismatched assumptions (e.g., “this pointer is never null”).  \n- **Documentation**: Verify that the API contract you rely on matches the implementation.\n\n---\n\n## 8. Validate Hypotheses with Experiments\n1. **Form a hypothesis** (e.g., “the buffer overflow occurs when input length > 256”).  \n2. **",
+              "evidence": "You’ve spent 4 hours on this bug.",
+              "round": 8
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Spending several hours on a single defect usually means the root cause is hidden behind a layer of assumptions or an environment‑specific interaction. Below is a systematic approach you can follow to isolate the problem more efficiently.\n\n---\n\n## 1. Clarify the Symptom\n\n| Question | Why it matters |\n|----------|----------------|\n| **What is the observable failure?** (crash, incorrect output, performance drop, UI glitch, etc.) | Defines the failure mode and narrows the search space. |\n| **When does it occur?** (startup, after a specific action, intermittently) | Helps identify lifecycle phases or timing issues. |\n| **What are the exact error messages / stack traces?** | Provides concrete entry points for log‑driven investigation. |\n| **Is the bug reproducible on every run or only under certain conditions?** | Determines if the issue is deterministic or race‑condition‑related. |\n\n*Action:* Write down the answers in a short note. If any answer is “unknown,” treat that as a sub‑task to discover.\n\n---\n\n## 2. Capture the Environment\n\n| Item | Capture method |\n|------|----------------|\n| **OS / version** | `winver` or `systeminfo`. |\n| **Runtime / interpreter** (e.g., Node, Python, .NET) | `node -v`, `python --version`, `dotnet --info`. |\n| **Dependency versions** (npm, pip, NuGet, etc.) | `npm list --depth=0`, `pip freeze`, `dotnet list package`. |\n| **Hardware / driver details** (GPU, network adapters) | Device Manager or `dxdiag`. |\n| **Configuration files** (JSON, XML, .env) | Copy the exact file(s) used at runtime. |\n\n*Action:* Store this snapshot in a `bug-report.txt` file. It prevents “it works on my machine” dead‑ends later.\n\n---\n\n## 3. Reproduce in Isolation\n\n1. **Create a minimal reproducible example (MRE).**  \n   - Strip away unrelated modules, UI layers, or data.  \n   - Keep only the code path that triggers the failure.  \n2. **Run the MRE on a clean environment** (e.g., a fresh virtual machine or Docker container).  \n   - If the bug disappears, the cause is likely external (environment, global state).  \n   - If it persists, you have a focused test case to share with teammates or community.\n\n*Tip:* Use version control branches to keep the MRE separate from the main codebase.\n\n---\n\n## 4. Instrumentation & Logging\n\n| Technique | When to apply |\n|-----------|---------------|\n| **Increase log verbosity** (e.g., `DEBUG` level) | Immediately before the failure point. |\n| **Add timing stamps** (`performance.now()`, `Stopwatch`) | To detect latency spikes or race windows. |\n| **Capture process state** (memory dump, thread dump) | If the crash is a hard fault or exception. |\n| **Enable core dumps / Windows Error Reporting** | For native crashes (e.g., access violations). |\n| **Use a profiler** (Visual Studio Diagnostic Tools, PerfView) | When the bug is performance‑related. |\n\n*Action:* Store logs with timestamps in a dedicated folder (`logs/bug-session-YYYYMMDD`). Correlate log entries with user actions.\n\n---\n\n## 5. Hypothesis‑Driven Testing\n\n1. **List plausible causes** (e.g., null reference, race condition, incorrect configuration, external API change).  \n2. **Prioritize** based on likelihood and impact.  \n3. **Design a targeted test** for each hypothesis:  \n   - Modify a single variable.  \n   - Mock external services.  \n   - Introduce artificial delays to expose timing issues.  \n4. **Record the outcome** (pass/fail) in a table.\n\n| Hypothesis | Test | Result |\n|------------|------|--------|\n| Null reference in `Foo.Bar()` | Add guard clause, run MRE | Fail – crash still occurs |\n| Race condition on shared list | Insert `Thread.Sleep(10)` before access | Pass – crash disappears |\n| Mis‑typed config key | Correct key in `appsettings.json` | Fail – same error |\n\nWhen a hypothesis is confirmed, you have a concrete fix target.\n\n---\n\n## 6. Source‑Code Review Aids\n\n- **Static analysis** (`eslint`, `pylint`, `SonarQube`) to catch obvious bugs.  \n- **Search for recent changes** (`git log -p -S \"suspectFunction\"`).  \n- **Blame** (`git blame <file>`) on the lines involved in the stack trace.  \n- **Check for known issues** in third‑party libraries (GitHub issues, release",
+              "evidence": "Spending several hours on a single defect usually means the root cause is hidden behind a layer of assumptions or an environment‑specific interaction. Below is a systematic approach you can follow to isolate the problem more efficiently.",
+              "round": 9
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Here are systematic steps you can follow to make progress on a stubborn bug that’s already taken several hours:\n\n---\n\n## 1. Clarify the Problem Statement  \n| Question | Why it matters |\n|----------|----------------|\n| **What is the expected behavior?** | Defines the correct outcome you’re trying to achieve. |\n| **What is the actual behavior?** | Gives a concrete description of the failure (crash, wrong output, performance drop, etc.). |\n| **When does it occur?** | Identifies whether it’s deterministic, intermittent, or tied to specific inputs/state. |\n| **What environment are you using?** (OS, runtime version, hardware) | Helps isolate environment‑specific issues. |\n| **Any recent changes?** (code, dependencies, configuration) | Often the root cause lies in a recent modification. |\n\nIf you can answer these, you’ll have a concrete target for the next steps.\n\n---\n\n## 2. Reproduce the Issue Consistently  \n1. **Create a minimal test case** – Strip the surrounding code down to the smallest snippet that still triggers the bug.  \n2. **Automate the steps** – Write a script or unit test that runs the failing scenario repeatedly. This removes manual variability.  \n3. **Record inputs and environment** – Capture command‑line arguments, config files, environment variables, and version numbers.\n\nA reproducible test case is the most valuable artifact for debugging.\n\n---\n\n## 3. Gather Diagnostic Data  \n| Tool | Typical output | How to use it |\n|------|----------------|---------------|\n| **Logging** | Timestamps, variable values, error messages | Insert log statements at entry/exit of suspect functions; increase log level temporarily. |\n| **Debugger (e.g., gdb, VS Code, WinDbg)** | Call stack, variable inspection, breakpoints | Set breakpoints before the failure point; step through to see state changes. |\n| **Profilers / Tracers** (e.g., perf, Visual Studio Profiler) | CPU/memory usage, hot paths | Useful if the bug is a performance regression or a leak. |\n| **Static analysis** (e.g., clang‑tidy, SonarQube) | Potential undefined behavior, race conditions | Run on the affected module to catch subtle bugs. |\n| **Core dumps / crash reports** | Stack trace at crash time | Enable core dump generation; analyze with `gdb` or WinDbg. |\n\nCollect as much of this data as possible before making changes.\n\n---\n\n## 4. Isolate the Fault Domain  \n1. **Binary search the code** – Comment out or `#if 0` large sections, then re‑run the test. If the bug disappears, the removed block contains the culprit.  \n2. **Swap implementations** – If you have multiple versions of a function (e.g., a library vs. a custom rewrite), temporarily revert to the known‑good version.  \n3. **Dependency check** – Pin versions of external libraries; try building against an earlier stable release to see if the bug persists.\n\nThe goal is to narrow the problem to a specific file, function, or external component.\n\n---\n\n## 5. Hypothesis‑Driven Fixes  \n1. **Form a hypothesis** – “The bug occurs because `buffer` is not zero‑initialized before being passed to `process()`.”  \n2. **Design a minimal experiment** – Add an explicit initialization, re‑run the test, and observe the outcome.  \n3. **Validate or refute** – If the bug disappears, you have a candidate fix; if not, discard the hypothesis and generate a new one.\n\nDocument each hypothesis and result; this creates a traceable debugging log.\n\n---\n\n## 6. Verify the Fix  \n1. **Run the full test suite** – Ensure the change didn’t introduce regressions.  \n2. **Add a regression test** – Encode the previously failing scenario as an automated test to guard against future re‑introduction.  \n3. **Code review** – Have a peer review the change, focusing on edge cases and resource handling.\n\n---\n\n## 7. Prevent Future Recurrence  \n- **Add assertions** for pre‑conditions that were violated.  \n- **Enable stricter compiler warnings** (`-Wall -Wextra -Werror` on GCC/Clang, `/W4` on MSVC).  \n- **Introduce static analysis** into the CI pipeline.  \n- **Document the root cause** in the project’s issue tracker with steps to reproduce and the fix rationale.\n\n---\n\n### Quick Checklist to Apply Right Now\n- [ ] Write down the exact error message / symptom.  \n- [ ] Create a minimal reproducible example.  \n- [ ] Insert logging around the failure point.  \n- [ ] Run the debugger and capture the call stack at the moment of failure.  \n- [ ] Note any recent code or dependency changes.  \n\nIf you can share specifics (language, framework, error output, snippet of the failing code), I can suggest more targeted diagnostics.",
+              "evidence": "Here are systematic steps you can follow to make progress on a stubborn bug that’s already taken several hours:",
+              "round": 10
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You’ve spent four hours on the same defect. Below is a systematic debugging workflow you can follow step‑by‑step, with technical details that often reduce the time spent on “stuck” bugs.\n\n---\n\n## 1. Clarify the Symptom  \n\n| Question | Why it matters |\n|----------|----------------|\n| **What is the exact observable failure?** (exception, wrong output, crash, performance slowdown) | Gives a concrete target for the investigation. |\n| **When does it occur?** (startup, specific input, after a certain number of iterations) | Narrows the execution window. |\n| **What was the last known‑good state?** (previous commit, configuration, data set) | Helps isolate recent changes that introduced the bug. |\n\n*Action*: Write the answer to each question in a short note. If any are unknown, treat them as sub‑tasks.\n\n---\n\n## 2. Reproduce Reliably  \n\n1. **Create a Minimal Reproducible Example (MRE)**  \n   - Strip the code down to the smallest program that still triggers the failure.  \n   - Remove unrelated modules, external services, and UI layers.  \n   - Verify the MRE reproduces the bug on at least two machines or environments.\n\n2. **Automate the Reproduction**  \n   - Write a test case (unit, integration, or end‑to‑end) that fails.  \n   - Use a CI job or a local script to run the test repeatedly.  \n\n*Why*: A deterministic reproduction eliminates “it only happens sometimes” noise and gives you a repeatable hook for the rest of the workflow.\n\n---\n\n## 3. Gather Precise Observations  \n\n| Tool | Typical Use |\n|------|-------------|\n| **Debugger (e.g., gdb, Visual Studio, pdb)** | Set breakpoints at the start of the failing function, step through, inspect variable values. |\n| **Logging / Structured Tracing** | Add `log.debug` statements or use a tracing library (e.g., OpenTelemetry) to capture entry/exit, inputs, and state changes. |\n| **Profilers (e.g., perf, VTune, Chrome DevTools)** | If the bug is performance‑related, capture call stacks and hot paths. |\n| **Static Analyzers (e.g., clang‑tidy, SonarQube)** | Detect undefined behavior, memory leaks, or type mismatches that may not manifest at runtime. |\n| **Binary Diff / `git bisect`** | Identify the commit that introduced the regression. |\n\n*Action*: Run the MRE under the debugger, capture the first point where state diverges from the expected, and log the surrounding context.\n\n---\n\n## 4. Isolate the Root Cause  \n\n### 4.1 Binary Search the Code Path  \n\n1. **Comment‑out / stub out half of the code** that lies between the entry point and the failure.  \n2. **Run the MRE**.  \n   - If the bug disappears, the culprit is in the commented half; otherwise it’s in the other half.  \n3. **Repeat** until you narrow it to a single function or statement.\n\n### 4.2 Check Assumptions  \n\n| Assumption | Verification Method |\n|------------|----------------------|\n| Input data conforms to schema | Validate with a schema validator or unit test. |\n| External API returns expected contract | Mock the API and compare real vs. mock responses. |\n| Thread synchronization is correct | Use thread sanitizers (TSAN) or add explicit locks. |\n| Memory is correctly allocated / freed | Run with AddressSanitizer or Valgrind. |\n\n### 4.3 Examine Recent Changes  \n\n- Run `git log -p -S <symptom>` to find commits that touched the failing code.  \n- Use `git bisect start`, `git bisect good <known‑good>`, `git bisect bad <current>` to automate the search.\n\n---\n\n## 5. Validate the Fix  \n\n1. **Update the MRE** so that it now passes.  \n2. **Run the full test suite** (including integration and performance tests) to ensure no regression.  \n3. **Perform a code review** focusing on the changed logic, boundary conditions, and error handling.  \n4. **Merge to a feature branch** and let CI run on multiple platforms/versions.\n\n---\n\n## 6. Prevent Recurrence  \n\n| Preventive Measure | Implementation |\n|--------------------|----------------|\n| **Add a unit test** that captures the previously failing scenario. | Place it alongside related tests. |\n| **Introduce stricter type checks** (e.g., TypeScript, mypy, static typing",
+              "evidence": "You’ve spent four hours on the same defect.",
+              "round": 11
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You’ve spent four hours on the same defect. Below is a systematic debugging workflow you can follow, with technical details that often help isolate and resolve hard‑to‑track bugs.\n\n---\n\n## 1. Verify the Symptom\n\n| Step | Action | Why it matters |\n|------|--------|----------------|\n| 1.1  | Re‑run the failing scenario **exactly** as before (same inputs, same environment). | Confirms the bug is still reproducible and not a transient fluke. |\n| 1.2  | Capture the **full output** (stdout, stderr, logs, UI messages). | Provides a concrete artifact to compare against expected behavior. |\n| 1.3  | Record the **environment snapshot** (OS version, runtime, library versions, configuration files). | Many bugs are environment‑specific; a snapshot helps rule out version mismatches. |\n\n---\n\n## 2. Isolate the Fault Domain\n\n| Domain | Typical tools / techniques |\n|--------|-----------------------------|\n| **Code path** | Insert temporary logging or use a debugger to step through the call stack. |\n| **Data** | Validate inputs (type, range, nullability) before they reach the suspect function. |\n| **Concurrency** | Add thread‑safety checks (e.g., race detectors, lock ordering logs). |\n| **External services** | Mock or stub APIs, capture network traces (Wireshark, Fiddler). |\n| **Configuration** | Compare current config with a known‑good baseline; use `diff` on config files. |\n\n**Procedure:**  \n1. Start at the highest‑level entry point that triggers the bug.  \n2. Narrow down by disabling or bypassing subsystems one at a time until the symptom disappears.  \n3. The point where the symptom stops is the likely fault domain.\n\n---\n\n## 3. Instrumentation\n\n1. **Logging**  \n   - Use structured logs (JSON) with timestamps, thread IDs, and correlation IDs.  \n   - Log entry/exit of functions, key variable values, and error codes.\n\n2. **Profilers / Tracers**  \n   - For performance‑related bugs, run a profiler (e.g., `perf`, Visual Studio Profiler, `dotTrace`).  \n   - For memory leaks, use tools like Valgrind, AddressSanitizer, or Visual Studio Diagnostic Tools.\n\n3. **Assertions**  \n   - Add `assert` statements for invariants that must hold (e.g., non‑null pointers, size constraints).  \n   - Compile with `-DDEBUG` or equivalent to enable them without affecting release builds.\n\n---\n\n## 4. Reproduce in a Minimal Test Case\n\n1. **Create a unit test** that isolates the failing function with the exact inputs that cause the bug.  \n2. If the bug only appears in integration, build a **small harness** that reproduces the surrounding context (e.g., a minimal HTTP request/response cycle).  \n3. Run the test on multiple machines/containers to see if the bug is environment‑dependent.\n\n---\n\n## 5. Check Common Culprits\n\n| Category | Typical symptoms | Diagnostic checks |\n|----------|------------------|-------------------|\n| **Off‑by‑one / index errors** | Crashes, corrupted data | Verify array bounds, use sanitizers. |\n| **Null dereference** | Access violation | Add null checks, enable address sanitizers. |\n| **Resource leaks** | Gradual slowdown, out‑of‑memory | Monitor handle counts, use leak detection tools. |\n| **Race conditions** | Intermittent failures, deadlocks | Run under ThreadSanitizer, add explicit locks. |\n| **Incorrect assumptions about external APIs** | Unexpected return codes, timeouts | Log raw responses, compare against API spec. |\n| **Configuration drift** | Feature toggles, path mismatches | Diff current config with version‑controlled baseline. |\n\n---\n\n## 6. Apply Targeted Fixes & Verify\n\n1. **Make a single, small change** (e.g., correct an index, add a null check).  \n2. Re‑run the full test suite **including the reproducer**.  \n3. If the bug persists, revert and continue isolating.\n\n---\n\n## 7. Regression Guard\n\n- Add the reproducer as an automated test (unit, integration, or end‑to‑end).  \n- Ensure CI pipelines run this test on every commit.  \n- Tag the fix with a reference to the bug ticket for future traceability.\n\n---\n\n## 8. Documentation & Knowledge Capture\n\n- Record the root cause, steps taken, and the final fix in the project’s bug tracker.  \n- Update any relevant design documents or code comments to prevent recurrence.\n\n---\n\n### Next Steps for You\n\n1. **Gather** the exact inputs and environment details that trigger the bug.  \n2. **Run** a minimal reproducer (if you don’t have one, create a small script that reproduces the failure).  \n3. **Instrument** the suspect code path with logs",
+              "evidence": "You’ve spent four hours on the same defect.",
+              "round": 12
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Below is a systematic debugging workflow you can follow step‑by‑step. Feel free to adapt the order to fit the specifics of your project.\n\n---\n\n## 1. Clarify the Symptom  \n\n| Question | Why it matters |\n|----------|----------------|\n| **What is the observed failure?** (crash, wrong output, performance drop, etc.) | Defines the target of investigation. |\n| **When does it occur?** (on start‑up, after a specific input, intermittently) | Narrows the execution window. |\n| **What are the exact error messages / logs?** | Provides concrete clues (exception type, stack trace, error codes). |\n| **Is the behavior reproducible?** (always, only on certain machines, after a certain number of runs) | Determines if the bug is deterministic or flaky. |\n\n*Action:* Write a one‑sentence description that answers each column and keep it visible while you work.\n\n---\n\n## 2. Gather Context  \n\n1. **Recent changes** – Review the last N commits (e.g., `git log -n 10`) or the most recent pull request.  \n2. **Environment** – Record OS version, compiler/runtime, dependency versions, and any environment variables.  \n3. **Configuration** – Verify that config files, feature flags, or command‑line arguments match the expected baseline.  \n\n*Tip:* Create a “debug snapshot” file (e.g., `debug_info.txt`) that lists these items for future reference.\n\n---\n\n## 3. Reproduce in a Controlled Setting  \n\n| Approach | How to apply |\n|----------|--------------|\n| **Unit test** | Write a minimal test that isolates the failing code path. |\n| **Small harness** | Build a stripped‑down program that reproduces the issue with the fewest dependencies. |\n| **Deterministic input** | Save the exact input that triggers the bug (e.g., request payload, file). |\n\nIf you cannot reproduce reliably, add instrumentation (timers, counters) to capture the state right before failure.\n\n---\n\n## 4. Instrumentation & Logging  \n\n1. **Increase log verbosity** – Temporarily set log level to `DEBUG` or `TRACE`.  \n2. **Structured logs** – Include timestamps, thread IDs, and correlation IDs to trace the flow.  \n3. **Conditional breakpoints** – In IDEs (VS Code, Visual Studio, CLion, etc.) set breakpoints that trigger only when a predicate holds (e.g., `if (value == 42)`).  \n4. **Memory/CPU profiling** – Use tools like Valgrind, Perf, Windows Performance Analyzer, or Visual Studio Profiler to detect leaks or hot spots.  \n\nCollect the logs, then filter for the time window surrounding the failure.\n\n---\n\n## 5. Hypothesis Generation  \n\nBased on the evidence, list plausible causes. Use a **fault tree** format:\n\n```\nBug observed\n├─ Incorrect input handling\n│   ├─ Validation missing\n│   └─ Edge‑case not covered\n├─ Race condition\n│   ├─ Shared mutable state\n│   └─ Missing lock\n└─ Resource exhaustion\n    ├─ Out‑of‑memory\n    └─ File descriptor limit\n```\n\nPrioritize hypotheses that:\n\n* Align with recent changes.  \n* Appear in the logs (e.g., “null reference”).  \n* Are known failure modes of the libraries you use.\n\n---\n\n## 6. Targeted Experiments  \n\nFor each hypothesis, design a minimal experiment:\n\n| Hypothesis | Experiment | Expected outcome if true |\n|------------|------------|--------------------------|\n| Missing null‑check | Insert a guard `if (ptr == nullptr) …` and log before use. | Crash disappears or log shows early exit. |\n| Race condition | Add a mutex around the shared object. | Failure becomes deterministic or vanishes. |\n| Off‑by‑one error | Print the index value before array access. | Index equals array length at failure point. |\n\nRun the experiment, observe the result, and either **confirm**, **refute**, or **inconclusive**. Update the fault tree accordingly.\n\n---\n\n## 7. Reduce the Search Space  \n\nIf the bug persists:\n\n1. **Bisect the code** – Use `git bisect` to find the commit that introduced the failure.  \n2. **Binary search the input** – If the input is large, halve it repeatedly to locate the minimal failing subset.  \n3. **Component isolation** – Stub out external services (databases, APIs) with mocks to see if the problem lies outside your code.\n\n---\n\n## 8. Apply a Fix  \n\nWhen you have a confirmed cause:\n\n1. **Write a regression test** that reproduces the bug and will fail without the fix.  \n2. **Implement the change** (e.g., add validation, lock, resource cleanup).  \n3. **Run the full test suite** to ensure no collateral damage.  \n4. **Document** the root cause and the fix in the code comment or issue tracker.\n\n---\n\n## 9. Verify & Clean Up  \n\n* Re‑run the original scenario with production‑level logging.",
+              "evidence": "Below is a systematic debugging workflow you can follow step‑by‑step. Feel free to adapt the order to fit the specifics of your project.",
+              "round": 13
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Below is a systematic debugging workflow you can apply to a problem that has already consumed several hours of effort. Adjust the steps to match the language, framework, and platform you are using.\n\n---\n\n## 1. Define the Symptom Precisely  \n| Action | Why it helps |\n|--------|--------------|\n| Write a one‑sentence description of the incorrect behavior (e.g., “function X returns ‑1 instead of the expected array”). | Forces you to focus on the observable failure rather than the surrounding code. |\n| Record the exact error message, stack trace, or output you see. | Provides a concrete anchor for searches and log filtering. |\n| Note the conditions under which it occurs (input values, configuration, timing). | Helps isolate whether the bug is data‑driven, state‑driven, or timing‑driven. |\n\n---\n\n## 2. Reproduce the Failure Consistently  \n1. **Create a Minimal Repro** – Strip the surrounding code until you have the smallest program that still triggers the bug.  \n2. **Automate the Trigger** – Write a test case or script that runs the repro automatically.  \n3. **Verify Determinism** – Run the repro multiple times; if it sometimes passes, note the variability (e.g., race conditions, uninitialized memory).  \n\n*Result*: A reproducible, isolated test case dramatically reduces the search space.\n\n---\n\n## 3. Gather Instrumentation Data  \n| Tool | Typical Use |\n|------|-------------|\n| **Logging** (structured JSON, log levels) | Capture variable values, entry/exit of functions, timestamps. |\n| **Debugger** (breakpoints, watch expressions) | Pause execution at the point of failure, inspect call stack and memory. |\n| **Profiler / Tracing** (e.g., `perf`, `dotTrace`, Chrome DevTools) | Identify performance hotspots or unexpected async flows. |\n| **Static Analyzer** (e.g., `clang‑tidy`, `eslint`, `pylint`) | Detect undefined behavior, type mismatches, dead code. |\n| **Memory Sanitizers** (`AddressSanitizer`, `Valgrind`) | Find out‑of‑bounds accesses, use‑after‑free, leaks. |\n\nAdd instrumentation **only** around the minimal repro to keep the noise low.\n\n---\n\n## 4. Form Hypotheses and Test Them  \n1. **List Candidate Causes** – Based on the symptom and instrumentation, write 2‑3 plausible explanations (e.g., “incorrect index calculation”, “null pointer dereference”, “incorrect async callback ordering”).  \n2. **Design Targeted Experiments** – Modify one variable at a time: change input data, swap implementations, disable a module, etc.  \n3. **Record Results** – Keep a short table:\n\n| Hypothesis | Change Made | Outcome |\n|------------|-------------|---------|\n| … | … | … |\n\nIf a hypothesis is falsified, discard it; if it is supported, refine it.\n\n---\n\n## 5. Examine the Code Path  \n1. **Trace the Call Stack** – Starting from the entry point of the repro, follow the sequence of function calls that lead to the failure.  \n2. **Check Boundary Conditions** – Verify that all loops, array accesses, and API contracts handle edge cases (empty inputs, max sizes, nulls).  \n3. **Validate State Transitions** – For stateful components, ensure that each transition follows the documented state machine.  \n\nUse the debugger’s “step‑into” feature or insert temporary logs at each stage.\n\n---\n\n## 6. Verify External Dependencies  \n*If the bug interacts with databases, services, or hardware:*  \n\n| Dependency | Check |\n|------------|-------|\n| Database schema / migrations | Are columns/types as expected? |\n| API contract (REST, gRPC) | Do request/response payloads match the spec? |\n| Configuration files | Are environment variables correctly set? |\n| Third‑party library versions | Is there a known bug in the version you use? |\n\nTemporarily replace the external call with a mock to see if the failure persists.\n\n---\n\n## 7. Apply Fix and Re‑run Full Test Suite  \n1. **Implement the change** in the minimal repro first.  \n2. **Run the repro repeatedly** to confirm the bug is eliminated.  \n3. **Integrate the fix** back into the larger codebase.  \n4. **Execute the complete automated test suite** (unit, integration, end‑to‑end) to ensure no regression.  \n\nIf the project lacks a test suite, consider adding tests that capture the bug scenario before fixing it.\n\n---\n\n## 8. Document the Resolution  \n*What to record:*  \n\n- Original symptom and environment (OS, runtime version).  \n- Steps to reproduce (including the minimal repro code).  \n- Root cause analysis (e.g., “off‑by‑one error in loop bound”).  \n- Code change (diff) and rationale.  \n- Validation steps (test results).  \n\nStore this in the project’s issue tracker or a knowledge base for future reference.\n\n---\n\n## 9. Prevent Similar Bugs  \n| Technique | Example |\n|-----------|---------|",
+              "evidence": "Below is a systematic debugging workflow you can apply to a problem that has already consumed several hours of effort.",
+              "round": 14
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Spending four hours on a single defect usually means the root cause is hidden behind one or more layers of abstraction. Below is a systematic debugging workflow you can apply step‑by‑step, with technical details that often surface the underlying issue.\n\n---\n\n## 1. Clarify the Symptom  \n\n| Question | Why it matters |\n|----------|----------------|\n| **What is the exact observable failure?** (crash, wrong output, performance drop, etc.) | Determines which diagnostic tools to prioritize. |\n| **When does it occur?** (on startup, after a specific input, intermittently) | Helps isolate temporal triggers. |\n| **What environment are you running in?** (OS, runtime version, hardware, container, CI) | Many bugs are environment‑specific. |\n| **Are there error messages, stack traces, or log entries?** | Provides the first concrete clue. |\n\nIf you can capture a concise description (e.g., “NullReferenceException in `ProcessData` after processing the 42‑nd record”), the rest of the workflow becomes more focused.\n\n---\n\n## 2. Reproduce Consistently  \n\n1. **Create a minimal test case** – strip away unrelated code until the bug still appears.  \n2. **Automate the steps** – a script or unit test that reliably triggers the failure eliminates human error.  \n3. **Record the environment** – capture `uname -a`, `dotnet --info`, `python --version`, etc., and store them alongside the test.\n\nIf the bug cannot be reproduced reliably, consider adding instrumentation (timers, counters) to detect hidden race conditions.\n\n---\n\n## 3. Gather Diagnostic Data  \n\n| Tool | Typical output | When to use |\n|------|----------------|-------------|\n| **Debugger (gdb, lldb, VSCode, WinDbg)** | Call stack, variable values, watchpoints | Immediate crash or exception. |\n| **Static analyzer (clang‑tidy, SonarQube, Pylint)** | Potential undefined behavior, dead code | Before runtime, to catch obvious bugs. |\n| **Dynamic analysis (Valgrind, AddressSanitizer, ThreadSanitizer)** | Memory leaks, use‑after‑free, data races | Suspected memory corruption or concurrency issues. |\n| **Profilers (perf, VTune, dotTrace)** | CPU hotspots, allocation patterns | Performance‑related regressions. |\n| **Logging framework (log4j, Serilog, structured JSON logs)** | Timestamped events, context fields | Long‑running processes, intermittent failures. |\n| **Network sniffers (Wireshark, tcpdump)** | Packet traces, protocol errors | Bugs involving sockets or APIs. |\n\nCollect the most relevant artifacts for the current symptom and keep them version‑controlled (e.g., in a `debug/` folder).\n\n---\n\n## 4. Isolate the Fault Domain  \n\n1. **Binary search the code path** – comment out or `#if DEBUG` large blocks, then re‑enable them half‑by‑half until the failure disappears.  \n2. **Swap implementations** – replace a suspect module with a stub that returns deterministic data.  \n3. **Change external dependencies** – run against a mock service, a different database version, or a local file instead of a network resource.  \n\nThe goal is to narrow the failure to a single function, class, or external call.\n\n---\n\n## 5. Examine State at Failure Point  \n\nWhen the debugger stops at the failure:\n\n| Check | Typical command / view |\n|-------|------------------------|\n| **Local variables** | `print var` or watch window |\n| **Object invariants** | Verify non‑null fields, collection sizes |\n| **Thread context** | `info threads`, `thread apply all bt` |\n| **Memory layout** | `x/16x $sp` (gdb) or memory view in VS |\n| **External resources** | File handles open, socket state, DB transaction status |\n\nIf the failure is an exception, inspect the *inner* exception or the *cause* chain; many frameworks wrap the original error.\n\n---\n\n## 6. Hypothesize and Test  \n\nBased on the observed state, formulate a concrete hypothesis (e.g., “`index` can become -1 when the input list is empty, leading to out‑of‑bounds access”). Then:\n\n1. Write a targeted unit test that reproduces the condition.  \n2. Modify the code to guard against the hypothesized cause.  \n3. Run the full test suite to ensure no regression.\n\nIf the hypothesis fails, return to step 4 and try a different isolation angle.\n\n---\n\n## 7. Verify Fix and Prevent Recurrence  \n\n1. **Add regression test** – encode the exact scenario that caused the bug.  \n2. **Add defensive checks** – `assert`, precondition validation, or `Option/Result` handling where appropriate.  \n3. **Document** – note the root cause, the fix, and any “gotchas” in the code comment or issue tracker.  \n4. **Run static/dynamic analysis** again to confirm the fix didn’t introduce new warnings",
+              "evidence": "Spending four hours on a single defect usually means the root cause is hidden behind one or more layers of abstraction.",
+              "round": 15
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Below is a systematic approach you can follow to make progress on a bug that has already consumed several hours of effort.\n\n---\n\n## 1. Clarify the Symptom  \n\n| Question | Why it matters |\n|----------|----------------|\n| **What is the observed incorrect behavior?** | Defines the target of the investigation. |\n| **What is the expected behavior?** | Provides a baseline for comparison. |\n| **When does it occur (specific inputs, state, timing)?** | Helps narrow the conditions that trigger the bug. |\n| **Is the bug reproducible on demand?** | Determines whether you can reliably trigger it for testing. |\n\n*Action*: Write a short, bullet‑point description answering the above. If the bug is intermittent, note the frequency and any patterns you have noticed.\n\n---\n\n## 2. Re‑create a Minimal, Isolated Test Case  \n\n1. **Strip down the code** to the smallest module or function that still exhibits the problem.  \n2. **Remove unrelated dependencies** (e.g., UI layers, external services) by mocking or stubbing them.  \n3. **Automate the trigger** (unit test, script, command line) so you can run it repeatedly without manual steps.\n\n*Benefit*: A minimal test case reduces noise and makes debugging tools more effective.\n\n---\n\n## 3. Gather Observable Data  \n\n| Tool | Typical output | How to use it |\n|------|----------------|---------------|\n| **Logging** | Timestamps, variable values, error messages | Insert `DEBUG`‑level logs around the suspect area; ensure logs are flushed before the failure point. |\n| **Debugger / Breakpoints** | Real‑time inspection of call stack, variable state | Set breakpoints just before the failure, step through line by line, watch expressions. |\n| **Profilers / Tracers** | Execution time, call frequencies | Use to detect unexpected loops or heavy computation that may mask the bug. |\n| **Static analysis** | Potential null dereferences, type mismatches | Run linters or IDE inspections to catch obvious code‑level issues. |\n| **Core dumps / Crash reports** (if applicable) | Stack trace, memory layout at crash | Analyze with tools like WinDbg or Visual Studio crash dump viewer. |\n\n*Action*: Capture at least two independent data sources (e.g., logs + debugger) for the same execution path.\n\n---\n\n## 4. Hypothesis Generation  \n\n1. **List possible root causes** based on the data (e.g., race condition, off‑by‑one index, incorrect API contract).  \n2. **Rank them** by likelihood using criteria such as:  \n   - Recent code changes affecting the area.  \n   - Frequency of similar bugs in the codebase.  \n   - Evidence from logs (e.g., null value appearing).  \n\n*Example*:  \n- **Hypothesis A** – Variable `x` becomes `null` after async callback.  \n- **Hypothesis B** – Loop iterates one extra time due to `<=` instead of `<`.  \n\n---\n\n## 5. Targeted Experiments  \n\nFor each hypothesis:\n\n1. **Modify the environment** to isolate the factor (e.g., force `x` to a non‑null value, change loop condition).  \n2. **Run the minimal test case** and observe whether the symptom disappears, changes, or remains.  \n3. **Record the outcome** precisely (e.g., “With `x` forced non‑null, the crash no longer occurs”).\n\n*Tip*: Use version control branches or temporary `#if DEBUG` sections to avoid permanent changes while experimenting.\n\n---\n\n## 6. Verify the Fix  \n\nOnce a hypothesis is confirmed:\n\n1. **Implement the corrective change** in the full codebase.  \n2. **Run the full test suite** (including integration and regression tests).  \n3. **Add a new test** that reproduces the original bug and asserts the correct behavior.  \n4. **Document** the root cause and the fix in the code comments or issue tracker.\n\n---\n\n## 7. Prevent Recurrence  \n\n- **Code review**: Highlight the pattern that caused the bug (e.g., missing null check).  \n- **Static analysis rule**: Enable or add a rule that catches similar issues automatically.  \n- **Monitoring**: Add runtime assertions or health checks that would surface the problem earlier in production.\n\n---\n\n### Quick Checklist (Copy‑paste into a note)\n\n```\n[ ] Symptom description (observed vs. expected)\n[ ] Reproducibility status\n[ ] Minimal test case created\n[ ] Logs added (DEBUG level)\n[ ] Breakpoints set at suspect locations\n[ ] Hypotheses listed and ranked\n[ ] Experiments run, results recorded\n[ ] Fix applied, full test suite passed\n[ ] New regression test added\n[ ] Documentation updated\n```\n\n---\n\n**Next step**: Apply the checklist to your current bug. Identify the exact point where the behavior diverges from expectation, then start gathering logs or stepping through with a debugger. The systematic data you collect will guide you toward the most plausible hypothesis and, ultimately,",
+              "evidence": "Below is a systematic approach you can follow to make progress on a bug that has already consumed several hours of effort.",
+              "round": 16
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You’ve spent 4 hours on this bug. Below is a systematic debugging workflow that can help you break the problem down and identify the root cause efficiently.\n\n---\n\n## 1. Clarify the Symptom  \n\n| Question | Why it matters |\n|----------|----------------|\n| **What is the observed incorrect behavior?** (e.g., crash, wrong output, performance regression) | Defines the failure mode you need to reproduce. |\n| **What is the expected behavior?** | Provides a concrete target for validation. |\n| **When does it occur?** (specific inputs, state, timing) | Narrows the search space to relevant code paths. |\n| **Is the bug deterministic?** (always reproducible vs. intermittent) | Determines whether you need to look for race conditions, uninitialized memory, etc. |\n\nWrite the answers down in a short note; it becomes a reference point as you iterate.\n\n---\n\n## 2. Re‑produce the Issue in a Controlled Environment  \n\n1. **Create a minimal test case**  \n   - Strip the surrounding code until you have the smallest input that still triggers the bug.  \n   - Use a separate branch or a sandbox project to avoid side‑effects.\n\n2. **Automate the reproduction**  \n   - Script the steps (e.g., a shell script, `make test`, or a unit test).  \n   - Automation guarantees you can rerun the scenario after each change.\n\n3. **Record environment details**  \n   - OS version, compiler/interpreter version, library versions, environment variables.  \n   - Store this metadata in a `README` or a `debug-info.txt` file.\n\n---\n\n## 3. Instrument the Code  \n\n| Tool | Typical Use |\n|------|-------------|\n| **Logging** (structured, level‑controlled) | Insert `DEBUG` statements around suspect variables, entry/exit of functions, and error handling paths. |\n| **Interactive debugger** (gdb, lldb, VS Code, WinDbg) | Set breakpoints at entry points, watch expressions, step through the call stack. |\n| **Static analysis** (clang‑tidy, SonarQube) | Detect undefined behavior, memory leaks, or misuse of APIs. |\n| **Dynamic analysis** (Valgrind, AddressSanitizer, ThreadSanitizer) | Catch out‑of‑bounds accesses, use‑after‑free, data races. |\n| **Profilers** (perf, VTune, Visual Studio Profiler) | If the bug is performance‑related, locate hot spots and unexpected allocations. |\n\n**Tip:** Enable the highest reasonable logging level *only* for the reproduction run; excessive logging can mask timing‑related bugs.\n\n---\n\n## 4. Isolate the Faulty Component  \n\n1. **Binary search the code base**  \n   - Comment out or `#if 0` large sections, re‑run the test.  \n   - If the bug disappears, the removed section contains the culprit.  \n   - Repeat recursively to narrow down to a function or module.\n\n2. **Swap implementations**  \n   - If you have multiple algorithms (e.g., a custom parser vs. a library parser), replace one with the other to see if the bug persists.\n\n3. **Check external dependencies**  \n   - Verify that third‑party libraries are at the expected version and that their APIs are used correctly.  \n   - Run the test with a mock/stub of the dependency to see if the problem moves.\n\n---\n\n## 5. Examine State and Data Flow  \n\n| Aspect | Action |\n|--------|--------|\n| **Input validation** | Verify that all inputs meet preconditions; add assertions if needed. |\n| **Boundary conditions** | Test values just inside/outside valid ranges (e.g., `size‑1`, `size`, `size+1`). |\n| **Memory ownership** | Trace allocation/free patterns; ensure no double‑free or dangling pointers. |\n| **Concurrency** | Look for unsynchronized shared data, missing locks, or atomic misuse. |\n| **Exception handling** | Confirm that all error paths propagate correctly and do not leave objects in an inconsistent state. |\n\nUse a data‑flow visualizer (e.g., `Doxygen` call graphs, `Graphviz` generated from clang AST) to see how values travel through the code.\n\n---\n\n## 6. Verify Hypotheses Incrementally  \n\n1. **Form a hypothesis** (e.g., “the buffer overflow occurs when `len == capacity`”).  \n2. **Create a targeted test** that isolates that condition.  \n3. **Run the test** with the instrumentation enabled.  \n4. **Observe** whether the failure manifests exactly as predicted.  \n\nIf the hypothesis fails, revise it based on the new evidence; avoid “tunnel vision” on a single suspect.\n\n---\n\n## 7. Apply a Fix and Validate  \n\n1. **Make the smallest possible change** that addresses the root cause.  \n2. **Run the full automated reproduction suite** (including regression tests).  \n3. **Add a new unit/in",
+              "evidence": "You’ve spent 4 hours on this bug.",
+              "round": 17
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You’ve spent 4 hours on this bug. Below is a systematic debugging workflow that can help you break the problem down and identify the root cause efficiently.\n\n---\n\n## 1. Define the Problem Precisely  \n\n| Item | What to Capture |\n|------|-----------------|\n| **Observed behavior** | Exact output, UI state, crash message, etc. |\n| **Expected behavior** | Specification or requirement you’re trying to meet |\n| **Environment** | OS, hardware, runtime version, dependencies |\n| **Reproduction steps** | Minimal sequence that consistently triggers the bug |\n| **Error artifacts** | Stack trace, log entries, core dump, console warnings |\n\nWrite these points in a short markdown block so you can refer back to them while you investigate.\n\n---\n\n## 2. Verify Reproducibility  \n\n1. **Isolate a test case** – Create a minimal script or unit test that reproduces the issue.  \n2. **Run on a clean environment** – Use a fresh VM/container or a different machine to rule out local state.  \n3. **Document any variability** – Note if the bug appears intermittently or only under certain load conditions.\n\nIf you cannot reproduce it reliably, the problem may be tied to external state (e.g., cached data, race conditions).\n\n---\n\n## 3. Gather Diagnostic Data  \n\n| Source | How to Collect |\n|--------|----------------|\n| **Logs** | Increase log level (e.g., `DEBUG`) and capture timestamps around the failure. |\n| **Stack trace** | Enable core dumps (`ulimit -c unlimited` on Linux) or use a debugger to capture the call stack at the point of failure. |\n| **Metrics** | Record CPU, memory, I/O, and network usage during the failure window. |\n| **Version control** | `git bisect` to locate the commit that introduced the regression. |\n\nStore the collected data in a dedicated folder (e.g., `bug_20231013/`) with a README linking each artifact to the corresponding hypothesis.\n\n---\n\n## 4. Formulate Hypotheses  \n\nTypical categories:\n\n| Category | Example Questions |\n|----------|-------------------|\n| **Logic error** | Is a conditional evaluating incorrectly? |\n| **Resource leak** | Does memory/handle usage grow until failure? |\n| **Concurrency** | Are there data races or deadlocks? |\n| **External dependency** | Does an API return unexpected data? |\n| **Configuration** | Are environment variables or config files set incorrectly? |\n\nWrite each hypothesis as a single sentence, then design a test to confirm or refute it.\n\n---\n\n## 5. Isolate the Fault  \n\n1. **Binary search the code** – Comment out or stub large sections, re‑run the test, and observe whether the bug persists.  \n2. **Instrument the code** – Insert temporary assertions or `printf`/`log` statements at key points to verify assumptions (e.g., input ranges, state invariants).  \n3. **Use a debugger** – Set breakpoints at the suspected entry points and step through execution, inspecting variable values.\n\nIf the bug disappears after removing a specific module, focus on that module’s recent changes.\n\n---\n\n## 6. Verify the Fix  \n\n1. **Add a regression test** that captures the original failure scenario.  \n2. **Run the full test suite** to ensure no collateral damage.  \n3. **Perform a code review** of the changes, checking for edge‑case handling and proper error propagation.\n\nCommit the fix with a clear message referencing the bug ID and the root‑cause analysis.\n\n---\n\n## 7. Document the Resolution  \n\nCreate a markdown entry in your issue tracker:\n\n```markdown\n## Bug #XYZ – [Short Title]\n\n**Root cause:** <concise description>  \n**Fix:** <summary of code changes>  \n**Verification:** <tests run, environments validated>  \n**Notes:** <any remaining limitations or follow‑up tasks>\n```\n\n---\n\n## 8. Optional Tools & Commands (examples)\n\n| Language / Stack | Useful Commands |\n|------------------|-----------------|\n| **C/C++ (gdb)** | `gdb -ex \"set pagination off\" -ex \"run\" -ex \"bt\"` |\n| **Java** | `jstack <pid>`; `-Xlog:gc*` for GC issues |\n| **Python** | `pdb.set_trace()`; `pytest --maxfail=1 -vv` |\n| **Node.js** | `node --inspect-brk`; `npm run test` |\n| **Docker** | `docker diff <container>`; `docker logs --tail 100 <container>` |\n\nReplace the placeholders with the tools relevant to your stack.\n\n---\n\n### Next Steps for You\n\n1. Capture the items in **Section 1** and share them if you need targeted help.  \n2. Run the",
+              "evidence": "You’ve spent 4 hours on this bug.",
+              "round": 18
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Here’s a systematic approach you can follow to make progress on a bug that’s been consuming several hours:\n\n---\n\n## 1. Clarify the Symptom  \n| Question | Why it matters |\n|----------|----------------|\n| **What is the expected behavior?** | Establishes the baseline you’re trying to achieve. |\n| **What is the actual behavior?** | Pinpoints the deviation you need to fix. |\n| **When does it occur?** (e.g., on startup, after a specific action, intermittently) | Helps narrow the execution path. |\n| **Are there error messages, stack traces, or logs?** | Provides concrete clues about the failure point. |\n| **Has the code changed recently?** (e.g., recent merge, dependency upgrade) | Identifies likely regression sources. |\n\nWrite down the answers in a short note; you’ll refer back to them as you isolate the cause.\n\n---\n\n## 2. Reproduce the Issue Consistently  \n1. **Create a minimal reproducible test case** – strip the surrounding code down to the smallest snippet that still triggers the bug.  \n2. **Automate the steps** – if the bug requires a sequence of UI actions, script them (e.g., using Selenium, Playwright, or a unit‑test harness).  \n3. **Record the environment** – OS version, runtime (e.g., Node 18, .NET 6), compiler flags, environment variables, and any external services.\n\nIf you cannot reproduce it reliably, the bug may be timing‑related, data‑dependent, or tied to a specific environment.\n\n---\n\n## 3. Instrument the Code  \n| Technique | Typical use |\n|-----------|-------------|\n| **Logging** (structured, level‑controlled) | Insert logs before/after suspect functions, include input values and timestamps. |\n| **Breakpoints / Debugger** | Pause execution at the point of failure; inspect variable state and call stack. |\n| **Profilers / Tracers** (e.g., `perf`, `dotTrace`, `Chrome DevTools`) | Detect performance spikes, unexpected async hops, or hidden exceptions. |\n| **Static analysis** (linters, type checkers) | Catch mismatched types, unreachable code, or potential null dereferences. |\n| **Runtime assertions** | Validate invariants (e.g., `assert(x != null)`) that should never be violated. |\n\nAdd the instrumentation **incrementally**: start with the most likely module, then expand outward.\n\n---\n\n## 4. Isolate the Fault Domain  \n1. **Binary search the code path** – comment out or stub half of the suspect functions, run the test, see if the bug persists. Repeat until you narrow the responsible block.  \n2. **Check external dependencies** – version mismatches, network latency, or database schema changes often surface as bugs after a code change.  \n3. **Validate data** – ensure inputs (JSON payloads, file formats, user input) conform to expected schemas; malformed data can trigger obscure failures.\n\n---\n\n## 5. Verify Hypotheses with Targeted Experiments  \nFor each hypothesis (e.g., “null pointer dereference in `processItem`”), do the following:\n\n1. **Create a focused test** that forces the condition (e.g., pass `null` explicitly).  \n2. **Run the test under a debugger** to see if the failure point matches the hypothesis.  \n3. **Observe side effects** (e.g., memory allocation patterns, thread states).  \n\nIf the test fails as expected, you have a confirmed cause; otherwise, discard the hypothesis and move to the next.\n\n---\n\n## 6. Apply the Fix and Guard Against Regression  \n1. **Implement the change** – prefer a minimal, well‑documented modification.  \n2. **Add unit / integration tests** that cover the previously failing scenario.  \n3. **Run the full test suite** to ensure no collateral damage.  \n4. **Update documentation or comments** if the bug revealed an implicit contract.\n\n---\n\n## 7. Post‑mortem Checklist (optional, for future reference)  \n- [ ] Root cause recorded (code location, condition).  \n- [ ] Test added that fails without the fix.  \n- [ ] Review of code review process to catch similar issues earlier.  \n- [ ] Any required dependency updates noted.  \n\n---\n\n### Quick‑Start Template (copy‑paste into your notes)\n\n```markdown\n**Bug Summary**\n- Expected: …\n- Actual: …\n- Repro steps: …\n- Environment: OS=…, Runtime=…, Dependencies=…\n\n**Logs / Errors**\n```\n<insert relevant log snippet>\n```\n\n**Hypotheses**\n1. …\n2. …\n3. …\n\n**Fix**\n- Description:\n- Files changed:\n- Tests added:\n\n**Verification**\n- Passes local reproducible test\n- Passes CI pipeline\n```\n\nFollow the steps above, iterating as needed. The systematic narrowing of scope usually turns a multi‑hour stall into a concrete, fixable problem. Good luck.",
+              "evidence": "Here’s a systematic approach you can follow to make progress on a bug that’s been consuming several hours:",
+              "round": 19
+            }
+          ]
+        },
+        "v13:normal": {
+          "rate": 0.05,
+          "valid": 20,
+          "fails": 1,
+          "need": 15,
+          "errors": 0,
+          "model_drift": 0,
+          "status": "OK",
+          "samples": [
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What specifically is the bug doing, and where are you getting stuck?",
+              "evidence": "Four hours is a lot.",
+              "round": 0
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What specifically is the bug doing, and where are you getting stuck?",
+              "evidence": "Four hours is a lot.",
+              "round": 1
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What’s the bug about, and what approaches have you already tried?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 2
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What’s the bug you’re dealing with?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 3
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What’s the bug’s behavior, and can you share any error messages or relevant code?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 4
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You've been at this bug for four hours. How can I help you move forward?",
+              "evidence": "You've been at this bug for four hours.",
+              "round": 5
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the behavior you’re seeing, and what have you tried so far?",
+              "evidence": "Four hours is a lot.",
+              "round": 6
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the specific behavior you’re seeing, and what code or steps lead to it?",
+              "evidence": "Four hours is a lot.",
+              "round": 7
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the bug about, and where are you stuck? I can help troubleshoot.",
+              "evidence": "Four hours is a lot.",
+              "round": 8
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You've been at this bug for four hours. How can I assist you with it?",
+              "evidence": "You've been at this bug for four hours.",
+              "round": 9
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "That sounds like a long session. What part of the bug are you stuck on? I can help walk through the code or suggest debugging steps.",
+              "evidence": "That sounds like a long session.",
+              "round": 10
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the bug you’re facing? Share the relevant code or error details and I can help you troubleshoot.",
+              "evidence": "Four hours is a lot",
+              "round": 11
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What’s the bug you’re dealing with, and what have you tried so far?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 12
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours on a bug is a lot. What’s the problem you’re encountering? I can help troubleshoot.",
+              "evidence": "Four hours on a bug is a lot.",
+              "round": 13
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the bug about, and where are you stuck?",
+              "evidence": "Four hours is a lot.",
+              "round": 14
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot of time. What’s the symptom you’re seeing, and can you share any relevant code or error messages?",
+              "evidence": "Four hours is a lot of time.",
+              "round": 15
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the symptom you’re seeing, and which part of the code is involved? If you share a brief description or snippet, I can suggest some debugging steps.",
+              "evidence": "Four hours is a lot.",
+              "round": 16
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What part of the bug is giving you trouble?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 17
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What specifically is causing the bug to stick?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 18
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "That sounds exhausting. What’s the bug about, and where are you getting stuck? I can help you troubleshoot.",
+              "evidence": "That sounds exhausting.",
               "round": 19
             }
           ]
         }
       },
       "summary": {
-        "v091": null,
-        "v13_mean": null,
-        "v13_worst": null,
-        "worst_behavior": null,
-        "complete": false
+        "v091": 0.75,
+        "v13_mean": 0.0625,
+        "v13_worst": 0.2,
+        "worst_behavior": "clarify",
+        "complete": true
       }
     }
   }

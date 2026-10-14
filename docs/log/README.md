@@ -6,6 +6,27 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-13 (night) - rate limit mid-run; harness now stops itself
+
+clarify-with-D run (prompt 4f05abba7fb5) produced nothing usable. Anchor:
+6 valid of 20 - the 120b model hit its 429 after round 5, AurixAI fell
+back to gpt-oss-20b, those samples were excluded (correctly). clarify:
+0 of 20 valid, all 20b. The harness refused to report either - good -
+but it kept calling for 54 more samples after the limit hit, and the
+INVALID run was saved over v13_eval_results.json and committed (8a5c5fd).
+
+Fix: `run()` raises RunAborted after 3 unusable samples in a row
+(fallback model or error). main() and position_experiment.py catch it,
+save nothing, and say how far they got. Test: 4 good calls then fallback
+-> stops at call 7, not 20.
+
+Restored v13_eval_results.json to the last complete run (d6c6114, prompt
+823c240d3c7e). Removed anchor_D_clarify.json (6/20 valid, no reading).
+
+The clarify experiment is unrun. Its prediction stands (<=0.10).
+
+---
+
 ## 2026-10-13 - production 823c240d3c7e; writeup 03 rewritten
 
 Same session, n=20, interleaved, anchor first:
