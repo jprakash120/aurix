@@ -198,9 +198,16 @@ anchor:
 The anchor landed in its earlier range, so the session is comparable.
 `normal` has no "can be draining"; its one FAIL is "That sounds
 exhausting". `clarify` fails 4/20: two "Sounds like a tough spot", one
-"can really wear you down", one "can be draining". Its directive does
-not carry D. That is the next experiment, run against a same-session
-anchor.
+"can really wear you down", one "can be draining". Its directive did
+not carry D.
+
+Oct 14: with D added to `clarify`'s directive, `clarify` failed **1/20**
+("That sounds like a tough spot"). The same-session anchor scored 0.15,
+inside its earlier range. 4/20 vs 1/20 across sessions is p = 0.17, so
+this is consistent with the `normal` result rather than proof on its
+own. Production now has D in the system prompt and in the `normal` and
+`clarify` directives (prompt `4f05abba7fb5`). The regression on the
+other seven test inputs is still to run.
 
 ## Limits
 
@@ -255,7 +262,7 @@ github.com/jprakash120/aurix
 
 - Prompt fingerprints: `42198bc6d2f1` baseline, `6922b3799f41` with S,
   `45b15b47198f` D in `normal`'s directive, `eb4bdb0e720d` S+D,
-  `823c240d3c7e` current (D only).
+  `823c240d3c7e` D only, `4f05abba7fb5` current (D also in `clarify`).
 - 2x2: `position_experiment.py`. Results: `position_experiment_results.json`
   (Oct 11), `position_2x2_interleaved.json` (Oct 12). It rebuilds the
   S-era system prompt and checks it by hash, so it still runs after

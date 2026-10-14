@@ -6,6 +6,26 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-14 - clarify with D: 1/20
+
+Prompt 4f05abba7fb5, same session, n=20: anchor (cell D) 0.15 (3/20, all
+"That sounds frustrating"); clarify **0.05** (1/20, "That sounds like a
+tough spot"). Predicted <=0.10 - held. Anchor in range (0.30, 0.15,
+0.25, 0.15 across four sessions), so the session is comparable.
+
+Honest size: 4/20 (Oct 13) vs 1/20 (Oct 14) is cross-session, p=0.17.
+Supporting, not proof. The within-session evidence is still the 2x2.
+
+Remaining failures on e82-01 across all behaviors are the forbidden
+phrases themselves ("That sounds frustrating/exhausting", "Sounds like a
+tough spot"), not new paraphrases.
+
+Next: regression of 4f05abba7fb5 on the other 7 cases, all v1.3
+behaviors, n=5, no control. 280 calls - split over two sessions,
+because one session tops out around 250-280 before the 429.
+
+---
+
 ## 2026-10-13 (night) - rate limit mid-run; harness now stops itself
 
 clarify-with-D run (prompt 4f05abba7fb5) produced nothing usable. Anchor:
