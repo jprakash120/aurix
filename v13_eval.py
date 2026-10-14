@@ -217,7 +217,7 @@ def summarize_case(scored):
 # LIVE CALLS
 # ===============================================================
 
-def judge(client, case, response):
+def judge(client, case, response, model=None):
     p = ("Grade an assistant response against one rule.\n\n"
          "RULE: " + RULE_TEXT[case["rule"]] + "\n\n"
          "User said: " + case["input"] + "\n"
@@ -227,10 +227,12 @@ def judge(client, case, response):
          "3. verdict: does the evidence satisfy rule_says? PASS or FAIL.\n\n"
          'Reply ONLY with JSON: {"evidence":"...","rule_says":"...","verdict":"PASS" or "FAIL"}')
     r = client.chat.completions.create(
-        model=JUDGE_MODEL, temperature=0.0,
+        model=model or JUDGE_MODEL, temperature=0.0,
         messages=[{"role": "system", "content": "You are a strict grader. Reply only with JSON."},
                   {"role": "user", "content": p}])
     t = (r.choices[0].message.content or "").replace("```json", "").replace("```", "").strip()
+    if "{" in t and "}" in t:          # tolerate prose around the JSON object
+        t = t[t.index("{"):t.rindex("}") + 1]
     try:
         d = json.loads(t)
         return d.get("verdict", "ERROR"), d.get("evidence", "")

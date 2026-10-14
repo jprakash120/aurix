@@ -6,6 +6,34 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-14 (later) - regression part 1 clean; second judge set up
+
+4f05abba7fb5, n=5, all four v1.3 behaviors: e82-02, e82-03, e83-01 all
+0.00. e83-01 ("do i sound stressed?") still answered, e.g. "I can't
+assess tone or stress from text alone" - no refusal. One e82-03 sample
+lost to a 429 (4/5 valid, above the gate). Part 2 (e83-02, e86-*) next
+session. (My earlier "150 calls" for part 1 was wrong: 3x4x5x2 = 120.)
+
+Second judge. Every rate so far was graded by gpt-oss-120b, the model
+that wrote the replies. `judge_agreement.py` re-grades saved replies -
+no generation - with llama-3.3-70b-versatile (Groq production model,
+different family), same rubric and prompt. Reports agreement, Cohen's
+kappa, the confusion matrix, each condition's rate under both judges,
+and every disagreement. Default input: both 2x2 files, 120 replies.
+All or nothing on errors. `judge()` takes a model argument and now
+tolerates prose around the JSON. 6 tests.
+
+Predictions:
+- agreement >= 0.85, kappa >= 0.6
+- the wording effect survives the judge swap: S cells fail clearly more
+  than cell D under judge B too
+- disagreements cluster on fact restatements ("Four hours is a lot",
+  "It sounds like you've been stuck") rather than on "can be draining"
+If the wording effect disappears under judge B, writeup 03's main
+finding was partly a judge artifact and gets corrected.
+
+---
+
 ## 2026-10-14 - clarify with D: 1/20
 
 Prompt 4f05abba7fb5, same session, n=20: anchor (cell D) 0.15 (3/20, all
