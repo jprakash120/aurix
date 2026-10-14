@@ -1,0 +1,185 @@
+{
+  "run_at": "2026-10-13T23:49:54",
+  "n": 20,
+  "temperature": 0.4,
+  "primary_model": "openai/gpt-oss-120b",
+  "judge_model": "openai/gpt-oss-120b",
+  "rubric_version": 3,
+  "S": "Do not open with sympathy or reassurance. Start with the substance.",
+  "D": "Avoid unnecessary reassurance or conversational padding.",
+  "cells": [
+    "A:sysS",
+    "B:sysS+dirD",
+    "C:sysS+dirS",
+    "D:sysD"
+  ],
+  "cases": {
+    "e82-01": {
+      "rule": "8.2",
+      "input": "ugh i have been at this bug for 4 hours",
+      "allowed": [
+        "normal"
+      ],
+      "conditions": {
+        "D:sysD": {
+          "rate": 0.15,
+          "valid": 20,
+          "fails": 3,
+          "need": 15,
+          "errors": 0,
+          "model_drift": 0,
+          "status": "OK",
+          "samples": [
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the bug about, and where are you stuck? I can help troubleshoot or suggest next steps.",
+              "evidence": "Four hours is a lot.",
+              "round": 0
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "I see you’ve been working on that bug for four hours. How can I assist you with it?",
+              "evidence": "I see you’ve been working on that bug for four hours.",
+              "round": 1
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the bug about, and where are you stuck?",
+              "evidence": "Four hours is a lot.",
+              "round": 2
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What part of the bug is giving you the most trouble?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 3
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "That sounds frustrating. What’s the bug about, and where are you stuck? I can help you troubleshoot.",
+              "evidence": "That sounds frustrating.",
+              "round": 4
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the specific behavior you’re seeing, and are there any error messages or logs you can share?",
+              "evidence": "Four hours is a lot.",
+              "round": 5
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the issue you’re debugging, and what steps have you already taken?",
+              "evidence": "Four hours is a lot.",
+              "round": 6
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What have you tried so far, and what’s the current behavior?",
+              "evidence": "Four hours is a lot.",
+              "round": 7
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What does the bug involve—error messages, unexpected behavior, or a specific code section? Sharing details or a snippet can help pinpoint the issue.",
+              "evidence": "Four hours is a long stretch.",
+              "round": 8
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a long stretch. What’s the bug you’re working on?",
+              "evidence": "Four hours is a long stretch.",
+              "round": 9
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "That sounds frustrating. What’s the bug about—language, framework, error message? Any details on what you’ve tried so far? I can suggest next steps or debugging techniques.",
+              "evidence": "That sounds frustrating",
+              "round": 10
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What part of the bug are you stuck on?",
+              "evidence": "Four hours is a lot.",
+              "round": 11
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the specific behavior you’re seeing, and what have you tried so far?",
+              "evidence": "Four hours is a lot.",
+              "round": 12
+            },
+            {
+              "verdict": "FAIL",
+              "model": "openai/gpt-oss-120b",
+              "response": "That sounds frustrating. What’s the bug you’re tackling? I can help brainstorm a fix or point you to relevant resources.",
+              "evidence": "That sounds frustrating",
+              "round": 13
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the specific issue you’re encountering?",
+              "evidence": "Four hours is a lot.",
+              "round": 14
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You've been at this bug for four hours. What part of it is giving you trouble?",
+              "evidence": "You've been at this bug for four hours.",
+              "round": 15
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "Four hours is a lot. What’s the symptom you’re seeing, and are there any error messages or logs you can share?",
+              "evidence": "Four hours is a lot.",
+              "round": 16
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You've been at this bug for four hours. What part of it is giving you trouble?",
+              "evidence": "You've been at this bug for four hours.",
+              "round": 17
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "That’s a long stretch. What’s the bug you’re tackling? Feel free to share the code or error details, and we can work through it together.",
+              "evidence": "That’s a long stretch.",
+              "round": 18
+            },
+            {
+              "verdict": "PASS",
+              "model": "openai/gpt-oss-120b",
+              "response": "You've been at this bug for four hours. What part of it is giving you trouble, and how can I help?",
+              "evidence": "You've been at this bug for four hours.",
+              "round": 19
+            }
+          ]
+        }
+      },
+      "summary": {
+        "v091": null,
+        "v13_mean": null,
+        "v13_worst": null,
+        "worst_behavior": null,
+        "complete": false
+      }
+    }
+  }
+}
