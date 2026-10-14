@@ -213,9 +213,15 @@ other seven test inputs is still to run.
 
 - **One input.** Every number is one user message. Other messages may
   produce other paraphrases.
-- **One model, judging itself.** The judge is the generator's own model.
-  Anthropic's eval guidance recommends a different grader model. A
-  cross-model regrade of the saved replies is planned.
+- **One model, judging itself - checked.** The judge is the generator's
+  own model, against Anthropic's advice to grade with a different one.
+  I regraded all 120 2x2 replies with Qwen3 (a different model family,
+  same rubric): **agreement 0.98, Cohen's kappa 0.97**, every cell's
+  rate within one sample of the original, the wording effect unchanged.
+  The two disagreements were both fact restatements ("Four hours is a
+  lot", "you've hit a sticking point"). This covers rule 8.2 on one
+  input with a very explicit rubric; it says nothing about the harder
+  rule 8.3 judgments.
 - **Small n.** The strongest results are p = 0.002 within a session.
   Several others are p ≈ 0.08 and are reported as suggestive.
 - **Provider drift is observed, not explained.** I know the behavior

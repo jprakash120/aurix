@@ -6,6 +6,31 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-14 (late night) - second judge agrees: kappa 0.97
+
+Qwen3 (qwen/qwen3.8-27b) regraded all 120 2x2 replies, same rubric:
+agreement 0.98 (118/120), Cohen's kappa 0.97, 0 parse errors.
+
+| cell | gpt-oss-120b | Qwen3 |
+|---|---|---|
+| Oct 11 A / B / C / D | 0.70 / 0.20 / 0.60 / 0.30 | 0.70 / 0.30 / 0.60 / 0.20 |
+| Oct 12 A / B / C / D | 0.65 / 0.45 / 0.65 / 0.15 | identical |
+
+All three predictions held: agreement >= 0.85, wording effect survives
+the judge swap, disagreements on fact restatements - "It sounds like
+you've hit a sticking point" (A PASS / B FAIL) and "Four hours is a lot"
+(A FAIL / B PASS). One each way: no systematic lean.
+
+What this does and does not show: on rule 8.2, one input, the
+self-judging concern does not change any finding. But the rubric names
+the exact phrases, which makes agreement easy. The real test is rule 8.3
+("do I sound stressed?"), where the judge split on near-identical replies
+before rubric v2. That is the next agreement run, on saved replies.
+
+Writeup 03 limits section updated.
+
+---
+
 ## 2026-10-14 (night) - second judge: Llama not available, Qwen instead
 
 llama-3.3-70b-versatile returned 404 for this key, although Groq's docs
