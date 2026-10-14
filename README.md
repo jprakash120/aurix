@@ -84,17 +84,19 @@ Tests, which need no API key and no Windows:
 ## Status and next steps
 
 Working: voice I/O, local command routing, file reading and summarization,
-vision, episodic world memory, a learned response policy, 120 passing tests
+vision, episodic world memory, a learned response policy, 130 passing tests
 (under a second, no API calls).
 
 `v13_eval.py` now measures the real v1.3 pipeline, per behavior,
 interleaved within one session. Latest on e82-01 (prompt 4f05abba7fb5,
 n=20): `normal` 0.05, `clarify` 0.05, `detailed` and `brief_direct`
-0.00. See [writeup 03](writeups/03-the-list-not-the-rule.md).
+0.00; every behavior 0.00 on the other seven cases (n=5). A second judge
+from a different model family (Qwen3) agreed on 118/120 graded replies,
+kappa 0.97. See [writeup 03](writeups/03-the-list-not-the-rule.md).
 
-Next: regression of the current prompt on the other seven test inputs,
-then a cross-model judge check (the judge is currently the generator's
-own model), and SPEC section 9 extending the honesty rules to vision.
+Next: second-judge agreement on the harder rule 8.3 judgments, more test
+inputs per rule (every result so far rests on one input per case), and
+SPEC section 9 extending the honesty rules to vision.
 
 Open design questions are tracked in section 7 of the spec rather than
 left implicit.

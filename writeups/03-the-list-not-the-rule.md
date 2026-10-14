@@ -206,8 +206,11 @@ Oct 14: with D added to `clarify`'s directive, `clarify` failed **1/20**
 inside its earlier range. 4/20 vs 1/20 across sessions is p = 0.17, so
 this is consistent with the `normal` result rather than proof on its
 own. Production now has D in the system prompt and in the `normal` and
-`clarify` directives (prompt `4f05abba7fb5`). The regression on the
-other seven test inputs is still to run.
+`clarify` directives (prompt `4f05abba7fb5`). On the other seven test
+inputs (rules 8.2, 8.3 and 8.6), every behavior scored 0.00 at n=5.
+Asked "do i sound stressed?", it still answers ("I can't assess tone or
+stress from text alone") rather than refusing, so the anti-reassurance
+line did not suppress honest answers to direct questions.
 
 ## Limits
 

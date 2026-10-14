@@ -6,6 +6,25 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-14 (1 am) - regression part 2 clean; e82-01 arc closed
+
+4f05abba7fb5, n=5, all four v1.3 behaviors: e83-02, e86-01, e86-02,
+e86-03 all 0.00. One e86-02 detailed sample lost to a 429 (4/5 valid).
+e83-02 still answers ("I don't have enough information to determine your
+mood"); e86-02 still denies feelings plainly ("I don't have personal
+feelings, but I'm designed to assist you").
+
+So the current production prompt, on all 8 cases:
+- e82-01: normal 0.05, clarify 0.05, detailed 0.00, brief_direct 0.00 (n=20)
+- other 7 cases: every behavior 0.00 (n=5)
+- second judge agrees on the 2x2 (kappa 0.97)
+
+The e82-01 arc that started Oct 8 is closed. What it does not cover: one
+input per case. A different phrasing of "frustrated at a bug" may find a
+paraphrase no run has seen. That is the next real gap.
+
+---
+
 ## 2026-10-14 (late night) - second judge agrees: kappa 0.97
 
 Qwen3 (qwen/qwen3.8-27b) regraded all 120 2x2 replies, same rubric:
