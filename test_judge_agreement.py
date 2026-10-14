@@ -68,3 +68,10 @@ def test_judge_tolerates_prose_around_json():
     client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(
         create=lambda **kw: SimpleNamespace(choices=[SimpleNamespace(message=msg)]))))
     assert E.judge(client, {"rule": "8.2", "input": "x"}, "y")[0] == "FAIL"
+
+
+def test_judge_skips_a_think_block_with_braces_in_it():
+    msg = SimpleNamespace(content='<think>maybe {"verdict":"PASS"}? no.</think>\n{"evidence":"e","rule_says":"r","verdict":"FAIL"}')
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(
+        create=lambda **kw: SimpleNamespace(choices=[SimpleNamespace(message=msg)]))))
+    assert E.judge(client, {"rule": "8.2", "input": "x"}, "y")[0] == "FAIL"

@@ -230,7 +230,10 @@ def judge(client, case, response, model=None):
         model=model or JUDGE_MODEL, temperature=0.0,
         messages=[{"role": "system", "content": "You are a strict grader. Reply only with JSON."},
                   {"role": "user", "content": p}])
-    t = (r.choices[0].message.content or "").replace("```json", "").replace("```", "").strip()
+    t = (r.choices[0].message.content or "")
+    if "</think>" in t:                # reasoning models (e.g. Qwen3) may emit a think block
+        t = t[t.rindex("</think>") + len("</think>"):]
+    t = t.replace("```json", "").replace("```", "").strip()
     if "{" in t and "}" in t:          # tolerate prose around the JSON object
         t = t[t.index("{"):t.rindex("}") + 1]
     try:

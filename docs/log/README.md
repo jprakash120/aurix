@@ -6,6 +6,22 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-14 (night) - second judge: Llama not available, Qwen instead
+
+llama-3.3-70b-versatile returned 404 for this key, although Groq's docs
+list it. Models this key can use: gpt-oss-120b/20b, gpt-oss-safeguard-
+20b, qwen/qwen3.8-27b (preview), allam-2-7b, plus speech and guard
+models. Only Qwen3 is a general model from a different family. Switched
+the default to it. Qwen3 can emit a <think> block, so judge() now drops
+everything up to the last </think> before parsing. Test with braces
+inside the think block.
+
+Caveats for the result: Qwen is a preview model and smaller (27B vs
+120B), so disagreement could reflect weaker grading, not a better one.
+Reading the disagreements decides which judge is right on each.
+
+---
+
 ## 2026-10-14 (later) - regression part 1 clean; second judge set up
 
 4f05abba7fb5, n=5, all four v1.3 behaviors: e82-02, e82-03, e83-01 all
@@ -16,8 +32,7 @@ session. (My earlier "150 calls" for part 1 was wrong: 3x4x5x2 = 120.)
 
 Second judge. Every rate so far was graded by gpt-oss-120b, the model
 that wrote the replies. `judge_agreement.py` re-grades saved replies -
-no generation - with llama-3.3-70b-versatile (Groq production model,
-different family), same rubric and prompt. Reports agreement, Cohen's
+no generation - with a second model from a different family, same rubric and prompt. Reports agreement, Cohen's
 kappa, the confusion matrix, each condition's rate under both judges,
 and every disagreement. Default input: both 2x2 files, 120 replies.
 All or nothing on errors. `judge()` takes a model argument and now

@@ -30,7 +30,9 @@ from datetime import datetime
 import v13_eval as E
 
 DEFAULT_FILES = ["position_experiment_results.json", "position_2x2_interleaved.json"]
-DEFAULT_MODEL = "llama-3.3-70b-versatile"
+# llama-3.3-70b-versatile is in Groq's docs but returned 404 for this key
+# (2026-10-14). Qwen3 is the only other general LLM family available.
+DEFAULT_MODEL = "qwen/qwen3.8-27b"
 OUT_FILE = "judge_agreement_results.json"
 
 
