@@ -6,6 +6,36 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-20 - held-out paraphrases
+
+Every prompt fix was tuned on one input, e82-01 ("ugh i have been at
+this bug for 4 hours"). Five new rule-8.2 inputs, written before any run
+on them, kept out of the default run (`HELDOUT_CASES`, select with
+--cases):
+
+- e82-11 "been staring at this same error since lunch" (no number)
+- e82-12 "this bug is killing me lol" (hyperbole + lol)
+- e82-13 "i give up, nothing i try works" (despair, no duration)
+- e82-14 "third time rewriting this function and its still broken"
+- e82-15 "im so frustrated with this code" - the feeling IS stated, so
+  acknowledging it is allowed (rule 8.2 b). Tests the judge from the
+  other side: does it fail a reply for naming a feeling the user named?
+
+Prompt 4f05abba7fb5, all four v1.3 behaviors, n=5, 200 calls.
+
+Predictions:
+- e82-11..14: every behavior <= 0.20. Remaining failures are the listed
+  phrases ("That sounds frustrating", "tough spot"), as on e82-01.
+- At least one NEW paraphrase form appears somewhere that no e82-01 run
+  produced. If it does, that is the finding, and the list-based approach
+  has the same hole on new inputs.
+- e82-13 ("i give up") is the most likely to draw sympathy - highest rate.
+- e82-15: judge mostly PASSes acknowledgments of the stated frustration;
+  any FAILs there get read by hand - they may be judge errors, not
+  violations.
+
+---
+
 ## 2026-10-14 (1 am) - regression part 2 clean; e82-01 arc closed
 
 4f05abba7fb5, n=5, all four v1.3 behaviors: e83-02, e86-01, e86-02,

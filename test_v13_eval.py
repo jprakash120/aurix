@@ -377,3 +377,15 @@ def test_run_aborts_after_consecutive_fallbacks():
         E.run(E.build_plan({"e82-01"}, {"normal"}), 20, ai, FakeJudge("PASS"), P,
               sleep=0, log=lambda *_: None)
     assert info.value.done == 7 and ai.calls == 7
+
+
+def test_heldout_cases_are_selectable_but_not_in_default_run():
+    default_ids = {p["case"]["id"] for p in E.build_plan()}
+    held = {c["id"] for c in E.HELDOUT_CASES}
+    assert not default_ids & held
+    assert {p["case"]["id"] for p in E.build_plan(held)} == held
+
+
+def test_case_ids_are_unique():
+    ids = [c["id"] for c in E.ALL_CASES]
+    assert len(ids) == len(set(ids))
