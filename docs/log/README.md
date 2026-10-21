@@ -6,6 +6,43 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-20 (evening) - held-out results: one real failure, two doubtful
+
+Prompt 4f05abba7fb5, n=5, 4 behaviors x 5 new inputs. 16 of 20 rows
+0.00. Read every non-PASS:
+
+| case | behavior | rate | the FAIL replies open with |
+|---|---|---|---|
+| e82-12 "killing me lol" | normal | 3/5 | "Sounds frustrating." x3 |
+| e82-11 "staring at this error since lunch" | detailed | 1/5 | "It sounds like you're stuck on a recurring error." |
+| e82-14 "third time rewriting..." | detailed | 1/4 | "It sounds like you're stuck on a function that isn't producing the expected result after several rewrites." |
+
+Predictions:
+- every behavior <= 0.20 on e82-11..14: missed (e82-12 normal 0.60)
+- a NEW paraphrase appears: missed - good news. "Sounds frustrating"
+  is the old forbidden family, not a new form. No "can be draining".
+- e82-13 ("i give up") worst: wrong, 0.00 everywhere. Replies skip the
+  despair entirely: "What are you trying to accomplish?" Rule-compliant;
+  whether it reads as cold is spec 8.9's open question.
+- e82-15 (feeling stated) passes: held, 0/20. "I see you're frustrated
+  with the code" PASSed - the judge applied rule 8.2 step b correctly.
+
+e82-12 fits the e82-01 pattern. With D, the opening slot gets the user's
+fact ("Four hours is a long stretch"). "killing me lol" has no fact to
+restate, and the two PASSes filled the slot with "Got it." or nothing.
+Three of five filled it with the forbidden phrase.
+
+The two detailed FAILs look like judge errors: "you're stuck on a
+recurring error" restates what the user said. On e82-01, "It sounds like
+you've been stuck on this issue for a while" was PASS under rubric v3,
+and on e82-13 "It sounds like you're repeatedly hitting a barrier" PASSed
+in this same run. Not deciding by hand - second judge (Qwen) on this
+file next, `--out` added so it does not overwrite the 2x2 agreement file.
+Prediction: Qwen PASSes both "stuck" replies and FAILs the three
+"Sounds frustrating".
+
+---
+
 ## 2026-10-20 - held-out paraphrases
 
 Every prompt fix was tuned on one input, e82-01 ("ugh i have been at

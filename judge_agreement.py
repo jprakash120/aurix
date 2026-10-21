@@ -19,6 +19,7 @@ Usage:
     python judge_agreement.py --dry-run
     python judge_agreement.py                       # default files, default model
     python judge_agreement.py --model llama-3.3-70b-versatile --files a.json,b.json
+    python judge_agreement.py --files v13_eval_results.json --out judge_agreement_heldout.json
 """
 
 import json
@@ -179,13 +180,14 @@ def main():
         print("\nABORTED - %s\nNothing saved." % e)
         sys.exit(1)
     summary = summarize(rows)
-    with open(OUT_FILE, "w", encoding="utf-8") as fh:
+    out = E._arg("--out", OUT_FILE)
+    with open(out, "w", encoding="utf-8") as fh:
         json.dump({"run_at": datetime.now().isoformat(timespec="seconds"),
                    "judge_a": E.JUDGE_MODEL, "judge_b": model,
                    "rubric_version": E.RUBRIC_VERSION, "files": files,
                    "summary": summary, "rows": rows}, fh, indent=2, ensure_ascii=False)
     report(summary, rows, E.JUDGE_MODEL, model)
-    print("\nSaved to " + OUT_FILE)
+    print("\nSaved to " + out)
 
 
 if __name__ == "__main__":
