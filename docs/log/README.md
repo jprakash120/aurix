@@ -6,6 +6,18 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-23 - second judge on held-out: aborted at 95/99
+
+One long reply plus the 2048-token output budget exceeded Qwen's
+per-minute token cap ("Request too large"). That is deterministic for
+that reply - waiting does not help - and it threw away 95 good grades.
+Now: retry that reply with max_tokens 1024, then 512; if it still does
+not fit, mark it TOO_LARGE (counted as a judge-B error, excluded from
+agreement) and continue. Rate-limit waits and every other error behave
+as before. 3 tests replace the old one.
+
+---
+
 ## 2026-10-20 (evening) - held-out results: one real failure, two doubtful
 
 Prompt 4f05abba7fb5, n=5, 4 behaviors x 5 new inputs. 16 of 20 rows

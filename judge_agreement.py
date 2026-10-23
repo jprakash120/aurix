@@ -102,15 +102,33 @@ def _wait_seconds(msg):
     return int(m.group(1) or 0) * 60 + float(m.group(2))
 
 
+TOO_LARGE_BUDGETS = (1024, 512)
+
+
 def _judge_with_retry(client, case, response, model, sleep_fn=time.sleep, log=print):
-    for attempt in range(MAX_RETRIES + 1):
+    """Per-minute 429: wait and retry. 'Request too large' (one long reply
+    plus the output budget exceeds the per-minute token cap): retry with a
+    smaller output budget, and if it still does not fit, return TOO_LARGE
+    for this one reply instead of aborting the run (2026-10-23: aborted at
+    95/99 on a single long `detailed` reply)."""
+    budgets = [MAX_TOKENS] + list(TOO_LARGE_BUDGETS)
+    b, attempt = 0, 0
+    while True:
         try:
-            return E.judge(client, case, response, model=model, max_tokens=MAX_TOKENS)
+            return E.judge(client, case, response, model=model, max_tokens=budgets[b])
         except Exception as e:
             msg = str(e)
+            if "Request too large" in msg:
+                b += 1
+                if b == len(budgets):
+                    log("  reply too long for this model's per-minute cap - skipped")
+                    return "TOO_LARGE", ""
+                log("  request too large - retrying with max_tokens=%d" % budgets[b])
+                continue
             wait = _wait_seconds(msg) if "Rate limit reached" in msg else None
             if wait is None or attempt == MAX_RETRIES:
                 raise
+            attempt += 1
             log("  rate limit - waiting %.0fs" % (wait + 1))
             sleep_fn(wait + 1)
 

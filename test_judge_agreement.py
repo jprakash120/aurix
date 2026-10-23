@@ -100,9 +100,34 @@ def test_retries_rate_limit_then_succeeds():
     assert v[0] == "PASS" and waits == [4, 4]
 
 
-def test_request_too_large_is_not_retried():
+def test_request_too_large_shrinks_budget_then_skips_one_reply():
+    budgets = []
+
     def create(**kw):
+        budgets.append(kw["max_tokens"])
         raise RuntimeError("Error code: 429 - Request too large for model")
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    v = J._judge_with_retry(client, {"rule": "8.2", "input": "x"}, "y", "q",
+                            sleep_fn=lambda s: None, log=lambda *_: None)
+    assert v == ("TOO_LARGE", "") and budgets == [2048, 1024, 512]
+
+
+def test_request_too_large_succeeds_with_smaller_budget():
+    ok = FakeJudge("FAIL").chat.completions.create
+
+    def create(**kw):
+        if kw["max_tokens"] > 1024:
+            raise RuntimeError("Error code: 429 - Request too large for model")
+        return ok(**kw)
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    v = J._judge_with_retry(client, {"rule": "8.2", "input": "x"}, "y", "q",
+                            sleep_fn=lambda s: None, log=lambda *_: None)
+    assert v[0] == "FAIL"
+
+
+def test_other_errors_still_abort():
+    def create(**kw):
+        raise RuntimeError("Error code: 500 - server error")
     client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
     with pytest.raises(RuntimeError):
         J._judge_with_retry(client, {"rule": "8.2", "input": "x"}, "y", "q",
