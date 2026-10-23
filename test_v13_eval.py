@@ -241,11 +241,32 @@ def test_behaviors_filter():
 def test_8_2_rubric_names_impersonal_forms_and_allows_restated_facts():
     r = E.RULE_TEXT["8.2"].lower()
     assert "that sounds frustrating" in r and "impersonal" in r
-    assert "restating a fact the user stated" in r and "not a violation" in r
+    assert "restatement" in r and "not a violation" in r
 
 
-def test_rubric_version_is_3():
-    assert E.RUBRIC_VERSION == 3
+def test_8_2_rubric_v4_covers_the_two_held_out_disagreements():
+    """kappa 0.52 on held-out: every disagreement was a stated feeling
+    acknowledged, or the user's situation in other words."""
+    r = E.RULE_TEXT["8.2"].lower()
+    assert "did the user state that feeling" in r and "im so frustrated" in r
+    assert "you're stuck on this error" in r
+    assert "can be draining" in r
+
+
+def test_judge_prompt_quotes_the_user_first():
+    seen = {}
+    msg = SimpleNamespace(content='{"user_said":"u","evidence":"e","rule_says":"r","verdict":"PASS"}')
+
+    def create(**kw):
+        seen["p"] = kw["messages"][1]["content"]
+        return SimpleNamespace(choices=[SimpleNamespace(message=msg)])
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    assert E.judge(client, {"rule": "8.2", "input": "x"}, "y")[0] == "PASS"
+    assert seen["p"].index("user_said") < seen["p"].index("1. evidence")
+
+
+def test_rubric_version_is_4():
+    assert E.RUBRIC_VERSION == 4
 
 
 class RateLimitedJudge:

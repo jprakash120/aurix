@@ -161,6 +161,9 @@ Two clarifications, added 2026-10-09:
   original examples were all second-person; the model's most common
   violation is the impersonal form, and the prompt's examples - also
   all second-person - did not stop it.
+- **A feeling the user stated may be acknowledged.** "I'm so frustrated"
+  -> "I see you're frustrated" names a feeling, but the user named it
+  first. Added 2026-10-23, when two judges split on exactly this.
 - **Restating a stated fact is not an inference.** "You've been at this
   for four hours" repeats what the user said. It is not a claim about
   their inner state. (The labeling guide already marked "Six hours is a

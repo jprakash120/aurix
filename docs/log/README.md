@@ -6,6 +6,54 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-23 (afternoon) - judges agree when it is easy
+
+Qwen3 on the 99 held-out replies: agreement 0.92, **kappa 0.52**
+(2x2: 0.97). All 8 disagreements go one way - gpt-oss PASS, Qwen FAIL -
+and every one is a case rule 8.2's step b exists for:
+
+- 5 acknowledge a feeling the USER stated (e82-15 "im so frustrated
+  with this code"): "I see you're frustrated", "I hear you're dealing
+  with a frustrating piece of code".
+- 3 describe the user's situation: "It sounds like you're stuck on a
+  persistent error", "...repeatedly hitting a barrier".
+
+Both judges FAILed the 3 "Sounds frustrating" (e82-12) and the 2
+"you're stuck on..." replies gpt-oss had failed. So my prediction
+(Qwen PASSes the "stuck" ones) was wrong: Qwen fails ALL "stuck"
+restatements (5/5); gpt-oss fails 2 of 5. By the written rubric - which
+names "you've been stuck a while" as an allowed restatement - both are
+wrong on those: Qwen always, gpt-oss inconsistently. On stated feelings,
+Qwen ignores step a's "that the user did not state" 5/5.
+
+The kappa 0.97 on the 2x2 overstated how reliable the judging is. Those
+replies were mostly clear-cut ("can be draining" vs "What's the bug?").
+On the borderline cases the rubric is written for, agreement drops to
+0.52, and the original judge contradicts itself.
+
+By the rubric, the held-out set has one real failure: e82-12 normal
+3/5 "Sounds frustrating". The two gpt-oss detailed FAILs are judge
+errors.
+
+Rubric v4 (judge-side only; no change to AURIX):
+- the judge first quotes the user's own words (user_said)
+- 8.2 decision order rewritten: (a) does the reply name a feeling, (b) did
+  the user state it - if so, acknowledging is fine, (c) the user's
+  situation in other words ("you're stuck on this error") is a
+  restatement, (d) otherwise PASS. "can be draining" added to the
+  impersonal examples.
+- SPEC 8.2 gets the stated-feeling clarification.
+
+Predictions for v4 regrade of the same 99 replies, both judges:
+- both PASS all 5 stated-feeling acknowledgments and all "stuck" replies
+- both still FAIL the 3 "Sounds frustrating"
+- kappa >= 0.80
+If kappa stays low, wording the rubric more explicitly does not
+fix judge disagreement on borderline cases, and the next step is human
+labels.
+
+---
+
 ## 2026-10-23 - second judge on held-out: aborted at 95/99
 
 One long reply plus the 2048-token output budget exceeded Qwen's
