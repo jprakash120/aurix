@@ -6,6 +6,46 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-10-28 - the paper study
+
+Target: a workshop paper + arXiv in Jan 2027, NeurIPS 2027 (~May 21,
+estimated) if it scales. What a reviewer would reject today: one model,
+13 inputs, one behavior.
+
+New `paper/`: does a forbidden behavior go away, or move?
+- 3 behaviors in 3 reply positions: sympathy opener (8.2), apology after
+  a correction, offer-of-help closer
+- 4 conditions: none / list of 3 phrases / one-sentence principle /
+  one-sentence positive alternative
+- 60 inputs per behavior, written today before any run; sympathy inputs
+  contain no feeling words (test)
+- 4 models: gpt-oss-120b, gpt-oss-20b, Qwen3 (Groq), gemini-2.5-flash
+- measure: violation rate (Wilson CI), and the displaced share -
+  violations that contain none of the listed phrases
+- generic system prompt, not AURIX's - the claim is about LLMs, not this
+  assistant
+
+Runner is resumable (JSONL, one line per call, rerun skips done work),
+so the free tier can accumulate it over sessions. Generation and judging
+are separate phases, so a second judge can grade the same replies later.
+A model that hits 3 errors in a row is skipped for the session; the
+others continue. Conditions for the same input are generated back to
+back in rotated order (drift lesson). 16 tests.
+
+Size: 2880 generations + 2880 judge calls for the full run; 960 + 960 for
+the 20-input pilot.
+
+Predictions for the pilot (before any run):
+- `none` has the behavior often (sympathy >= 0.30, closer >= 0.50,
+  apology >= 0.70 - models apologize when corrected)
+- `list` cuts listed phrases to ~0 but total violations much less:
+  displaced share under `list` >= 0.70
+- `principle` lowers violations more than `list` for apology and closer
+  (simple behaviors), but not for sympathy (writeup 03)
+- `positive` has the lowest rate for sympathy
+
+---
+
 ## 2026-10-23 (afternoon) - judges agree when it is easy
 
 Qwen3 on the 99 held-out replies: agreement 0.92, **kappa 0.52**
