@@ -1,23 +1,28 @@
 """
-Displacement study runner. Resumable: every call is appended to a JSONL
-file as soon as it returns, and a rerun skips work already done. That
-lets the study accumulate over several sessions on a rate-limited key
-without losing anything.
+Displacement study runner (v2). Resumable: every call is appended to a
+JSONL file as soon as it returns, and a rerun skips work already done, so
+the study can accumulate over several sessions on a rate-limited key.
 
-Two phases, run separately:
-    generate   one reply per (behavior, condition, input, model)
-    judge      grade every reply not yet graded by the chosen judge
+Steps, in order:
+    calibrate   no-instruction replies on the CALIBRATION inputs (sympathy,
+                apology) - to find each model's own common phrases
+    judge --calibration
+    derive      python paper/derive_lists.py  -> lists.json (review it)
+    generate    the study: 3 behaviors x 4 conditions x 60 inputs x 4 models
+    judge
+    analyze     python paper/analyze.py
 
 Usage:
-    python paper/run_study.py plan                       # sizes, no API
+    python paper/run_study.py plan
+    python paper/run_study.py calibrate --max-calls 200
+    python paper/run_study.py judge --calibration --max-calls 200
     python paper/run_study.py generate --inputs 20 --max-calls 200
     python paper/run_study.py judge --max-calls 200
     python paper/run_study.py judge --judge qwen/qwen3.8-27b    # second judge
 
-Order: for each input, every model, conditions in an order rotated by the
-input index. Conditions for the same input are generated minutes apart,
-so drift in a served model lands on all four conditions (the lesson of
-2026-10-12: the same prompt gave 3/20 one day and 12/20 the next).
+Order in `generate`: for each input, every model, conditions in an order
+rotated by the input index, so drift in a served model lands on all four
+conditions (2026-10-12: the same prompt gave 3/20 one day, 12/20 the next).
 """
 
 import json
@@ -31,7 +36,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import stimuli as S  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-GEN_FILE = os.path.join(HERE, "results", "generations.jsonl")
+RESULTS = os.path.join(HERE, "results", "v%d" % S.STIMULI_VERSION)
+GEN_FILE = os.path.join(RESULTS, "generations.jsonl")
+CAL_FILE = os.path.join(RESULTS, "calibration.jsonl")
 
 GROQ = ("https://api.groq.com/openai/v1", "GROQ_API_KEY")
 GEMINI = ("https://generativelanguage.googleapis.com/v1beta/openai/", "GEMINI_API_KEY")
@@ -45,9 +52,12 @@ MODELS = {
 DEFAULT_JUDGE = "openai/gpt-oss-120b"
 
 GEN_TEMPERATURE = 0.7
-GEN_MAX_TOKENS = 1500
-JUDGE_MAX_TOKENS = 1024
+# v2: reasoning models spend output tokens on thinking; 1500 lost replies
+GEN_MAX_TOKENS = 4096
+JUDGE_MAX_TOKENS = 2048
 MAX_CONSECUTIVE_ERRORS = 3
+RATE_LIMIT_RETRIES = 3
+MAX_WAIT = 60
 SLEEP = 0.5
 
 
@@ -65,9 +75,9 @@ def strip_think(text):
     return text.strip()
 
 
-def judge_file(judge_model):
+def judge_file(judge_model, calibration=False):
     safe = re.sub(r"[^A-Za-z0-9.-]+", "_", judge_model)
-    return os.path.join(HERE, "results", "judgments_%s.jsonl" % safe)
+    return os.path.join(RESULTS, "%sjudgments_%s.jsonl" % ("calibration_" if calibration else "", safe))
 
 
 def read_jsonl(path):
@@ -87,10 +97,51 @@ def key(behavior, condition, idx, model):
     return "%s|%s|%d|%s" % (behavior, condition, idx, model)
 
 
-# ---------------------------------------------------------------- plan
+def wait_seconds(msg):
+    """Seconds to wait from a 429 message (Groq 'try again in 1m3.2s',
+    Gemini 'retry in 12.5s' / 'retryDelay': '12s'), or None."""
+    m = re.search(r"(?:try again|retry) in (?:(\d+)m)?([\d.]+)s", msg)
+    if m:
+        return int(m.group(1) or 0) * 60 + float(m.group(2))
+    m = re.search(r"retryDelay['\"]?\s*:\s*['\"]?([\d.]+)s", msg)
+    if m:
+        return float(m.group(1))
+    return None
+
+
+def call_with_retry(fn, sleep_fn=time.sleep, log=print):
+    """Retry a call on 429 rate limits, waiting what the API asks (capped)."""
+    for attempt in range(RATE_LIMIT_RETRIES + 1):
+        try:
+            return fn()
+        except Exception as e:
+            msg = str(e)
+            if "429" not in msg or "Request too large" in msg or attempt == RATE_LIMIT_RETRIES:
+                raise
+            wait = min(MAX_WAIT, (wait_seconds(msg) or 10) + 1)
+            log("  rate limit - waiting %.0fs" % wait)
+            sleep_fn(wait)
+
+
+# ---------------------------------------------------------------- plans
+
+def _rotate(conds, idx):
+    k = idx % len(conds)
+    return conds[k:] + conds[:k]
+
+
+def _interleave(jobs, behaviors):
+    by_b = [[j for j in jobs if j["behavior"] == b] for b in behaviors]
+    out = []
+    for i in range(max((len(x) for x in by_b), default=0)):
+        for x in by_b:
+            if i < len(x):
+                out.append(x[i])
+    return out
+
 
 def plan(n_inputs=None, models=None, behaviors=None):
-    """Ordered list of generation jobs."""
+    """Study jobs: every behavior x condition x input x model."""
     models = models or list(MODELS)
     behaviors = behaviors or list(S.BEHAVIORS)
     jobs = []
@@ -98,18 +149,26 @@ def plan(n_inputs=None, models=None, behaviors=None):
         inputs = S.BEHAVIORS[b]["inputs"][:n_inputs] if n_inputs else S.BEHAVIORS[b]["inputs"]
         for idx, text in enumerate(inputs):
             for m in models:
-                k = idx % len(S.CONDITIONS)
-                for c in S.CONDITIONS[k:] + S.CONDITIONS[:k]:
+                for c in _rotate(S.CONDITIONS, idx):
                     jobs.append({"behavior": b, "condition": c, "idx": idx,
                                  "input": text, "model": m})
-    # interleave behaviors so a partial session covers all three
-    by_b = [[j for j in jobs if j["behavior"] == b] for b in behaviors]
-    out = []
-    for i in range(max(len(x) for x in by_b)):
-        for x in by_b:
-            if i < len(x):
-                out.append(x[i])
-    return out
+    return _interleave(jobs, behaviors)
+
+
+def calibration_plan(models=None):
+    """No-instruction jobs on the calibration inputs (behaviors with derived lists)."""
+    models = models or list(MODELS)
+    jobs = [{"behavior": b, "condition": "none", "idx": idx, "input": text, "model": m}
+            for b, inputs in S.CALIBRATION.items()
+            for idx, text in enumerate(inputs) for m in models]
+    return _interleave(jobs, list(S.CALIBRATION))
+
+
+def missing_lists(models=None, lists=None):
+    """(behavior, model) pairs whose `list` condition has no derived list yet."""
+    models = models or list(MODELS)
+    lists = S.load_lists() if lists is None else lists
+    return [(b, m) for b in S.BEHAVIORS for m in models if S.list_text(b, m, lists) is None]
 
 
 # ---------------------------------------------------------------- clients
@@ -120,13 +179,14 @@ def make_client(model):
     return OpenAI(api_key=os.environ[env], base_url=base)
 
 
-def generate_one(client, job):
+def generate_one(client, job, lists=None):
+    system = S.system_prompt(job["behavior"], job["condition"], job["model"], lists)
     r = client.chat.completions.create(
         model=job["model"], temperature=GEN_TEMPERATURE, max_tokens=GEN_MAX_TOKENS,
-        messages=[{"role": "system", "content": S.system_prompt(job["behavior"], job["condition"])},
+        messages=[{"role": "system", "content": system},
                   {"role": "user", "content": job["input"]}])
     ch = r.choices[0]
-    return strip_think(ch.message.content), ch.finish_reason, getattr(r, "model", job["model"])
+    return strip_think(ch.message.content), ch.finish_reason, getattr(r, "model", job["model"]), system
 
 
 def judge_prompt(behavior, user_text, reply):
@@ -162,9 +222,10 @@ def judge_one(client, judge_model, gen):
 
 # ---------------------------------------------------------------- phases
 
-def run_generate(jobs, max_calls, client_for, log=print, sleep=SLEEP, gen_file=GEN_FILE):
+def run_generate(jobs, max_calls, client_for, log=print, sleep=SLEEP, gen_file=GEN_FILE,
+                 sleep_fn=time.sleep, lists=None):
     done = {key(g["behavior"], g["condition"], g["idx"], g["model"])
-            for g in read_jsonl(gen_file) if g.get("reply") is not None}
+            for g in read_jsonl(gen_file) if g.get("reply")}
     todo = [j for j in jobs if key(j["behavior"], j["condition"], j["idx"], j["model"]) not in done]
     log("generate: %d done, %d to do, cap %d this session" % (len(done), len(todo), max_calls))
     errors, dead, calls = {}, set(), 0
@@ -175,18 +236,20 @@ def run_generate(jobs, max_calls, client_for, log=print, sleep=SLEEP, gen_file=G
             continue
         calls += 1
         try:
-            text, finish, served = generate_one(client_for(j["model"]), j)
+            text, finish, served, system = call_with_retry(
+                lambda: generate_one(client_for(j["model"]), j, lists), sleep_fn=sleep_fn, log=log)
             errors[j["model"]] = 0
             append_jsonl(gen_file, dict(j, reply=text, finish_reason=finish, served_model=served,
-                                        stimuli_version=S.STIMULI_VERSION,
+                                        system=system, stimuli_version=S.STIMULI_VERSION,
                                         temperature=GEN_TEMPERATURE,
                                         at=datetime.now().isoformat(timespec="seconds")))
         except Exception as e:
             errors[j["model"]] = errors.get(j["model"], 0) + 1
+            log("  %s error: %s" % (j["model"], str(e)[:120]))
             if errors[j["model"]] >= MAX_CONSECUTIVE_ERRORS:
                 dead.add(j["model"])
-                log("  %s: %d errors in a row, skipping it this session (%s)"
-                    % (j["model"], MAX_CONSECUTIVE_ERRORS, str(e)[:100]))
+                log("  %s: %d errors in a row - skipping it this session"
+                    % (j["model"], MAX_CONSECUTIVE_ERRORS))
         if calls % 25 == 0:
             log("  %d calls" % calls)
         time.sleep(sleep)
@@ -195,7 +258,7 @@ def run_generate(jobs, max_calls, client_for, log=print, sleep=SLEEP, gen_file=G
 
 
 def run_judge(judge_model, max_calls, client, log=print, sleep=SLEEP,
-              gen_file=GEN_FILE, out_file=None):
+              gen_file=GEN_FILE, out_file=None, sleep_fn=time.sleep):
     out_file = out_file or judge_file(judge_model)
     graded = {r["key"] for r in read_jsonl(out_file) if r["verdict"] in ("VIOLATION", "OK")}
     gens = [g for g in read_jsonl(gen_file)
@@ -209,12 +272,14 @@ def run_judge(judge_model, max_calls, client, log=print, sleep=SLEEP,
             break
         calls += 1
         try:
-            v, ev = judge_one(client, judge_model, g)
+            v, ev = call_with_retry(lambda: judge_one(client, judge_model, g),
+                                    sleep_fn=sleep_fn, log=log)
             errs = 0
         except Exception as e:
             errs += 1
+            log("  judge error: %s" % str(e)[:120])
             if errs >= MAX_CONSECUTIVE_ERRORS:
-                log("  judge: %d errors in a row - stopping (%s)" % (errs, str(e)[:100]))
+                log("  judge: %d errors in a row - stopping" % errs)
                 break
             continue
         append_jsonl(out_file, {"key": key(g["behavior"], g["condition"], g["idx"], g["model"]),
@@ -231,27 +296,37 @@ def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "plan"
     n_inputs = int(arg("--inputs")) if arg("--inputs") else None
     models = arg("--models").split(",") if arg("--models") else None
-    jobs = plan(n_inputs, models)
+    max_calls = int(arg("--max-calls", 200))
+    clients = {}
+
+    def client_for(m):
+        if m not in clients:
+            clients[m] = make_client(m)
+        return clients[m]
+
     if cmd == "plan":
-        gens = read_jsonl(GEN_FILE)
         print("stimuli v%d: %s" % (S.STIMULI_VERSION,
               ", ".join("%s %d inputs" % (b, len(v["inputs"])) for b, v in S.BEHAVIORS.items())))
         print("models: %s" % ", ".join(models or MODELS))
-        print("generation jobs: %d (%d already saved)" % (len(jobs), len(gens)))
-        print("judge calls: about the same again")
-        return
-    max_calls = int(arg("--max-calls", 200))
-    if cmd == "generate":
-        clients = {}
-
-        def client_for(m):
-            if m not in clients:
-                clients[m] = make_client(m)
-            return clients[m]
-        run_generate(jobs, max_calls, client_for)
+        print("calibration jobs: %d (%d saved)" % (len(calibration_plan(models)), len(read_jsonl(CAL_FILE))))
+        print("study jobs: %d (%d saved)" % (len(plan(n_inputs, models)), len(read_jsonl(GEN_FILE))))
+        miss = missing_lists(models)
+        print("derived lists: %s" % ("complete" if not miss else "missing for %d (behavior, model) pairs" % len(miss)))
+        print("judge calls: about the same as generations")
+    elif cmd == "calibrate":
+        run_generate(calibration_plan(models), max_calls, client_for, gen_file=CAL_FILE)
+    elif cmd == "generate":
+        miss = missing_lists(models)
+        if miss:
+            print("No derived list yet for: %s" % ", ".join("%s/%s" % p for p in miss))
+            print("Run calibrate, judge --calibration and paper/derive_lists.py first.")
+            sys.exit(1)
+        run_generate(plan(n_inputs, models), max_calls, client_for)
     elif cmd == "judge":
         jm = arg("--judge", DEFAULT_JUDGE)
-        run_judge(jm, max_calls, make_client(jm))
+        cal = "--calibration" in sys.argv
+        run_judge(jm, max_calls, make_client(jm), gen_file=CAL_FILE if cal else GEN_FILE,
+                  out_file=judge_file(jm, calibration=cal))
     else:
         print("unknown command: " + cmd)
         sys.exit(1)

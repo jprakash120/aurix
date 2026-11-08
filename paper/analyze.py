@@ -31,12 +31,16 @@ import stimuli as S  # noqa: E402
 
 
 def norm(text):
-    return (text or "").lower().replace("’", "'").replace("‘", "'")
+    from derive_lists import norm as _norm   # one normalization for deriving and matching
+    return _norm(text)
 
 
-def has_listed(behavior, reply):
+def has_listed(behavior, reply, model=None, lists=None):
+    """True if the reply contains one of the phrases this model's `list`
+    condition names (derived per model for sympathy/apology; fixed for emphasis)."""
+    phrases = S.listed_for(behavior, model, lists) or []
     r = norm(reply)
-    return any(p in r for p in S.BEHAVIORS[behavior]["listed"])
+    return any(norm(p) in r for p in phrases)
 
 
 def wilson(k, n, z=1.96):
@@ -67,7 +71,7 @@ def join(gens, judgments):
     for g in gens:
         k = R.key(g["behavior"], g["condition"], g["idx"], g["model"])
         if k in v and g.get("reply"):
-            rows.append(dict(g, verdict=v[k], listed=has_listed(g["behavior"], g["reply"])))
+            rows.append(dict(g, verdict=v[k], listed=has_listed(g["behavior"], g["reply"], g["model"])))
     return rows
 
 
@@ -120,10 +124,10 @@ def report(rows, log=print):
 def main():
     jm = R.arg("--judge", R.DEFAULT_JUDGE)
     rows = join(R.read_jsonl(R.GEN_FILE), R.read_jsonl(R.judge_file(jm)))
-    print("judge %s: %d graded replies\n" % (jm, len(rows)))
+    print("judge %s: %d graded replies (stimuli v%d)\n" % (jm, len(rows), S.STIMULI_VERSION))
     if not rows:
         return
-    out = os.path.join(R.HERE, "results", "summary_%s.md" % os.path.basename(R.judge_file(jm))[10:-6])
+    out = os.path.join(R.RESULTS, "summary_" + os.path.basename(R.judge_file(jm))[len("judgments_"):-len(".jsonl")] + ".md")
     lines = []
     report(rows, log=lambda s: (print(s), lines.append(s)))
     with open(out, "w", encoding="utf-8") as f:

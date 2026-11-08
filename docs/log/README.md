@@ -6,6 +6,55 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-11-08 - rubric v4 agreement 1.00; smoke test; study v2
+
+Rubric v4 regrade of the 99 held-out replies (run Oct 23, committed
+today): gpt-oss-120b and Qwen3 agree on 99/99, kappa 1.00 (v3: 0.52).
+Both FAIL exactly the three "Sounds frustrating." replies (e82-12
+normal) and PASS the five stated-feeling acknowledgments and five
+"you're stuck on..." restatements. gpt-oss flipped its two "stuck" FAILs
+to PASS. All predictions held. Caveat: v4 was written after reading
+these exact replies, so this shows the rule is now unambiguous, not that
+judges agree on unseen cases. The study's replies are the fresh test.
+
+Paper study smoke test (v1, 2 inputs, 96 jobs): 90 replies saved, 88
+graded. Three design problems found:
+- closers: 0/30 violations, including with no instruction. Nothing to
+  displace. Bold appeared in 47/90 replies across all four models.
+- sympathy list: the phrases I picked ("That sounds frustrating",
+  "Sounds exhausting", "I'm sorry you're dealing with this") appeared
+  0 times, even with no instruction. The models say "Oh no, that's
+  incredibly frustrating" and "My apologies for that mistake". A list of
+  phrases nobody uses cannot show displacement.
+- 6 of 96 calls failed (5 Gemini, 1 Qwen) and the errors were not
+  printed; 2 judge outputs unparseable.
+Early hint, n far too small: apology violations under list/principle
+were all forms not on my list (Gemini "My apologies for that error").
+
+v2 (before any pilot; smoke data excluded from the study):
+- `closer` -> `emphasis` (bold, italics, caps, headings in a short
+  factual answer); list condition = "Do not use bold text".
+- sympathy and apology lists derived per model: 20 calibration inputs
+  each (separate from the 60 test inputs), no instruction; the judge's
+  evidence quotes are cut to first clauses; each model's top 3 become
+  its "Do not say: ..." list, first 3 words are matched as LISTED. A
+  model with fewer than 3 distinct clauses gets the rest from the pooled
+  list. `derive_lists.py` writes a draft lists.json for review; frozen
+  once the study starts.
+- every reply saves its exact system prompt
+- 429s are waited out (Groq and Gemini formats) and errors are printed
+- output budgets: 4096 generation, 2048 judge
+- results go to results/v2/
+Tests: 24 for the study, 160 total.
+
+Predictions for calibration (no instruction):
+- apology >= 0.70 for every model
+- sympathy >= 0.30 pooled; Gemini highest
+- at least 2 models whose top-3 sympathy clauses differ from each other's
+  (otherwise per-model lists add nothing over one pooled list)
+
+---
+
 ## 2026-10-28 - the paper study
 
 Target: a workshop paper + arXiv in Jan 2027, NeurIPS 2027 (~May 21,

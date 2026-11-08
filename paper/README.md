@@ -9,15 +9,21 @@ on a bug can be draining" (50/90 replies vs 0/30 without it). This study
 tests whether that generalizes: three behaviors, four instruction styles,
 60 inputs each, four models.
 
-| behavior | position | example violation |
-|---|---|---|
-| sympathy | opening | "That sounds frustrating." |
-| apology | anywhere, after a correction | "Apologies for the confusion." |
-| closer | ending | "Let me know if you need anything else!" |
+| behavior | example violation |
+|---|---|
+| sympathy | "Oh no, that's incredibly frustrating." (user stated no feeling) |
+| apology | "My apologies for that mistake." (after a correction) |
+| emphasis | "The capital is **Ottawa**." (bold in a one-line answer) |
 
-Conditions: `none`, `list` (three forbidden phrases), `principle` (one
-sentence forbidding the behavior), `positive` (one sentence saying what
-to do instead).
+Conditions: `none`, `list` (the model's own three most common phrases,
+or bold for emphasis), `principle` (one sentence forbidding the
+behavior), `positive` (one sentence saying what to do instead).
+
+Version 2 (2026-11-08). The 2-input smoke test (v1, files directly in
+`results/`) showed: closers never happened (0/30), and the models never
+used the sympathy phrases I had picked, so a list of them could not show
+displacement. v2 replaces closers with emphasis and derives each model's
+list from its own replies to 20 separate calibration inputs.
 
 Main measure: violation rate per cell, and the **displaced share** -
 violations containing none of the listed phrases.
@@ -26,15 +32,19 @@ violations containing none of the listed phrases.
 
 ```
 python paper/run_study.py plan
-python paper/run_study.py generate --inputs 2 --max-calls 24     # smoke test, all 4 models
-python paper/run_study.py judge --max-calls 24
+python paper/run_study.py calibrate --max-calls 160          # no-instruction replies, calibration inputs
+python paper/run_study.py judge --calibration --max-calls 160
+python paper/derive_lists.py                                 # writes lists.json - review, then commit
+python paper/run_study.py generate --inputs 20 --max-calls 250   # pilot
+python paper/run_study.py judge --max-calls 250
 python paper/analyze.py
 ```
 
-Then the pilot (20 inputs) and the full run (60), a few hundred calls per
-session. Both phases resume where they stopped.
+Every step resumes where it stopped. `generate` refuses to start until
+lists.json exists, and lists.json is frozen once it starts.
 
-Files: `results/generations.jsonl` (one reply per line),
-`results/judgments_<judge>.jsonl`, `results/summary_<judge>.md`.
+Files (in `results/v2/`): `calibration.jsonl`, `generations.jsonl` (one
+reply per line, with the exact system prompt), `*judgments_<judge>.jsonl`,
+`summary_<judge>.md`.
 
 Stimuli are frozen once the first real run starts (`STIMULI_VERSION`).
