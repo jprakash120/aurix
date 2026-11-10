@@ -52,11 +52,26 @@ def first_clause(evidence):
     return " ".join(words[:8]).strip(" ,")
 
 
+LEADING = ("and ", "but ", "so ", "also ")
+
+
+def core(clause):
+    """First MATCH_WORDS words: the FORM of the phrase, not its input-specific end."""
+    for w in LEADING:
+        if clause.startswith(w):
+            clause = clause[len(w):]
+    return " ".join(clause.split()[:MATCH_WORDS])
+
+
 def derive(gens, judgments, models=None):
+    """Group each model's violation clauses by their opening words (the form),
+    take the TOP most frequent forms. Ties: more distinct clauses first, then
+    alphabetical, so the result is deterministic."""
     v = {j["key"]: j for j in judgments if j["verdict"] in ("VIOLATION", "OK")}
     models = models or sorted({g["model"] for g in gens})
     out, report = {}, {}
     for b in S.CALIBRATION:
+        groups = {}
         for m in models:
             clauses = collections.Counter()
             for g in gens:
@@ -68,22 +83,34 @@ def derive(gens, judgments, models=None):
                     if c:
                         clauses[c] += 1
             report[(b, m)] = clauses
-        # a model with fewer than TOP distinct clauses gets the rest from the
-        # pooled list, so every model's list condition names TOP phrases
-        pooled = collections.Counter()
+            g_ = {}
+            for c, n in clauses.items():
+                g_.setdefault(core(c), collections.Counter())[c] += n
+            groups[m] = g_
+
+        def ranked(g_):
+            return sorted(g_, key=lambda k: (-sum(g_[k].values()), -len(g_[k]), k))
+
+        pooled = {}
         for m in models:
-            pooled.update(report[(b, m)])
+            for k, cs in groups[m].items():
+                pooled.setdefault(k, collections.Counter()).update(cs)
         for m in models:
-            own = [c for c, _ in report[(b, m)].most_common(TOP)]
-            fill = [c for c, _ in pooled.most_common() if c not in own][:TOP - len(own)]
-            top = own + fill
-            if top:
-                out.setdefault(b, {})[m] = {
-                    "say": [c[:1].upper() + c[1:] + "." for c in top],
-                    "match": sorted({" ".join(c.split()[:MATCH_WORDS]) for c in top}),
-                    "n_violations": sum(report[(b, m)].values()),
-                    "from_pooled": len(fill),
-                }
+            own = ranked(groups[m])[:TOP]
+            fill = [k for k in ranked(pooled) if k not in own][:TOP - len(own)]
+            forms = own + fill
+            if not forms:
+                continue
+            say = []
+            for k in forms:
+                cs = groups[m].get(k) or pooled[k]
+                rep = sorted(cs, key=lambda c: (-cs[c], len(c), c))[0]
+                say.append(rep[:1].upper() + rep[1:] + ".")
+            out.setdefault(b, {})[m] = {
+                "say": say, "match": forms,
+                "n_violations": sum(report[(b, m)].values()),
+                "from_pooled": len(fill),
+            }
     return out, report
 
 

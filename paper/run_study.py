@@ -109,18 +109,50 @@ def wait_seconds(msg):
     return None
 
 
+class LimitForToday(Exception):
+    """The API asks for a wait longer than MAX_WAIT (a daily token limit) or
+    says the quota is used up. Waiting a minute and retrying only burns time
+    (2026-11-08: ~45 one-minute waits in one judge session)."""
+
+
+def is_daily_limit(msg):
+    w = wait_seconds(msg)
+    return ("exceeded your current quota" in msg or "per day" in msg.lower()
+            or (w is not None and w > MAX_WAIT))
+
+
 def call_with_retry(fn, sleep_fn=time.sleep, log=print):
-    """Retry a call on 429 rate limits, waiting what the API asks (capped)."""
+    """Retry a call on short 429 rate limits, waiting what the API asks.
+    Raise LimitForToday for daily limits instead of retrying."""
     for attempt in range(RATE_LIMIT_RETRIES + 1):
         try:
             return fn()
         except Exception as e:
             msg = str(e)
-            if "429" not in msg or "Request too large" in msg or attempt == RATE_LIMIT_RETRIES:
+            if "429" not in msg or "Request too large" in msg:
+                raise
+            if is_daily_limit(msg):
+                raise LimitForToday(msg[:200])
+            if attempt == RATE_LIMIT_RETRIES:
                 raise
             wait = min(MAX_WAIT, (wait_seconds(msg) or 10) + 1)
             log("  rate limit - waiting %.0fs" % wait)
             sleep_fn(wait)
+
+
+# A model's per-minute token cap can be smaller than prompt + output budget
+# ("Request too large", Qwen 2026-11-08). Retry the same request smaller.
+GEN_BUDGETS = (GEN_MAX_TOKENS, 2048, 1024)
+
+
+def with_smaller_budgets(fn, budgets=GEN_BUDGETS, log=print):
+    for i, b in enumerate(budgets):
+        try:
+            return fn(b)
+        except Exception as e:
+            if "Request too large" not in str(e) or i == len(budgets) - 1:
+                raise
+            log("  request too large - retrying with max_tokens=%d" % budgets[i + 1])
 
 
 # ---------------------------------------------------------------- plans
@@ -179,10 +211,10 @@ def make_client(model):
     return OpenAI(api_key=os.environ[env], base_url=base)
 
 
-def generate_one(client, job, lists=None):
+def generate_one(client, job, lists=None, max_tokens=GEN_MAX_TOKENS):
     system = S.system_prompt(job["behavior"], job["condition"], job["model"], lists)
     r = client.chat.completions.create(
-        model=job["model"], temperature=GEN_TEMPERATURE, max_tokens=GEN_MAX_TOKENS,
+        model=job["model"], temperature=GEN_TEMPERATURE, max_tokens=max_tokens,
         messages=[{"role": "system", "content": system},
                   {"role": "user", "content": job["input"]}])
     ch = r.choices[0]
@@ -236,13 +268,19 @@ def run_generate(jobs, max_calls, client_for, log=print, sleep=SLEEP, gen_file=G
             continue
         calls += 1
         try:
-            text, finish, served, system = call_with_retry(
-                lambda: generate_one(client_for(j["model"]), j, lists), sleep_fn=sleep_fn, log=log)
+            text, finish, served, system = with_smaller_budgets(
+                lambda b: call_with_retry(
+                    lambda: generate_one(client_for(j["model"]), j, lists, max_tokens=b),
+                    sleep_fn=sleep_fn, log=log), log=log)
             errors[j["model"]] = 0
             append_jsonl(gen_file, dict(j, reply=text, finish_reason=finish, served_model=served,
                                         system=system, stimuli_version=S.STIMULI_VERSION,
                                         temperature=GEN_TEMPERATURE,
                                         at=datetime.now().isoformat(timespec="seconds")))
+        except LimitForToday as e:
+            dead.add(j["model"])
+            log("  %s: daily limit reached - skipping it until the next session (%s)"
+                % (j["model"], str(e)[:100]))
         except Exception as e:
             errors[j["model"]] = errors.get(j["model"], 0) + 1
             log("  %s error: %s" % (j["model"], str(e)[:120]))
@@ -275,6 +313,9 @@ def run_judge(judge_model, max_calls, client, log=print, sleep=SLEEP,
             v, ev = call_with_retry(lambda: judge_one(client, judge_model, g),
                                     sleep_fn=sleep_fn, log=log)
             errs = 0
+        except LimitForToday as e:
+            log("  judge: daily limit reached - stopping; rerun next session (%s)" % str(e)[:100])
+            break
         except Exception as e:
             errs += 1
             log("  judge error: %s" % str(e)[:120])

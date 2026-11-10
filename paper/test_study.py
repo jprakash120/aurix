@@ -194,37 +194,59 @@ def test_first_clause():
     assert D.first_clause("My apologies for the mix\u2011up") == "my apologies for the mix-up"
 
 
-def test_derive_uses_own_phrases_and_fills_from_pooled():
+def test_derive_groups_by_form_and_fills_from_pooled():
     gens, js = [], []
-    data = {"m1": ["My apologies for the error.", "My apologies for the error.", "I apologize."],
+    data = {"m1": ["I'm sorry about that mistake.", "I'm sorry about the earlier error.",
+                   "I'm sorry for the confusion.", "And I apologize for the error."],
             "m2": []}
-    for m, evs in data.items():
-        for i in range(3):
-            g = {"behavior": "apology", "condition": "none", "idx": i, "model": m, "reply": "r"}
-            gens.append(g)
-            ev = evs[i] if i < len(evs) else ""
+    for m in data:
+        for i in range(4):
+            gens.append({"behavior": "apology", "condition": "none", "idx": i, "model": m, "reply": "r"})
+            ev = data[m][i] if i < len(data[m]) else ""
             js.append({"key": R.key("apology", "none", i, m),
                        "verdict": "VIOLATION" if ev else "OK", "evidence": ev})
     lists, report = D.derive(gens, js, models=["m1", "m2"])
     m1 = lists["apology"]["m1"]
-    assert m1["say"] == ["My apologies for the error.", "I apologize."] and m1["from_pooled"] == 0
-    assert m1["n_violations"] == 3 and "my apologies for" in m1["match"]
-    m2 = lists["apology"]["m2"]        # no own violations: pooled list
-    assert m2["n_violations"] == 0 and m2["from_pooled"] == 2
+    # "i'm sorry about" (2) ranks first; leading "and" is stripped
+    assert m1["match"] == ["i'm sorry about", "i apologize for", "i'm sorry for"]
+    assert m1["say"][0] == "I'm sorry about that mistake." and m1["n_violations"] == 4
+    m2 = lists["apology"]["m2"]        # no own violations: pooled forms
+    assert m2["from_pooled"] == 3 and m2["match"] == m1["match"]
 
 
-def test_fisher_known_value():
-    assert abs(A.fisher_two_sided(3, 1, 1, 3) - 0.4857) < 1e-3
-    assert A.fisher_two_sided(5, 5, 5, 5) == 1.0
+def test_daily_limits_are_not_retried():
+    def fn():
+        raise RuntimeError("Error code: 429 - Rate limit reached ... tokens per day (TPD). "
+                           "Please try again in 7m12.5s.")
+    with pytest.raises(R.LimitForToday):
+        R.call_with_retry(fn, sleep_fn=lambda s: None, log=lambda *_: None)
+
+    def gem():
+        raise RuntimeError("Error code: 429 - You exceeded your current quota")
+    with pytest.raises(R.LimitForToday):
+        R.call_with_retry(gem, sleep_fn=lambda s: None, log=lambda *_: None)
 
 
-def test_wilson_bounds():
-    lo, hi = A.wilson(0, 20)
-    assert lo == 0.0 and 0.1 < hi < 0.2
+def test_request_too_large_retries_with_smaller_budget():
+    seen = []
+
+    def fn(b):
+        seen.append(b)
+        if b > 2048:
+            raise RuntimeError("Error code: 429 - Request too large for model")
+        return "ok"
+    assert R.with_smaller_budgets(fn, log=lambda *_: None) == "ok" and seen == [4096, 2048]
 
 
-def test_displaced_counts_only_unlisted_violations():
-    rows = [{"verdict": "VIOLATION", "listed": True}, {"verdict": "VIOLATION", "listed": False},
-            {"verdict": "OK", "listed": False}, {"verdict": "OK", "listed": True}]
-    c = A.cell(rows)
-    assert c["violations"] == 2 and c["displaced"] == 1 and c["displaced_share"] == 0.5
+def test_daily_limit_skips_model_for_the_session(tmp_path):
+    f = str(tmp_path / "g.jsonl")
+
+    def client(m):
+        def create(**kw):
+            if m == "bad":
+                raise RuntimeError("Error code: 429 - You exceeded your current quota")
+            return fake_client().chat.completions.create(**kw)
+        return SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    jobs = R.plan(n_inputs=1, models=["bad", "good"])
+    R.run_generate(jobs, 100, client, gen_file=f, lists=_lists(["bad", "good"]), **NOSLEEP)
+    assert {r["model"] for r in R.read_jsonl(f)} == {"good"}

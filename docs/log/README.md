@@ -6,6 +6,45 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-11-08 (evening) - calibration, first pass: three limits hit
+
+- Gemini: "You exceeded your current quota" after a handful of replies
+  (free tier, daily). Skipped for the session as designed.
+- Qwen: "Request too large" on generation - prompt + 4096 output budget
+  is over its per-minute token cap. 9 replies lost.
+- Judge (gpt-oss-120b): ~45 one-minute waits and 15 failed grades. The
+  waits were for a DAILY token limit; retrying every minute could never
+  succeed.
+
+Fixes:
+- a wait longer than 60 s, "per day", or "exceeded your current quota"
+  now ends that model's session (judge: stops) instead of retrying
+- "Request too large" retries the same request with 2048, then 1024
+  output tokens
+- list derivation groups clauses by their first three words. First pass
+  had almost every clause unique and input-specific ("i'm sorry you're
+  seeing the same silent-failure issue"), so "top 3 clauses" was picking
+  among ties. Grouped, the forms are clear:
+    gpt-oss-120b apology: "i'm sorry about" 14, "i'm sorry for" 5
+    gpt-oss-20b apology:  "i'm sorry for" 10, "i'm sorry about" 5
+    qwen apology:         "i apologize for" 6
+    qwen sympathy:        "that is incredibly" 3, "i am so" 2
+    gpt-oss-120b sympathy: "i'm sorry you're" 4, "i'm sorry to" 2
+  Models differ - per-model lists are doing real work (prediction held).
+
+Baseline rates so far (no instruction, incomplete): apology 20/20ish for
+both gpt-oss models (prediction >= 0.70 held for them); sympathy
+gpt-oss-120b 13, Qwen 10, gpt-oss-20b 7 violations.
+
+lists.json from this pass is NOT final: calibration is incomplete
+(Gemini, Qwen, 15 ungraded). Finish calibration, re-derive, then freeze.
+
+Open decision: Gemini's free tier cannot carry 720 study replies plus
+calibration. Either enable billing on the Gemini key or run the study
+on the three Groq models.
+
+---
+
 ## 2026-11-08 - rubric v4 agreement 1.00; smoke test; study v2
 
 Rubric v4 regrade of the 99 held-out replies (run Oct 23, committed
