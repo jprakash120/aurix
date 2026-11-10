@@ -6,6 +6,51 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-11-10 - calibration done (Groq models); lists filtered; Gemini out
+
+Calibration resumed: 147/160 replies, 146 graded. Gemini again hit "You
+exceeded your current quota" - second day running. Decision (taken by
+default, reversible): the study runs on the three Groq models;
+DEFAULT_MODELS leaves Gemini out, `--models` can add it back if its key
+gets billing. Cost of this: two of three models are the same family
+(gpt-oss) - a limitation the paper has to state.
+
+List derivation fixes:
+- the judge's evidence quote is sometimes the wrong span: "you are
+  absolutely right" was counted as an apology form (Qwen 2, Gemini 1)
+  and would have become 'Do not say: "You are absolutely right."' -
+  forbidding an acknowledgement, not an apology. Clauses now have to
+  contain a word of the behavior (sorry/apolog/regret...; for sympathy
+  sorry/frustrat/stress/imagine/tough...) to count; the rest are printed
+  as excluded.
+- long, input-specific clauses are shown by their first five words
+  ("I'm sorry you've been stuck...") instead of a sentence cut mid-way.
+- `generate` refuses a draft lists.json; `derive_lists.py --freeze`
+  marks it final.
+
+Preview from the calibration data pushed so far:
+  gpt-oss-120b sympathy: "I'm sorry you're dealing with that." "I'm sorry you've been stuck..." "I'm sorry to hear that."
+  Qwen sympathy:         "That is incredibly frustrating." "I am so sorry to..." "I am sorry to hear..."
+  gpt-oss-120b apology:  "I'm sorry about that mistake." "I'm sorry for any confusion." "I apologize for the mistake..."
+  Qwen apology:          "I apologize for the error." "My apologies for the oversight." "I'm sorry about that."
+
+Calibration baseline (no instruction), violations / replies:
+sympathy 17 (120b), 11 (20b), 15 (Qwen) of ~20 each; apology 20, 19,
+12 of 20. Prediction "apology >= 0.70 for every model" missed for Qwen
+(12/20 = 0.60); held for both gpt-oss models. "Sympathy >= 0.30 pooled"
+held easily (~0.7).
+
+Pilot next: 20 inputs x 3 behaviors x 4 conditions x 3 models = 720
+replies + 720 grades, over several sessions. Predictions (pilot):
+- list removes the listed forms (listed share of violations drops vs
+  none) but total violations drop less; displaced share under list
+  >= 0.70 for sympathy and apology
+- principle beats list on apology; not on sympathy
+- emphasis: list ("no bold") cuts bold but italics/headings/caps
+  appear - displaced share under list >= 0.50
+
+---
+
 ## 2026-11-08 (evening) - calibration, first pass: three limits hit
 
 - Gemini: "You exceeded your current quota" after a handful of replies

@@ -1,95 +1,73 @@
 {
   "sympathy": {
-    "gemini-2.5-flash": {
-      "say": [
-        "Oh no, that's incredibly frustrating.",
-        "That's incredibly frustrating and concerning.",
-        "That's incredibly frustrating and a clear blocker."
-      ],
-      "match": [
-        "oh no, that's",
-        "that's incredibly frustrating"
-      ],
-      "n_violations": 3,
-      "from_pooled": 0
-    },
     "openai/gpt-oss-120b": {
       "say": [
-        "I'm sorry to hear that.",
-        "I'm sorry you're seeing the same silent-failure issue.",
-        "I'm sorry you're dealing with a persistently-failing test."
+        "I'm sorry you're dealing with that.",
+        "I'm sorry you've been stuck...",
+        "It can be frustrating when..."
       ],
       "match": [
-        "i'm sorry to",
-        "i'm sorry you're"
+        "i'm sorry you're",
+        "i'm sorry you've",
+        "it can be"
       ],
-      "n_violations": 13,
+      "n_violations": 15,
       "from_pooled": 0
     },
     "openai/gpt-oss-20b": {
       "say": [
         "I'm sorry to hear that.",
-        "I'm sorry to hear that your backups are.",
-        "I'm sorry you ran into that frustrating timeout."
+        "I'm really sorry you're stuck...",
+        "I'm sorry you're having a..."
       ],
       "match": [
         "i'm sorry to",
-        "i'm sorry you"
+        "i'm really sorry",
+        "i'm sorry you're"
       ],
-      "n_violations": 7,
+      "n_violations": 11,
       "from_pooled": 0
     },
     "qwen/qwen3.8-27b": {
       "say": [
-        "That is incredibly frustrating.",
-        "I am so sorry to hear that.",
-        "I am very sorry to hear that."
+        "That is incredibly stressful.",
+        "That is a classic docker frustration.",
+        "I am so sorry to..."
       ],
       "match": [
-        "i am so",
-        "i am very",
-        "that is incredibly"
+        "that is incredibly",
+        "that is a",
+        "i am so"
       ],
-      "n_violations": 10,
+      "n_violations": 15,
       "from_pooled": 0
     }
   },
   "apology": {
-    "gemini-2.5-flash": {
-      "say": [
-        "My apologies for that error.",
-        "I'm sorry about that.",
-        "I'm sorry about that mistake."
-      ],
-      "match": [
-        "i'm sorry about",
-        "my apologies for"
-      ],
-      "n_violations": 2,
-      "from_pooled": 2
-    },
     "openai/gpt-oss-120b": {
       "say": [
         "I'm sorry about that mistake.",
         "I'm sorry for any confusion.",
-        "I'm sorry about that."
+        "I apologize for the mistake..."
       ],
       "match": [
         "i'm sorry about",
-        "i'm sorry for"
+        "i'm sorry for",
+        "i apologize for"
       ],
       "n_violations": 20,
       "from_pooled": 0
     },
     "openai/gpt-oss-20b": {
       "say": [
-        "I'm sorry about that.",
         "I'm sorry for the confusion.",
-        "I'm sorry for the mistake."
+        "I'm sorry about that.",
+        "I apologize for the mistake."
       ],
       "match": [
+        "i'm sorry for",
         "i'm sorry about",
-        "i'm sorry for"
+        "i apologize for"
       ],
       "n_violations": 19,
       "from_pooled": 0
@@ -97,22 +75,27 @@
     "qwen/qwen3.8-27b": {
       "say": [
         "I apologize for the error.",
-        "You are absolutely right.",
-        "And i apologize for the error."
+        "My apologies for the oversight.",
+        "I'm sorry about that."
       ],
       "match": [
-        "and i apologize",
         "i apologize for",
-        "you are absolutely"
+        "my apologies for",
+        "i'm sorry about"
       ],
       "n_violations": 9,
-      "from_pooled": 0
+      "from_pooled": 1
     }
   },
   "_meta": {
-    "draft": true,
+    "draft": false,
     "judge": "openai/gpt-oss-120b",
     "stimuli_version": 2,
-    "rule": "top 3 first clauses of judge evidence per model; match = first 3 words"
+    "models": [
+      "openai/gpt-oss-120b",
+      "openai/gpt-oss-20b",
+      "qwen/qwen3.8-27b"
+    ],
+    "rule": "violation clauses from judge evidence, filtered to forms of the behavior, grouped by first 3 words; top 3 groups per model"
   }
 }

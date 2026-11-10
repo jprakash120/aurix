@@ -67,7 +67,7 @@ def test_closer_was_replaced_by_emphasis():
 
 def test_plan_size_and_rotation():
     jobs = R.plan()
-    assert len(jobs) == 3 * 4 * 60 * len(R.MODELS)
+    assert len(jobs) == 3 * 4 * 60 * len(R.DEFAULT_MODELS)
     # for one (behavior, input, model) the four conditions are adjacent
     b0 = [j for j in jobs if j["behavior"] == "sympathy" and j["idx"] == 1
           and j["model"] == "openai/gpt-oss-120b"]
@@ -250,3 +250,19 @@ def test_daily_limit_skips_model_for_the_session(tmp_path):
     jobs = R.plan(n_inputs=1, models=["bad", "good"])
     R.run_generate(jobs, 100, client, gen_file=f, lists=_lists(["bad", "good"]), **NOSLEEP)
     assert {r["model"] for r in R.read_jsonl(f)} == {"good"}
+
+
+def test_non_forms_are_excluded_from_lists():
+    gens = [{"behavior": "apology", "condition": "none", "idx": i, "model": "m1", "reply": "r"}
+            for i in range(3)]
+    evs = ["You are absolutely right.", "I apologize for the error.", "I apologize for the error."]
+    js = [{"key": R.key("apology", "none", i, "m1"), "verdict": "VIOLATION", "evidence": e}
+          for i, e in enumerate(evs)]
+    lists, _ = D.derive(gens, js, models=["m1"])
+    assert lists["apology"]["m1"]["match"] == ["i apologize for"]
+    assert D.derive.excluded[("apology", "m1")]["you are absolutely right"] == 1
+
+
+def test_default_models_leave_out_gemini():
+    assert "gemini-2.5-flash" not in R.DEFAULT_MODELS and "gemini-2.5-flash" in R.MODELS
+    assert {j["model"] for j in R.plan(n_inputs=1)} == set(R.DEFAULT_MODELS)

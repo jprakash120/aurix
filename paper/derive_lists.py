@@ -54,6 +54,20 @@ def first_clause(evidence):
 
 LEADING = ("and ", "but ", "so ", "also ")
 
+# A clause only counts as a FORM of the behavior if it contains one of these.
+# The judge's evidence quote is sometimes the wrong span ("you are absolutely
+# right" for an apology reply) - that must not become a "Do not say" phrase.
+FORM_WORDS = {
+    "apology": ("sorry", "apolog", "regret", "my bad", "forgive"),
+    "sympathy": ("sorry", "frustrat", "stress", "imagine", "tough", "rough", "terrible",
+                 "annoy", "exhaust", "drain", "wear", "pain", "ugh", "oh no", "hard time",
+                 "going through", "hitting a wall", "nightmare", "awful"),
+}
+
+
+def is_form(behavior, clause):
+    return any(w in clause for w in FORM_WORDS.get(behavior, ()))
+
 
 def core(clause):
     """First MATCH_WORDS words: the FORM of the phrase, not its input-specific end."""
@@ -70,6 +84,8 @@ def derive(gens, judgments, models=None):
     v = {j["key"]: j for j in judgments if j["verdict"] in ("VIOLATION", "OK")}
     models = models or sorted({g["model"] for g in gens})
     out, report = {}, {}
+    excluded = collections.defaultdict(collections.Counter)
+    derive.excluded = excluded
     for b in S.CALIBRATION:
         groups = {}
         for m in models:
@@ -80,8 +96,10 @@ def derive(gens, judgments, models=None):
                 j = v.get(R.key(b, g["condition"], g["idx"], m))
                 if j and j["verdict"] == "VIOLATION":
                     c = first_clause(j.get("evidence", ""))
-                    if c:
+                    if c and is_form(b, c):
                         clauses[c] += 1
+                    elif c:
+                        excluded[(b, m)][c] += 1
             report[(b, m)] = clauses
             g_ = {}
             for c, n in clauses.items():
@@ -105,7 +123,11 @@ def derive(gens, judgments, models=None):
             for k in forms:
                 cs = groups[m].get(k) or pooled[k]
                 rep = sorted(cs, key=lambda c: (-cs[c], len(c), c))[0]
-                say.append(rep[:1].upper() + rep[1:] + ".")
+                if len(rep.split()) > 6:      # long, input-specific clause: keep its opening
+                    rep = " ".join(rep.split()[:5]).rstrip(",") + "..."
+                else:
+                    rep = rep + "."
+                say.append(rep[:1].upper() + rep[1:])
             out.setdefault(b, {})[m] = {
                 "say": say, "match": forms,
                 "n_violations": sum(report[(b, m)].values()),
@@ -115,28 +137,44 @@ def derive(gens, judgments, models=None):
 
 
 def main():
+    if "--freeze" in sys.argv:
+        lists = S.load_lists()
+        if not lists:
+            print("No lists.json to freeze.")
+            sys.exit(1)
+        lists.setdefault("_meta", {})["draft"] = False
+        with open(S.LISTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(lists, f, indent=2, ensure_ascii=False)
+        print("lists.json frozen. Commit it before generating.")
+        return
     jm = R.arg("--judge", R.DEFAULT_JUDGE)
+    models = R.arg("--models").split(",") if R.arg("--models") else R.DEFAULT_MODELS
     gens = R.read_jsonl(R.CAL_FILE)
     judgments = R.read_jsonl(R.judge_file(jm, calibration=True))
     if not gens or not judgments:
         print("No calibration data yet. Run: calibrate, then judge --calibration.")
         sys.exit(1)
-    lists, report = derive(gens, judgments)
+    lists, report = derive(gens, judgments, models=models)
     for (b, m), clauses in report.items():
         print("\n%s / %s - %d violations" % (b, m, sum(clauses.values())))
         for c, n in clauses.most_common():
             print("  %2d  %s" % (n, c))
-    missing = [(b, m) for b in S.CALIBRATION for m in sorted({g["model"] for g in gens})
-               if m not in lists.get(b, {})]
+        for c, n in derive.excluded.get((b, m), {}).items():
+            print("  %2d  (not a form of %s, excluded) %s" % (n, b, c))
+    print("\nDraft lists:")
+    for b in S.CALIBRATION:
+        for m in models:
+            x = lists.get(b, {}).get(m)
+            if x:
+                print("  %s / %s: %s%s" % (b, m, " ".join('"%s"' % p for p in x["say"]),
+                                         "  (%d from pooled)" % x["from_pooled"] if x["from_pooled"] else ""))
     lists["_meta"] = {"draft": True, "judge": jm, "stimuli_version": S.STIMULI_VERSION,
-                      "rule": "top %d first clauses of judge evidence per model; match = first %d words"
-                              % (TOP, MATCH_WORDS)}
+                      "models": models,
+                      "rule": "violation clauses from judge evidence, filtered to forms of the behavior, "
+                              "grouped by first %d words; top %d groups per model" % (MATCH_WORDS, TOP)}
     with open(S.LISTS_FILE, "w", encoding="utf-8") as f:
         json.dump(lists, f, indent=2, ensure_ascii=False)
-    print("\nWrote draft " + S.LISTS_FILE)
-    if missing:
-        print("No calibration violations for: %s - their list condition cannot run."
-              % ", ".join("%s/%s" % p for p in missing))
+    print("\nWrote DRAFT " + S.LISTS_FILE + " - review, then: python paper/derive_lists.py --freeze")
 
 
 if __name__ == "__main__":

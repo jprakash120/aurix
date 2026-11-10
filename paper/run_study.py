@@ -50,6 +50,10 @@ MODELS = {
     "gemini-2.5-flash": GEMINI,
 }
 DEFAULT_JUDGE = "openai/gpt-oss-120b"
+# 2026-11-10: Gemini's free tier ran out after ~25 calibration replies on
+# two days running; the study needs ~800 from it. Default to the three Groq
+# models; add Gemini back with --models if its key gets billing.
+DEFAULT_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"]
 
 GEN_TEMPERATURE = 0.7
 # v2: reasoning models spend output tokens on thinking; 1500 lost replies
@@ -174,7 +178,7 @@ def _interleave(jobs, behaviors):
 
 def plan(n_inputs=None, models=None, behaviors=None):
     """Study jobs: every behavior x condition x input x model."""
-    models = models or list(MODELS)
+    models = models or list(DEFAULT_MODELS)
     behaviors = behaviors or list(S.BEHAVIORS)
     jobs = []
     for b in behaviors:
@@ -189,7 +193,7 @@ def plan(n_inputs=None, models=None, behaviors=None):
 
 def calibration_plan(models=None):
     """No-instruction jobs on the calibration inputs (behaviors with derived lists)."""
-    models = models or list(MODELS)
+    models = models or list(DEFAULT_MODELS)
     jobs = [{"behavior": b, "condition": "none", "idx": idx, "input": text, "model": m}
             for b, inputs in S.CALIBRATION.items()
             for idx, text in enumerate(inputs) for m in models]
@@ -198,7 +202,7 @@ def calibration_plan(models=None):
 
 def missing_lists(models=None, lists=None):
     """(behavior, model) pairs whose `list` condition has no derived list yet."""
-    models = models or list(MODELS)
+    models = models or list(DEFAULT_MODELS)
     lists = S.load_lists() if lists is None else lists
     return [(b, m) for b in S.BEHAVIORS for m in models if S.list_text(b, m, lists) is None]
 
@@ -348,7 +352,7 @@ def main():
     if cmd == "plan":
         print("stimuli v%d: %s" % (S.STIMULI_VERSION,
               ", ".join("%s %d inputs" % (b, len(v["inputs"])) for b, v in S.BEHAVIORS.items())))
-        print("models: %s" % ", ".join(models or MODELS))
+        print("models: %s" % ", ".join(models or DEFAULT_MODELS))
         print("calibration jobs: %d (%d saved)" % (len(calibration_plan(models)), len(read_jsonl(CAL_FILE))))
         print("study jobs: %d (%d saved)" % (len(plan(n_inputs, models)), len(read_jsonl(GEN_FILE))))
         miss = missing_lists(models)
@@ -361,6 +365,9 @@ def main():
         if miss:
             print("No derived list yet for: %s" % ", ".join("%s/%s" % p for p in miss))
             print("Run calibrate, judge --calibration and paper/derive_lists.py first.")
+            sys.exit(1)
+        if S.load_lists().get("_meta", {}).get("draft", True):
+            print("lists.json is still a draft. Review it, then: python paper/derive_lists.py --freeze")
             sys.exit(1)
         run_generate(plan(n_inputs, models), max_calls, client_for)
     elif cmd == "judge":
