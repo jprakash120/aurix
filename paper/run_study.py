@@ -264,7 +264,7 @@ def run_generate(jobs, max_calls, client_for, log=print, sleep=SLEEP, gen_file=G
             for g in read_jsonl(gen_file) if g.get("reply")}
     todo = [j for j in jobs if key(j["behavior"], j["condition"], j["idx"], j["model"]) not in done]
     log("generate: %d done, %d to do, cap %d this session" % (len(done), len(todo), max_calls))
-    errors, dead, calls = {}, set(), 0
+    errors, dead, calls, shown = {}, set(), 0, set()
     for j in todo:
         if calls >= max_calls:
             break
@@ -287,7 +287,11 @@ def run_generate(jobs, max_calls, client_for, log=print, sleep=SLEEP, gen_file=G
                 % (j["model"], str(e)[:100]))
         except Exception as e:
             errors[j["model"]] = errors.get(j["model"], 0) + 1
-            log("  %s error: %s" % (j["model"], str(e)[:120]))
+            first = j["model"] not in shown
+            shown.add(j["model"])
+            # the first error per model in full: Groq puts the limit and the
+            # requested token count at the END of "Request too large" messages
+            log("  %s error: %s" % (j["model"], str(e) if first else str(e)[:120]))
             if errors[j["model"]] >= MAX_CONSECUTIVE_ERRORS:
                 dead.add(j["model"])
                 log("  %s: %d errors in a row - skipping it this session"
