@@ -266,3 +266,7 @@ def test_non_forms_are_excluded_from_lists():
 def test_default_models_leave_out_gemini():
     assert "gemini-2.5-flash" not in R.DEFAULT_MODELS and "gemini-2.5-flash" in R.MODELS
     assert {j["model"] for j in R.plan(n_inputs=1)} == set(R.DEFAULT_MODELS)
+
+
+def test_qwen_starts_under_its_output_cap():
+    assert max(R.MODEL_BUDGETS["qwen/qwen3.8-27b"]) < 1000

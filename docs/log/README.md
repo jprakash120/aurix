@@ -6,6 +6,37 @@ Format: what I did, what I found, what surprised me.
 
 ---
 
+## 2026-11-16 - pilot at 652/720; Qwen's real limit; first look
+
+Qwen's full error, finally: "output tokens per minute (OTPM): Limit
+1000, Requested 1024". Every max_tokens over 1000 is refused, so the
+4096 -> 2048 -> 1024 ladder could never fit. Qwen now starts at 900.
+None of its 214 saved replies was truncated (median ~585 characters).
+Requests now time out after 60 s (a stalled connection hung a session
+under the 600 s client default).
+
+Pilot: 652/720 replies (gpt-oss-120b 222, gpt-oss-20b 216, Qwen 214);
+128 graded. First look, about 11 graded replies per cell, pooled over
+models - direction only, no conclusions:
+
+| behavior | none | list | principle | positive |
+|---|---|---|---|---|
+| sympathy | 8/11 (5 listed) | 4/11 (1 listed, **3 displaced**) | 0/10 | 3/11 (3 displaced) |
+| apology | 9/11 (9 listed) | 0/11 | 0/10 | 4/11 (4 listed) |
+| emphasis | 10/11 (bold) | 4/10 (3 still bold) | 3/10 | 7/11 |
+
+If this holds at full n:
+- sympathy behaves like AURIX: the list removes the listed phrases
+  (5 -> 1) but the behavior continues in other forms.
+- apology does NOT displace: the list removes it entirely. My
+  prediction (displaced share >= 0.70) would be wrong for apology.
+- the one-sentence principle is the most effective condition on all
+  three, as in writeup 03's D wording.
+- "Do not use bold" still leaves bold in 3/10.
+Waiting for the full pilot before reading anything into it.
+
+---
+
 ## 2026-11-10 - calibration done (Groq models); lists filtered; Gemini out
 
 Calibration resumed: 147/160 replies, 146 graded. Gemini again hit "You

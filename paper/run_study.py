@@ -147,6 +147,12 @@ def call_with_retry(fn, sleep_fn=time.sleep, log=print):
 # A model's per-minute token cap can be smaller than prompt + output budget
 # ("Request too large", Qwen 2026-11-08). Retry the same request smaller.
 GEN_BUDGETS = (GEN_MAX_TOKENS, 2048, 1024)
+# Qwen on Groq's free tier: "output tokens per minute (OTPM): Limit 1000,
+# Requested 1024" (2026-11-16). Any max_tokens over 1000 is refused, so
+# start it under the cap. Its replies so far: median ~585 characters,
+# none truncated.
+MODEL_BUDGETS = {"qwen/qwen3.8-27b": (900,)}
+TIMEOUT = 60   # seconds per request; the client default (600) hung a session
 
 
 def with_smaller_budgets(fn, budgets=GEN_BUDGETS, log=print):
@@ -212,7 +218,7 @@ def missing_lists(models=None, lists=None):
 def make_client(model):
     from openai import OpenAI
     base, env = MODELS.get(model, GROQ)
-    return OpenAI(api_key=os.environ[env], base_url=base)
+    return OpenAI(api_key=os.environ[env], base_url=base, timeout=TIMEOUT)
 
 
 def generate_one(client, job, lists=None, max_tokens=GEN_MAX_TOKENS):
@@ -275,7 +281,8 @@ def run_generate(jobs, max_calls, client_for, log=print, sleep=SLEEP, gen_file=G
             text, finish, served, system = with_smaller_budgets(
                 lambda b: call_with_retry(
                     lambda: generate_one(client_for(j["model"]), j, lists, max_tokens=b),
-                    sleep_fn=sleep_fn, log=log), log=log)
+                    sleep_fn=sleep_fn, log=log),
+                budgets=MODEL_BUDGETS.get(j["model"], GEN_BUDGETS), log=log)
             errors[j["model"]] = 0
             append_jsonl(gen_file, dict(j, reply=text, finish_reason=finish, served_model=served,
                                         system=system, stimuli_version=S.STIMULI_VERSION,
